@@ -10,8 +10,9 @@ class ByProduct():
 
     def __init__(self, graph_state : GraphState) -> None:
         """Initialize the ByProduct operator"""
+        self.graph_state = graph_state
         
 
     def correct(self, measurement_pattern , measurement_outcome : np.ndarray):
         """Correct the measurement outcomes given a measurement pattern"""
-        raise NotImplemented
+        raise NotImplementedError
