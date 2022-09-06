@@ -6,7 +6,9 @@ from mentpy.state import GraphState
 from mentpy.measurement import BaseMeasurement
 
 class ByProduct():
-    """Calculate the ByProduct operator of a given graph state with flow"""
+    """Calculate the ByProduct operator of a given graph state with flow
+    :group: processing
+    """
 
     def __init__(self, graph_state : GraphState) -> None:
         """Initialize the ByProduct operator"""

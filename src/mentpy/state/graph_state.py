@@ -10,7 +10,10 @@ import pennylane as qml
 
 
 class GraphState:
-    """The GraphState class that deals with operations and manipulations of graph states"""
+    """The GraphState class that deals with operations and manipulations of graph states
+    
+    :group: states
+    """
 
     def __init__(
         self,
@@ -29,12 +32,18 @@ class GraphState:
 
 
 def lc_reduce(state: GraphState):
-    """Reduce graph state"""
+    """Reduce graph state
+    
+    :group: states
+    """
     raise NotImplementedError
 
 
 def merge(
     state1: GraphState, state2: GraphState, indices_tuple: List[Tuple]
 ) -> GraphState:
-    """Merge two graph states into a larger graph state"""
+    """Merge two graph states into a larger graph state
+    
+    :group: states
+    """
     raise NotImplementedError

@@ -5,7 +5,10 @@ from mentpy.state import GraphState
 
 
 class BaseMeasurement(metaclass=ABCMeta):
-    """Base class for measurements"""
+    """Base class for measurements
+
+    :group: measurements
+    """
 
     def __init__(self, state: GraphState):
         """Initialize a base measurement"""

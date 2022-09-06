@@ -10,6 +10,9 @@ def find_flow(state: GraphState):
     """Finds the generalized flow of graph state if allowed. Otherwise returns None
 
     Implementation of https://arxiv.org/pdf/quant-ph/0603072.pdf.
+
+    :group: states
+
     """
     state_flow = None
 

@@ -6,11 +6,21 @@
 Welcome to MentPy's documentation!
 ==================================
 
+The :obj:`mentpy` library is super cool.
+
 .. toctree::
+   :caption: Getting Started
+   :hidden:
    :maxdepth: 2
-   :caption: Contents:
 
+   getting-started
 
+.. toctree::
+   :caption: API Reference
+   :hidden:
+   :maxdepth: 2
+
+   api
 
 Indices and tables
 ==================
