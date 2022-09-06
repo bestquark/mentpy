@@ -1,2 +1,2 @@
-# mebas
+# MentPy
 Measurement-Based Quantum Computing simulator. 
