@@ -92,72 +92,58 @@ html_static_path = ["_static"]
 
 html_title = "MentPy"
 # html_favicon = "../logo/mentpy-favicon-color.png"
-# html_logo = "../logo/mentpy-favicon-white.png"
+html_logo = "_static/logo-state.png"
 
+html_theme_options = {
+    "icon": {
+        "repo": "fontawesome/brands/github",
+    },
+    "site_url": "https://github.com/BestQuark/mentpy",
+    "repo_url": "https://github.com/BestQuark/mentpy",
+    "repo_name": "MentPy",
+    "repo_type": "github",
+    # "google_analytics": ["UA-XXXXX", "auto"],
+    "globaltoc_collapse": True,
+    "features": [
+        "navigation.expand",
+        # "navigation.tabs",
+        # "toc.integrate",
+        "navigation.sections",
+        # "navigation.instant",
+        # "header.autohide",
+        "navigation.top",
+        # "navigation.tracking",
+        # "search.highlight",
+        "search.share",
+        "toc.follow",
+        "toc.sticky",
+    ],
+    "palette": [
+        {
+            "media": "(prefers-color-scheme: light)",
+            "scheme": "default",
+            "primary": "deep-purple",
+            "toggle": {
+                "icon": "material/lightbulb-outline",
+                "name": "Switch to dark mode",
+            },
+        },
+        {
+            "media": "(prefers-color-scheme: dark)",
+            "scheme": "slate",
+            "primary": "deep-purple",
+            "toggle": {
+                "icon": "material/lightbulb",
+                "name": "Switch to light mode",
+            },
+        },
+    ],
+    # BEGIN: version_dropdown
+    "version_dropdown": False,
 
-# html_theme_options = {
-#     "icon": {
-#         "repo": "fontawesome/brands/github",
-#     },
-#     "site_url": "https://mentpy.readthedocs.io/",
-#     "repo_url": "https://github.com/bestquark/mentpy",
-#     "repo_name": "bestquark/mentpy",
-#     "repo_type": "github",
-#     "social": [
-#         {
-#             "icon": "fontawesome/brands/github",
-#             "link": "https://github.com/bestquark/mentpy"
-#         },
-#         {
-#             "icon": "fontawesome/brands/python",
-#             "link": "https://pypi.org/project/mentpy/"
-#         },
-#         {
-#             "icon": "fontawesome/brands/twitter",
-#             "link": "https://twitter.com/mentpy"
-#         },
-#     ],
-#     "edit_uri": "",
-#     "globaltoc_collapse": False,
-#     "features": [
-#         # "navigation.expand",
-#         "navigation.tabs",
-#         # "toc.integrate",
-#         # "navigation.sections",
-#         # "navigation.instant",
-#         # "header.autohide",
-#         "navigation.top",
-#         "navigation.tracking",
-#         "toc.follow",
-#         "toc.sticky"
-#     ],
-#     "palette": [
-#         {
-#             "media": "(prefers-color-scheme: light)",
-#             "scheme": "default",
-#             "accent": "deep-orange",
-#             "toggle": {
-#                 "icon": "material/weather-night",
-#                 "name": "Switch to dark mode",
-#             },
-#         },
-#         {
-#             "media": "(prefers-color-scheme: dark)",
-#             "scheme": "slate",
-#             "accent": "deep-orange",
-#             "toggle": {
-#                 "icon": "material/weather-sunny",
-#                 "name": "Switch to light mode",
-#             },
-#         },
-#     ],
-#     "analytics": {
-#         "provider": "google",
-#         "property": "G-XXX"
-#     },
-#     "version_dropdown": True,
-#     "version_json": "../versions.json",
-# }
+    # END: version_dropdown
+    "toc_title_is_page_title": True,
+}
 
 # -- Extension configuration -------------------------------------------------
 

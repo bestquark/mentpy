@@ -1,5 +1,5 @@
-Getting Started
-===============
+Installation
+=============
 
 The :doc:`getting-started` guide is intended to assist the user with installing the library.
 
