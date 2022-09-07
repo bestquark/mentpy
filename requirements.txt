@@ -2,3 +2,4 @@ networkx>=2.8.6
 numpy>=1.23.2
 PennyLane>=0.25.1
 scipy>=1.9.1
+tensornetwork>=0.4.6

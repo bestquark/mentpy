@@ -30,7 +30,6 @@ class GraphState:
         self.output_nodes = output_nodes
         self.flow = flow
 
-
 def lc_reduce(state: GraphState):
     """Reduce graph state
     

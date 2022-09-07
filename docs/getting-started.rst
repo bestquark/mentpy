@@ -6,7 +6,7 @@ The :doc:`getting-started` guide is intended to assist the user with installing 
 Install using ``pip``
 ---------------------
 The :obj:`mentpy` library requires Python 3.9 and above. It can be installed from 
-`PyPI <https://pypi.org/project/mentpy/>`_ using `pip`.
+`PyPI <https://pypi.org/project/mentpy/>`_ using ``pip``.
 
 .. code-block:: console
 
