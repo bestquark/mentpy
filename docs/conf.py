@@ -26,6 +26,9 @@ release = mentpy.__version__
 
 extensions = [
     "sphinx.ext.autodoc",
+    'sphinx.ext.todo', 
+    'sphinx.ext.mathjax', 
+    'sphinx.ext.ifconfig',
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "sphinx_immaterial",
@@ -91,7 +94,7 @@ html_theme = "sphinx_immaterial"
 html_static_path = ["_static"]
 
 html_title = "MentPy"
-# html_favicon = "../logo/mentpy-favicon-color.png"
+html_favicon = "_static/favicon-32x32.png"
 html_logo = "_static/logo-state.png"
 
 html_theme_options = {
@@ -140,7 +143,6 @@ html_theme_options = {
     ],
     # BEGIN: version_dropdown
     "version_dropdown": False,
-
     # END: version_dropdown
     "toc_title_is_page_title": True,
 }
@@ -165,4 +167,9 @@ autodoc_typehints_description_target = "documented"
 autodoc_typehints_format = "short"
 myst_enable_extensions = ["dollarmath"]
 
-ipython_execlines = ["import math", "import numpy as np", "import mentpy"]
+ipython_execlines = [
+    "import math",
+    "import numpy as np",
+    "import networkx as nx",
+    "import mentpy as mtp",
+]

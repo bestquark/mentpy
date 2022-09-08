@@ -29,6 +29,6 @@ Import the :obj:`mentpy` package and verify that it was installed correctly.
 
 .. ipython:: python
 
-   import mentpy
-   mentpy.__version__
+   import mentpy as mtp
+   mtp.__version__
 
