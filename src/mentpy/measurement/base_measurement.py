@@ -19,6 +19,7 @@ class BaseMeasurement(metaclass=ABCMeta):
         """Initialize a base measurement"""
         self.state = state
         self.flow = flow
+        self.top_order = top_order
 
     @abstractmethod
     def measure(self, pattern: np.ndarray) -> Tuple:

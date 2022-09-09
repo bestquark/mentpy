@@ -1,4 +1,3 @@
-from graphviz import Graph
 import numpy as np
 
 from mentpy.measurement import BaseMeasurement
@@ -8,9 +7,13 @@ from typing import List, Tuple, Callable
 
 
 class GeneralMeasurement(BaseMeasurement):
+    """General measurements class
+    
+    :group: measurements
+    """
     def __init__(self, state: GraphState, flow: Callable, top_order: np.ndarray):
         """Initializes GeneralMeasurement object"""
-        super().__init__(state, flow)
+        super().__init__(state, flow, top_order)
 
     def measure(self, pattern: np.ndarray) -> Tuple:
         """Measures the given pattern"""

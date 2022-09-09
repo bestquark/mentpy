@@ -27,16 +27,36 @@ class GraphState:
 
     def __init__(
         self,
-        graph: Union[nx.Graph, nx.DiGraph],
+        graph: nx.Graph,
         input_state: np.ndarray = np.array([]),
         input_nodes: np.ndarray = np.array([]),
         output_nodes: np.ndarray = np.array([]),
     ) -> None:
         """Initializes a graph state"""
-        self.graph = graph
-        self.input_state = input_state
-        self.input_nodes = input_nodes
-        self.output_nodes = output_nodes
+        self._graph = graph
+        self._input_state = input_state
+        self._input_nodes = input_nodes
+        self._output_nodes = output_nodes
+
+    @property
+    def graph(self):
+        r"""Return the graph of the resource state."""
+        return self._graph
+    
+    @property
+    def input_state(self):
+        r"""Return the input state :math:`|\psi\rangle` of the MBQC circuit"""
+        return self._input_state
+
+    @property
+    def input_nodes(self):
+        r"""Return the input nodes of the MBQC circuit."""
+        return self._input_nodes
+
+    @property
+    def output_nodes(self):
+        r"""Return the output nodes of the MBQC circuit."""
+        return self._output_nodes
 
     @cached_property
     def outputc(self):
@@ -72,7 +92,10 @@ def entanglement_entropy(
 ):
     """Calculates the entanglement entropy between subRegionA and subRegionB
     of state. If subRegionB is None, then :python:`subRegionB = set(state.graph.nodes()) - set(subRegionA)`
-    by default."""
+    by default.
+    
+    :group: states
+    """
 
     G = state.graph.copy()
 
