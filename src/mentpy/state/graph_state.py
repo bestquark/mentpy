@@ -37,17 +37,17 @@ class GraphState:
         self.input_state = input_state
         self.input_nodes = input_nodes
         self.output_nodes = output_nodes
-    
+
     @cached_property
     def outputc(self):
         r"""Returns :math:`O^c`, the complement of output nodes."""
         return [v for v in self.graph.nodes() if v not in self.output_nodes]
-    
+
     @cached_property
     def inputc(self):
         r"""Returns :math:`I^c`, the complement of input nodes."""
         return [v for v in self.graph.nodes() if v not in self.input_nodes]
-        
+
 
 def lc_reduce(state: GraphState):
     """Reduce graph state
@@ -66,7 +66,10 @@ def merge(
     """
     raise NotImplementedError
 
-def entanglement_entropy(state: GraphState, subRegionA : List, subRegionB : Optional[List] = None):
+
+def entanglement_entropy(
+    state: GraphState, subRegionA: List, subRegionB: Optional[List] = None
+):
     """Calculates the entanglement entropy between subRegionA and subRegionB
     of state. If subRegionB is None, then :python:`subRegionB = set(state.graph.nodes()) - set(subRegionA)`
     by default."""
@@ -77,7 +80,7 @@ def entanglement_entropy(state: GraphState, subRegionA : List, subRegionB : Opti
     nx.set_edge_attributes(G, 1, name="capacity")
     if subRegionB is None:
         subRegionB = set(state.graph.nodes()) - set(subRegionA)
-    
+
     # Allow subregions. These are merged into a supernode to calculate
     # the minimum cut between them.
     if isinstance(subRegionA, List):
@@ -88,5 +91,5 @@ def entanglement_entropy(state: GraphState, subRegionA : List, subRegionB : Opti
         for v in subRegionA:
             G = nx.contracted_nodes(G, subRegionB[0], v)
         subRegionB = subRegionB[0]
-    
+
     return nx.minimum_cut(G, subRegionA, subRegionB)[0]

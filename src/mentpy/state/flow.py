@@ -8,18 +8,15 @@ from mentpy.state import GraphState
 from typing import List
 
 
-def set_flow(state: GraphState) -> None:
-    """Sets flow to state.graph by making it a DiGraph"""
-    flow = find_flow(state)
-    digraph = get_graph_with_flow(state, flow[0])
-    if digraph.number_of_nodes()!=state.graph.number_of_nodes():
-        raise RuntimeError("Graph with flow does not have same number of nodes as undirected graph")
-    state.graph = digraph
-
-def find_flow(state: GraphState, sanity_check = False):
-    r"""Finds the generalized flow of graph state if allowed. Otherwise returns None
+def find_flow(state: GraphState, sanity_check=False):
+    r"""Finds the generalized flow of graph state if allowed.
 
     Implementation of https://arxiv.org/pdf/quant-ph/0603072.pdf.
+
+    Returns
+    -------
+    The flow function ``flow`` and the list ``top_order`` corresponding to the
+    topological order induced by ``flow`` on ``state.graph``.
 
     Examples
     --------
@@ -30,8 +27,9 @@ def find_flow(state: GraphState, sanity_check = False):
         g = nx.Graph()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
         state = mtp.GraphState(g, input_nodes = [0], output_nodes = [4])
-        flow = mtp.find_flow(state)
-        print(flow)
+        flow, top_order = mtp.find_flow(state)
+        print("Flow of node 1: ", flow(1))
+        print("Topological order: ", top_order)
 
     :group: states
     """
@@ -48,23 +46,28 @@ def find_flow(state: GraphState, sanity_check = False):
 
         if sigma is not None:
             flow = _flow_from_array(state, f)
-            state_flow = (flow, P, L, sigma)
+            g = _get_flowgraph(state, flow)
+            top_order = list(nx.topological_sort(g))
+            state_flow = (flow, top_order)
             if sanity_check:
-                if not check_if_flow(state, flow):
-                    raise RuntimeError("Sanity check found that flow does not satisfy flow conditions.")
+                if not _check_if_flow(state, flow, top_order):
+                    raise RuntimeError(
+                        "Sanity check found that flow does not satisfy flow conditions."
+                    )
             return state_flow
     else:
         raise UserWarning("Could not find a flow for the given state.")
 
-def _flow_from_array(state: GraphState , f: List):
+
+def _flow_from_array(state: GraphState, f: List):
     """Create a flow function from a given array f"""
 
     def flow(v):
         if v in state.outputc:
             return int(f[v])
         else:
-            raise UserWarning(f"The node {v} is not in domain of the flow.") 
-    
+            raise UserWarning(f"The node {v} is not in domain of the flow.")
+
     return flow
 
 
@@ -72,7 +75,7 @@ def _get_chain_decomposition(state: GraphState, C: nx.DiGraph):
     """Gets the chain decomposition"""
     P = np.zeros(len(state.graph))
     L = np.zeros(len(state.graph))
-    f = {v:0 for v in set(state.graph) - set(state.output_nodes) }
+    f = {v: 0 for v in set(state.graph) - set(state.output_nodes)}
     for i in state.input_nodes:
         v, l = i, 0
         while v not in state.output_nodes:
@@ -104,7 +107,7 @@ def _compute_suprema(state: GraphState, f, P, L):
 def _traverse_infl_walk(state: GraphState, f, sup, status, v):
     """Compute the suprema by traversing influencing walks"""
     status[v] = 1
-    vertex2index = {v:index for index,v in enumerate(state.input_nodes) }
+    vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
 
     for w in state.graph.neighbors(v):
         if w == f[v] and w != v:
@@ -126,7 +129,7 @@ def _init_status(state: GraphState, P, L):
     status: 0 if none, 1 if pending, 2 if fixed.
     """
     sup = np.zeros((len(state.input_nodes), len(state.graph.nodes())))
-    vertex2index = {v:index for index,v in enumerate(state.input_nodes) }
+    vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
     status = np.zeros(len(state.graph.nodes()))
     for v in state.graph.nodes():
         for i in state.input_nodes:
@@ -203,21 +206,21 @@ def _augmented_search(state: GraphState, fam: nx.DiGraph, iter: int, visited, v)
     return (fam, visited, 0)
 
 
-def check_if_flow(state: GraphState, flow) -> bool:
+def _check_if_flow(state: GraphState, flow, top_order) -> bool:
     """Checks if flow satisfies conditions on state."""
-    g = get_graph_with_flow(state, flow)
-    top_order = list(nx.topological_sort(g))
     conds = True
     for i in state.outputc:
         nfi = state.graph.neighbors(flow(i))
         c1 = i in nfi
         c2 = top_order.index(i) < top_order.index(flow(i))
-        c3 = math.prod([top_order.index(i)<top_order.index(k) for k in set(nfi) - {i}])
-        conds = conds*c1*c2*c3
+        c3 = math.prod(
+            [top_order.index(i) < top_order.index(k) for k in set(nfi) - {i}]
+        )
+        conds = conds * c1 * c2 * c3
     return conds
 
 
-def get_graph_with_flow(state: GraphState, flow):
+def _get_flowgraph(state: GraphState, flow):
     """Get graph with flow"""
     H = nx.DiGraph()
     for v in state.outputc:
