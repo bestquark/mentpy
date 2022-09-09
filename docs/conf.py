@@ -173,3 +173,8 @@ ipython_execlines = [
     "import networkx as nx",
     "import mentpy as mtp",
 ]
+
+rst_prolog = """
+    .. role:: python(code)
+        :language: python
+"""
