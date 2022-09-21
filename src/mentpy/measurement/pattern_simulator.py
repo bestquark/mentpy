@@ -69,14 +69,12 @@ class PatternSimulator:
         return result.final_state_vector
 
     def _run_short_circuit(self, moment, init_state):
-        """Runs a short circuit"""
+        """Runs a short circuit with moment ``moment`` and initial state ``init_state``."""
 
         circ = cirq.Circuit()
         circ.append(cirq.I.on_each(self.qubit_register))
         circ.append(moment())
         return self.simulator.simulate(circ, initial_state=init_state)
-
-    
 
     def entangling_moment(self, cz_neighbors):
         r"""Entangle cz_neighbors"""
@@ -109,7 +107,7 @@ class PatternSimulator:
             angle_moment = self.measurement_moment(angle, ind_to_measure)
             result = self._run_short_circuit(angle_moment, self.current_sim_state)
             tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
-            # update this if density matrix?? 
+            # update this if density matrix??
             self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
                 result.final_state_vector, keep_indices=tinds
             )[0][1]
@@ -123,26 +121,26 @@ class PatternSimulator:
             )
 
         return outcome
-    
+
     def entangle_and_measure(self, angle):
-        """First entangles and then measures the qubit lowest in the topological ordering 
+        """First entangles and then measures the qubit lowest in the topological ordering
         and entangles the next plus state"""
 
         self.current_sim_graph = self.state.graph.subgraph(self.current_sim_ind).copy()
 
         # these atributes can only be updated in measure and measure_pattern
         self.current_sim_state = self.append_plus_state(
-            self.current_sim_graph, self.current_sim_graph.edges(self.current_sim_ind[-1])
+            self.current_sim_graph,
+            self.current_sim_graph.edges(self.current_sim_ind[-1]),
         )
 
         outcome = self.measure(angle)
         return outcome
 
     def correct_measurement_outcome(self, qubit):
-        r"""Correct for measurement angle by multiplying by stabilizer 
+        r"""Correct for measurement angle by multiplying by stabilizer
         :math:`X_{f(i)} \prod_{j \in N(f(i))} Z_j`"""
-        #TODO
-
+        # TODO
 
     def measure_pattern(self, pattern: Union[np.ndarray, dict]):
         """Measures in the pattern specified by the given list. Return the quantum state obtained
@@ -160,20 +158,11 @@ class PatternSimulator:
                 self.measure(angle)
             else:
                 self.entangle_and_measure(angle)
-                
+
         return self.measurement_outcomes, self.current_sim_state
 
     def reset(self):
         """Resets the state to run another simulation."""
-        self.__init__(self.state, self.simulator, flow = self.flow, top_order = self.top_order)
-
-    def _embed_state(self):
-        if 1:
-            pass
-        else:
-            raise RuntimeError(
-                f"Could not embed state as it is a tensor of rank {self.state_rank}"
-            )
-
-    def _create_simulated_state(self, density_matrix=False):
-        """Creates curr_sim_graph state representation"""
+        self.__init__(
+            self.state, self.simulator, flow=self.flow, top_order=self.top_order
+        )
