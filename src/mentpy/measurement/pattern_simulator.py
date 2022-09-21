@@ -22,6 +22,7 @@ class PatternSimulator:
     ):
         """Initializes Pattern object"""
         self.state = state
+        self.measure_number = 0
 
         if flow is None:
             flow, top_order = find_flow(state)
@@ -34,16 +35,15 @@ class PatternSimulator:
 
         self.qubit_register = cirq.LineQubit.range(self.total_simu)
 
-        self.curr_sim_graph = state.graph.subgraph(self.current_sim_ind).copy()
+        self.current_sim_graph = state.graph.subgraph(self.current_sim_ind).copy()
 
         # these atributes can only be updated in measure and measure_pattern
-        self.curr_sim_state = self.append_plus_state(
-            state.input_state, self.curr_sim_graph.edges()
+        self.current_sim_state = self.append_plus_state(
+            state.input_state, self.current_sim_graph.edges()
         )
-        self.measure_number = 0
 
         self.max_measure_number = len(state.outputc)
-        self.state_rank = len(self.curr_sim_state.shape)
+        self.state_rank = len(self.current_sim_state.shape)
         self.measurement_outcomes = {}
 
     @property
@@ -62,7 +62,7 @@ class PatternSimulator:
     def append_plus_state(self, psi, cz_neighbors):
         r"""Return :math:`\prod_{Neigh} CZ_{ij} |\psi \rangle \otimes |+\rangle`"""
 
-        augmented_state = cirq.kron(psi, cirq.KET_PLUS)
+        augmented_state = cirq.kron(psi, cirq.KET_PLUS.state_vector())
         result = self._run_short_circuit(
             self.entangling_moment(cz_neighbors), augmented_state
         )
@@ -70,8 +70,13 @@ class PatternSimulator:
 
     def _run_short_circuit(self, moment, init_state):
         """Runs a short circuit"""
-        circ = cirq.Circuit(moment)
+
+        circ = cirq.Circuit()
+        circ.append(cirq.I.on_each(self.qubit_register))
+        circ.append(moment())
         return self.simulator.simulate(circ, initial_state=init_state)
+
+    
 
     def entangling_moment(self, cz_neighbors):
         r"""Entangle cz_neighbors"""
@@ -88,7 +93,7 @@ class PatternSimulator:
 
         def measure_moment():
             qi = self.qubit_register[self.simind2qubitind[qindex]]
-            yield cirq.Rz(angle).on()
+            yield cirq.Rz(rads=angle).on(qi)
             yield cirq.H(qi)
             yield cirq.measure(qi)
 
@@ -102,14 +107,13 @@ class PatternSimulator:
         if self.measure_number < self.max_measure_number:
             ind_to_measure = self.current_sim_ind[0]
             angle_moment = self.measurement_moment(angle, ind_to_measure)
-            result = self._run_short_circuit(angle_moment, self.curr_sim_state)
-            tinds = [self.simind2qubitind[j] for j in self.curr_sim_ind[1:]]
-
+            result = self._run_short_circuit(angle_moment, self.current_sim_state)
+            tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
             # update this if density matrix?? 
-            self.curr_sim_state = cirq.partial_trace(
+            self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
                 result.final_state_vector, keep_indices=tinds
             )[0][1]
-            outcome = result.measurements[self.qubit_register[ind_to_measure]]
+            outcome = result.measurements[f"q({ind_to_measure})"]
             self.measurement_outcomes[ind_to_measure] = outcome
             self.measure_number += 1
 
@@ -121,17 +125,23 @@ class PatternSimulator:
         return outcome
     
     def entangle_and_measure(self, angle):
-        """Measures the qubit lowest in the topological ordering and entangles the next plus state"""
+        """First entangles and then measures the qubit lowest in the topological ordering 
+        and entangles the next plus state"""
 
-        self.curr_sim_graph = self.state.graph.subgraph(self.current_sim_ind).copy()
+        self.current_sim_graph = self.state.graph.subgraph(self.current_sim_ind).copy()
 
         # these atributes can only be updated in measure and measure_pattern
-        self.curr_sim_state = self.append_plus_state(
-            self.curr_sim_graph, self.curr_sim_graph.edges(self.current_sim_ind[-1])
+        self.current_sim_state = self.append_plus_state(
+            self.current_sim_graph, self.current_sim_graph.edges(self.current_sim_ind[-1])
         )
 
         outcome = self.measure(angle)
         return outcome
+
+    def correct_measurement_outcome(self, qubit):
+        r"""Correct for measurement angle by multiplying by stabilizer 
+        :math:`X_{f(i)} \prod_{j \in N(f(i))} Z_j`"""
+        #TODO
 
 
     def measure_pattern(self, pattern: Union[np.ndarray, dict]):
@@ -146,11 +156,12 @@ class PatternSimulator:
 
         for ind, angle in enumerate(pattern):
             if ind == 0:
+                # extra qubit already entangled at initialization (because nodes in I can have edges)
                 self.measure(angle)
             else:
                 self.entangle_and_measure(angle)
                 
-        return self.measurement_outcomes, self.curr_sim_state
+        return self.measurement_outcomes, self.current_sim_state
 
     def reset(self):
         """Resets the state to run another simulation."""
