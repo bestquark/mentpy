@@ -7,20 +7,25 @@ import numpy as np
 import scipy as scp
 import networkx as nx
 import mentpy as mtp
-
-import pennylane as qml
+import cirq
 
 
 class GraphState:
     r"""The GraphState class that deals with operations and manipulations of graph states
+    Args
+    ----
+    graph: nx.Graph
+    simulation_type: "qubit" or "density_matrix".
 
     Examples
     --------
     Create a 1D cluster state :math:`|G>` of five qubits
 
-    g = nx.Graph()
-    g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-    state = mtp.GraphState(g, input_nodes=[0], output_nodes=[4])
+    .. ipython:: python
+
+        g = nx.Graph()
+        g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
+        state = mtp.GraphState(g, input_nodes=[0], output_nodes=[4])
 
     :group: states
     """
@@ -28,33 +33,45 @@ class GraphState:
     def __init__(
         self,
         graph: nx.Graph,
-        input_state: np.ndarray = np.array([]),
+        input_state: Optional[np.ndarray] = None,
         input_nodes: np.ndarray = np.array([]),
         output_nodes: np.ndarray = np.array([]),
     ) -> None:
         """Initializes a graph state"""
         self._graph = graph
-        self._input_state = input_state
+        if input_state is not None:
+            self._input_state = input_state
+        else:
+            in_states = len(input_nodes) * [cirq.KET_PLUS.state_vector()]
+            self._input_state = cirq.kron(*in_states)
+
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
 
+    def __repr__(self) -> str:
+        """Return the representation of the current graph state"""
+        return (
+            f"Graph state with {self.graph.number_of_nodes()} nodes and "
+            f"{self.graph.number_of_edges()} edges."
+        )
+
     @property
-    def graph(self):
+    def graph(self) -> nx.Graph:
         r"""Return the graph of the resource state."""
         return self._graph
-    
+
     @property
     def input_state(self):
         r"""Return the input state :math:`|\psi\rangle` of the MBQC circuit"""
         return self._input_state
 
     @property
-    def input_nodes(self):
+    def input_nodes(self) -> np.ndarray:
         r"""Return the input nodes of the MBQC circuit."""
         return self._input_nodes
 
     @property
-    def output_nodes(self):
+    def output_nodes(self) -> np.ndarray:
         r"""Return the output nodes of the MBQC circuit."""
         return self._output_nodes
 
@@ -67,6 +84,9 @@ class GraphState:
     def inputc(self):
         r"""Returns :math:`I^c`, the complement of input nodes."""
         return [v for v in self.graph.nodes() if v not in self.input_nodes]
+
+    def create_plus_states(self, n):
+        r"""Returns the quantum state :math:`|+\rangle^n`."""
 
 
 def lc_reduce(state: GraphState):
@@ -93,7 +113,7 @@ def entanglement_entropy(
     """Calculates the entanglement entropy between subRegionA and subRegionB
     of state. If subRegionB is None, then :python:`subRegionB = set(state.graph.nodes()) - set(subRegionA)`
     by default.
-    
+
     :group: states
     """
 

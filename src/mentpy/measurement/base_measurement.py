@@ -15,11 +15,10 @@ class BaseMeasurement(metaclass=ABCMeta):
     :group: measurements
     """
 
-    def __init__(self, state: GraphState, flow: Callable, top_order: np.ndarray):
+    def __init__(self, state: GraphState, qubit: int):
         """Initialize a base measurement"""
         self.state = state
-        self.flow = flow
-        self.top_order = top_order
+        self.qubit = qubit
 
     @abstractmethod
     def measure(self, pattern: np.ndarray) -> Tuple:

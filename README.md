@@ -14,5 +14,6 @@
   <a href="https://codecov.io/gh/bestquark/mentpy"><img src="https://codecov.io/gh/bestquark/mentpy/branch/master/graph/badge.svg?token=3FJML79ZUK"></a>
 </div>
 
-The `MentPy` library is a complete and modular library for simulations of 
-measurement-based quantum computing circuits.
+The `MentPy` library is an open-source software for simulations of 
+measurement-based quantum computing circuits. It is built on top of [QuTiP](https://github.com/qutip/qutip).
+
