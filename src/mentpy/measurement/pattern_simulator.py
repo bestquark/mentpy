@@ -115,7 +115,6 @@ class PatternSimulator:
             curr_ind_to_measure = self.simind2qubitind[ind_to_measure]
             angle_moment = self.measurement_moment(angle, curr_ind_to_measure)
             result = self._run_short_circuit(angle_moment, self.current_sim_state)
-            tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
             outcome = result.measurements[f"q({curr_ind_to_measure})"]
             self.measurement_outcomes[ind_to_measure] = outcome
 
@@ -123,6 +122,10 @@ class PatternSimulator:
                 self.correct_measurement_outcome(ind_to_measure, outcome)
 
             # update this if density matrix??
+            tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
+
+            # PARTIAL TRACE IS NOT DOING WHAT IT IS SUPPOSED TO DO! 
+            # TODO: FIX IT!!
             self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
                 result.final_state_vector, keep_indices=tinds
             )[0][1]
