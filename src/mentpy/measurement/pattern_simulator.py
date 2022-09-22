@@ -3,8 +3,8 @@ import numpy as np
 import cirq
 from typing import Union, Callable, List, Optional
 
-from mentpy.state import GraphState
-from mentpy.state import find_flow
+from mentpy import GraphStateCircuit
+from mentpy import find_flow
 
 
 class PatternSimulator:
@@ -15,10 +15,11 @@ class PatternSimulator:
 
     def __init__(
         self,
-        state: GraphState,
+        state: GraphStateCircuit,
         simulator: cirq.SimulatorBase = cirq.Simulator(),
         flow: Optional[Callable] = None,
         top_order: Optional[np.ndarray] = None,
+        input_state: Optional[np.ndarray] = None,
     ):
         """Initializes Pattern object"""
         self.state = state
@@ -38,8 +39,13 @@ class PatternSimulator:
         self.current_sim_graph = state.graph.subgraph(self.current_sim_ind).copy()
 
         # these atributes can only be updated in measure and measure_pattern
+        if input_state is None:
+            input_state = state.input_state
+        else:
+            pass  # TODO: Check size of input state is right
+
         self.current_sim_state = self.append_plus_state(
-            state.input_state, self.current_sim_graph.edges()
+            input_state, self.current_sim_graph.edges()
         )
 
         self.max_measure_number = len(state.outputc)
@@ -61,11 +67,9 @@ class PatternSimulator:
 
     @property
     def qubitind2simind(self):
-        r"""Returns a dictionary to translate from qubit indices (eg. [1, 3, 2]) to simulated 
+        r"""Returns a dictionary to translate from qubit indices (eg. [1, 3, 2]) to simulated
         indices (eg. [6, 15, 4])"""
         return {ind: q for ind, q in enumerate(self.current_sim_ind)}
-
-    
 
     def append_plus_state(self, psi, cz_neighbors):
         r"""Return :math:`\prod_{Neigh} CZ_{ij} |\psi \rangle \otimes |+\rangle`"""
@@ -105,7 +109,7 @@ class PatternSimulator:
 
         return measure_moment
 
-    def measure(self, angle, correct_for_outcome = False):
+    def measure(self, angle, correct_for_outcome=False):
         """Measure next qubit in the given topological order"""
 
         outcome = None
@@ -124,7 +128,7 @@ class PatternSimulator:
             # update this if density matrix??
             tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
 
-            # PARTIAL TRACE IS NOT DOING WHAT IT IS SUPPOSED TO DO! 
+            # PARTIAL TRACE IS NOT DOING WHAT IT IS SUPPOSED TO DO!
             # TODO: FIX IT!!
             self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
                 result.final_state_vector, keep_indices=tinds
@@ -146,7 +150,9 @@ class PatternSimulator:
         outcome = None
 
         if self.measure_number < self.max_measure_number:
-            self.current_sim_graph = self.state.graph.subgraph(self.current_sim_ind).copy()
+            self.current_sim_graph = self.state.graph.subgraph(
+                self.current_sim_ind
+            ).copy()
             # these atributes can only be updated in measure and measure_pattern
             self.current_sim_state = self.append_plus_state(
                 self.current_sim_graph,
@@ -166,33 +172,46 @@ class PatternSimulator:
         if outcome == 1:
             fqubit = self.flow(qubit)
             stab_moment = self.stabilizer_moment(self.simind2qubitind[fqubit])
-            corrected_state = self._run_short_circuit(stab_moment, self.current_sim_state)
+            corrected_state = self._run_short_circuit(
+                stab_moment, self.current_sim_state
+            )
             self.current_sim_state = corrected_state
-    
+
     def stabilizer_moment(self, qindex):
         r"""Returns the moment that applies a stabilizer :math:`X_{i} \prod_{j \in N(i)} Z_j"""
 
         def stabilizer_circuit():
-            
+
             yield cirq.X(self.qubit_register[qindex])
             for qj in self.current_sim_graph.neighbors(self.qubitind2simind[qindex]):
                 qj = self.qubit_register[self.simind2qubitind[qj]]
                 yield cirq.Z(qj)
-    
+
         return stabilizer_circuit
-        
-    
+
     def get_adapted_angle(self, angle, qubit):
         r"""Calculates the adapted angle at qubit ``qubit``."""
         # TODO!!
 
-    def measure_pattern(self, pattern: Union[np.ndarray, dict]):
+    def measure_pattern(self, pattern: Union[np.ndarray, dict], input_state=None):
         """Measures in the pattern specified by the given list. Return the quantum state obtained
         after the measurement pattern.
 
         Args:
             pattern: dict specifying the operator (value) to be measured at qubit :math:`i` (key)
         """
+
+        if len(pattern) != self.max_measure_number:
+            raise UserWarning(
+                f"Pattern should be of size {self.max_measure_number}, "
+                f"but {len(pattern)} was given."
+            )
+
+        # Simulates with input_state as input
+        if input_state is not None:
+            self.reset(input_state)
+
+        # Makes the dictionary pattern into a list
         if isinstance(pattern, dict):
             pattern = [pattern[q] for q in self.top_order]
 
@@ -205,8 +224,12 @@ class PatternSimulator:
 
         return self.measurement_outcomes, self.current_sim_state
 
-    def reset(self):
+    def reset(self, input_state=None):
         """Resets the state to run another simulation."""
         self.__init__(
-            self.state, self.simulator, flow=self.flow, top_order=self.top_order
+            self.state,
+            self.simulator,
+            flow=self.flow,
+            top_order=self.top_order,
+            input_state=input_state,
         )

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.outputc
+.. python-apigen-entity-page:: mentpy.PatternSimulator.reset
 

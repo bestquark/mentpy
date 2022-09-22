@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.input_state
+.. python-apigen-entity-page:: mentpy.GraphStateCircuit.inputc
 

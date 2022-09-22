@@ -4,11 +4,11 @@ from graphviz import Graph
 import numpy as np
 import networkx as nx
 
-from mentpy.state import GraphState
+from mentpy.state import GraphStateCircuit
 from typing import List
 
 
-def find_flow(state: GraphState, sanity_check=False):
+def find_flow(state: GraphStateCircuit, sanity_check=False):
     r"""Finds the generalized flow of graph state if allowed.
 
     Implementation of https://arxiv.org/pdf/quant-ph/0603072.pdf.
@@ -26,7 +26,7 @@ def find_flow(state: GraphState, sanity_check=False):
 
         g = nx.Graph()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-        state = mtp.GraphState(g, input_nodes = [0], output_nodes = [4])
+        state = mtp.GraphStateCircuit(g, input_nodes = [0], output_nodes = [4])
         flow, top_order = mtp.find_flow(state)
         print("Flow of node 1: ", flow(1))
         print("Topological order: ", top_order)
@@ -59,7 +59,7 @@ def find_flow(state: GraphState, sanity_check=False):
         raise UserWarning("Could not find a flow for the given state.")
 
 
-def _flow_from_array(state: GraphState, f: List):
+def _flow_from_array(state: GraphStateCircuit, f: List):
     """Create a flow function from a given array f"""
 
     def flow(v):
@@ -71,7 +71,7 @@ def _flow_from_array(state: GraphState, f: List):
     return flow
 
 
-def _get_chain_decomposition(state: GraphState, C: nx.DiGraph):
+def _get_chain_decomposition(state: GraphStateCircuit, C: nx.DiGraph):
     """Gets the chain decomposition"""
     P = np.zeros(len(state.graph))
     L = np.zeros(len(state.graph))
@@ -88,7 +88,7 @@ def _get_chain_decomposition(state: GraphState, C: nx.DiGraph):
     return (f, P, L)
 
 
-def _compute_suprema(state: GraphState, f, P, L):
+def _compute_suprema(state: GraphStateCircuit, f, P, L):
     """Compute suprema
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -104,7 +104,7 @@ def _compute_suprema(state: GraphState, f, P, L):
     return sup
 
 
-def _traverse_infl_walk(state: GraphState, f, sup, status, v):
+def _traverse_infl_walk(state: GraphStateCircuit, f, sup, status, v):
     """Compute the suprema by traversing influencing walks"""
     status[v] = 1
     vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
@@ -123,7 +123,7 @@ def _traverse_infl_walk(state: GraphState, f, sup, status, v):
     return sup, status
 
 
-def _init_status(state: GraphState, P, L):
+def _init_status(state: GraphStateCircuit, P, L):
     """Initialize the supremum function
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -143,7 +143,7 @@ def _init_status(state: GraphState, P, L):
     return sup, status
 
 
-def _build_path_cover(state: GraphState):
+def _build_path_cover(state: GraphStateCircuit):
     """Builds a path cover
 
     status: 0 if 'fail', 1 if 'success'
@@ -163,7 +163,7 @@ def _build_path_cover(state: GraphState):
     return 0
 
 
-def _augmented_search(state: GraphState, fam: nx.DiGraph, iter: int, visited, v):
+def _augmented_search(state: GraphStateCircuit, fam: nx.DiGraph, iter: int, visited, v):
     """Does an augmented search
 
     status: 0 if 'fail', 1 if 'success'
@@ -206,7 +206,7 @@ def _augmented_search(state: GraphState, fam: nx.DiGraph, iter: int, visited, v)
     return (fam, visited, 0)
 
 
-def _check_if_flow(state: GraphState, flow, top_order) -> bool:
+def _check_if_flow(state: GraphStateCircuit, flow, top_order) -> bool:
     """Checks if flow satisfies conditions on state."""
     conds = True
     for i in state.outputc:
@@ -220,7 +220,7 @@ def _check_if_flow(state: GraphState, flow, top_order) -> bool:
     return conds
 
 
-def _get_flowgraph(state: GraphState, flow):
+def _get_flowgraph(state: GraphStateCircuit, flow):
     """Get graph with flow"""
     H = nx.DiGraph()
     for v in state.outputc:

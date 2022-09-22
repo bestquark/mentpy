@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.input_nodes
+.. python-apigen-entity-page:: mentpy.PatternSimulator.stabilizer_moment
 

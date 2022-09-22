@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.__repr__
+.. python-apigen-entity-page:: mentpy.GraphStateCircuit.__repr__
 

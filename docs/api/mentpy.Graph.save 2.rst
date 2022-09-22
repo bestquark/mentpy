@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState
+.. python-apigen-entity-page:: mentpy.Graph.save
 

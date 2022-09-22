@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.__init__
+.. python-apigen-entity-page:: mentpy.Graph.directory
 

@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page:: mentpy.GraphState.output_nodes
+.. python-apigen-entity-page:: mentpy.GraphStateCircuit.update_input_state
 

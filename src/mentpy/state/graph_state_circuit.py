@@ -10,8 +10,8 @@ import mentpy as mtp
 import cirq
 
 
-class GraphState:
-    r"""The GraphState class that deals with operations and manipulations of graph states
+class GraphStateCircuit:
+    r"""The GraphStateCircuit class that deals with operations and manipulations of graph states
     Args
     ----
     graph: nx.Graph
@@ -25,7 +25,7 @@ class GraphState:
 
         g = nx.Graph()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-        state = mtp.GraphState(g, input_nodes=[0], output_nodes=[4])
+        state = mtp.GraphStateCircuit(g, input_nodes=[0], output_nodes=[4])
 
     :group: states
     """
@@ -42,8 +42,7 @@ class GraphState:
         if input_state is not None:
             self._input_state = input_state
         else:
-            in_states = len(input_nodes) * [cirq.KET_PLUS.state_vector()]
-            self._input_state = cirq.kron(*in_states)
+            self._input_state = self.create_plus_states(len(input_nodes))
 
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
@@ -87,9 +86,16 @@ class GraphState:
 
     def create_plus_states(self, n):
         r"""Returns the quantum state :math:`|+\rangle^n`."""
+        in_states = n * [cirq.KET_PLUS.state_vector()]
+        return cirq.kron(*in_states)
+
+    def update_input_state(self, quantum_state) -> None:
+        r"""Updates value of self._input_state to quantum_state"""
+        # TODO: Check that it is the correct size compared to input nodes!
+        self._input_state = quantum_state
 
 
-def lc_reduce(state: GraphState):
+def lc_reduce(state: GraphStateCircuit):
     """Reduce graph state
 
     :group: states
@@ -98,8 +104,8 @@ def lc_reduce(state: GraphState):
 
 
 def merge(
-    state1: GraphState, state2: GraphState, indices_tuple: List[Tuple]
-) -> GraphState:
+    state1: GraphStateCircuit, state2: GraphStateCircuit, indices_tuple: List[Tuple]
+) -> GraphStateCircuit:
     """Merge two graph states into a larger graph state
 
     :group: states
@@ -108,7 +114,7 @@ def merge(
 
 
 def entanglement_entropy(
-    state: GraphState, subRegionA: List, subRegionB: Optional[List] = None
+    state: GraphStateCircuit, subRegionA: List, subRegionB: Optional[List] = None
 ):
     """Calculates the entanglement entropy between subRegionA and subRegionB
     of state. If subRegionB is None, then :python:`subRegionB = set(state.graph.nodes()) - set(subRegionA)`

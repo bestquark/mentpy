@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from mentpy.state import GraphState
+from mentpy.state import GraphStateCircuit
 
 # from mentpy.measurement import BaseMeasurement
 
@@ -12,7 +12,7 @@ class ByProduct:
     :group: processing
     """
 
-    def __init__(self, graph_state: GraphState) -> None:
+    def __init__(self, graph_state: GraphStateCircuit) -> None:
         """Initialize the ByProduct operator"""
         self.graph_state = graph_state
 
