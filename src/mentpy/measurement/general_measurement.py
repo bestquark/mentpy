@@ -5,6 +5,8 @@ from mentpy.state import GraphStateCircuit
 
 from typing import List, Tuple, Callable
 
+# TODO: Delete or do this class...
+
 
 class GeneralMeasurement(BaseMeasurement):
     """General measurements class

@@ -1,4 +1,8 @@
-from mentpy import PatternSimulator
+import numpy as np
+import cirq
+from mentpy import GraphStateCircuit, PatternSimulator
+from mentpy.measurement import pattern_simulator
+from mentpy.utils import generate_random_input_states
 
 
 def haar_probability_density_of_fidelities(F: float, n: int):
@@ -24,12 +28,37 @@ def expressivity_using_relative_entropy():
     # TODO:
 
 
-def expressivity_using_KL():
-    r"""Returns the expressivity calculated using the Kullback-Leiber entropy"""
-    # TODO:
-
-
-def calculate_probability_density_of_fidelities(
-    pattern_simulator: PatternSimulator, samples=1000
+def expressivity_using_KL(
+    graph_state_circuit: GraphStateCircuit, n_samples=10000, n_bins=1000
 ):
-    r"""Calculates the probability of fidelities of a given graph state circuit"""
+    r"""Returns the expressivity calculated using the Kullback-Leiber entropy"""
+    samples_from_circuit = sample_probability_density_of_fidelities(
+        graph_state_circuit, n_samples=n_samples
+    )
+    haar_prob_fun = lambda fid: haar_probability_density_of_fidelities(
+        fid, len(graph_state_circuit.output_nodes)
+    )
+
+    # TODO: Calculate expressivity here!
+
+
+def sample_probability_density_of_fidelities(
+    graph_state_circuit: GraphStateCircuit, n_samples=1000
+):
+    r"""Calculates samples of the probability of fidelities of the given graph state circuit"""
+
+    pattern_simulator = PatternSimulator(graph_state_circuit)
+    random_input_states = generate_random_input_states(
+        pattern_simulator.state, n_samples
+    )
+    fidelities = []
+    for random_st in random_input_states:
+        pattern_simulator.reset(input_state=random_st)
+        random_pattern = (
+            2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
+        )
+        _ = pattern_simulator.measure_pattern(random_pattern)
+        final_state = pattern_simulator.current_sim_state
+        fidelities.append(cirq.fidelity(random_st, final_state))
+
+    return fidelities

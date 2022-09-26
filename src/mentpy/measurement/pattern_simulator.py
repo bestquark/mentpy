@@ -1,3 +1,4 @@
+import warnings
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import cirq
@@ -52,6 +53,9 @@ class PatternSimulator:
         self.state_rank = len(self.current_sim_state.shape)
         self.measurement_outcomes = {}
 
+    def __repr__(self) -> str:
+        return f"PatternSimulator of a graph state with {len(self.state.graph)} nodes"
+
     @property
     def current_sim_ind(self):
         r"""Returns the current simulated indices"""
@@ -80,11 +84,15 @@ class PatternSimulator:
         )
         return result.final_state_vector
 
-    def _run_short_circuit(self, moment, init_state):
+    def _run_short_circuit(self, moment, init_state, id_on_qubits=None):
         """Runs a short circuit with moment ``moment`` and initial state ``init_state``."""
 
         circ = cirq.Circuit()
-        circ.append(cirq.I.on_each(self.qubit_register))
+        if id_on_qubits is None:
+            circ.append(cirq.I.on_each(self.qubit_register))
+        else:
+            for qq in id_on_qubits:
+                circ.append(cirq.I.on(qq))
         circ.append(moment())
         return self.simulator.simulate(circ, initial_state=init_state)
 
@@ -109,30 +117,41 @@ class PatternSimulator:
 
         return measure_moment
 
-    def measure(self, angle, correct_for_outcome=False):
+    def _measure(self, angle, correct_for_outcome=False):
         """Measure next qubit in the given topological order"""
 
         outcome = None
 
         if self.measure_number < self.max_measure_number:
             ind_to_measure = self.current_sim_ind[0]
+            tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
+
             curr_ind_to_measure = self.simind2qubitind[ind_to_measure]
             angle_moment = self.measurement_moment(angle, curr_ind_to_measure)
             result = self._run_short_circuit(angle_moment, self.current_sim_state)
+            self.current_sim_state = result.final_state_vector
             outcome = result.measurements[f"q({curr_ind_to_measure})"]
             self.measurement_outcomes[ind_to_measure] = outcome
+
+            # update this if density matrix??
+            # --------------------
+
+            # For state vectors (neet to generalize to density matrices)
+            partial_trace = cirq.partial_trace_of_state_vector_as_mixture(
+                result.final_state_vector, keep_indices=tinds
+            )
+
+            self.current_sim_graph.remove_node(ind_to_measure)
+
+            if len(partial_trace) > 1:
+                raise RuntimeError("State evolution is not unitary.")
+
+            self.current_sim_state = partial_trace[0][1]
 
             if correct_for_outcome:
                 self.correct_measurement_outcome(ind_to_measure, outcome)
 
-            # update this if density matrix??
-            tinds = [self.simind2qubitind[j] for j in self.current_sim_ind[1:]]
-
-            # PARTIAL TRACE IS NOT DOING WHAT IT IS SUPPOSED TO DO!
-            # TODO: FIX IT!!
-            self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
-                result.final_state_vector, keep_indices=tinds
-            )[0][1]
+            # ------------------
 
             self.measure_number += 1
 
@@ -143,7 +162,7 @@ class PatternSimulator:
 
         return outcome
 
-    def entangle_and_measure(self, angle, **kwargs):
+    def _entangle_and_measure(self, angle, **kwargs):
         """First, entangles, and then, measures the qubit lowest in the topological ordering
         and entangles the next plus state"""
 
@@ -155,10 +174,10 @@ class PatternSimulator:
             ).copy()
             # these atributes can only be updated in measure and measure_pattern
             self.current_sim_state = self.append_plus_state(
-                self.current_sim_graph,
+                self.current_sim_state,
                 self.current_sim_graph.edges(self.current_sim_ind[-1]),
             )
-            outcome = self.measure(angle, **kwargs)
+            outcome = self._measure(angle, **kwargs)
         else:
             raise UserWarning(
                 "All qubits have been measured. Consider reseting the state using self.reset()"
@@ -172,10 +191,14 @@ class PatternSimulator:
         if outcome == 1:
             fqubit = self.flow(qubit)
             stab_moment = self.stabilizer_moment(self.simind2qubitind[fqubit])
+            pad = [
+                self.qubit_register[self.simind2qubitind[pi]]
+                for pi in self.current_sim_graph.nodes()
+            ]
             corrected_state = self._run_short_circuit(
-                stab_moment, self.current_sim_state
+                stab_moment, self.current_sim_state, id_on_qubits=pad
             )
-            self.current_sim_state = corrected_state
+            self.current_sim_state = corrected_state.final_state_vector
 
     def stabilizer_moment(self, qindex):
         r"""Returns the moment that applies a stabilizer :math:`X_{i} \prod_{j \in N(i)} Z_j"""
@@ -193,7 +216,24 @@ class PatternSimulator:
         r"""Calculates the adapted angle at qubit ``qubit``."""
         # TODO!!
 
-    def measure_pattern(self, pattern: Union[np.ndarray, dict], input_state=None):
+    def measure(self, angle, **kwargs):
+        r"""Return outcome of measurement of corresponding qubit in flow with angle."""
+        if self.measure_number == 0:
+            self._measure(angle, **kwargs)
+        elif self.measure_number < self.max_measure_number:
+            self._entangle_and_measure(angle, **kwargs)
+        else:
+            raise UserWarning(
+                "All measurable qubits have been measured."
+                " Consider reseting the GraphStateCircuit"
+            )
+
+    def measure_pattern(
+        self,
+        pattern: Union[np.ndarray, dict],
+        input_state=None,
+        correct_for_outcome=False,
+    ):
         """Measures in the pattern specified by the given list. Return the quantum state obtained
         after the measurement pattern.
 
@@ -207,6 +247,10 @@ class PatternSimulator:
                 f"but {len(pattern)} was given."
             )
 
+        if self.measure_number != 0:
+            warnings.warn(f"Graph state was measured before, so it was reset.")
+            self.reset()
+
         # Simulates with input_state as input
         if input_state is not None:
             self.reset(input_state)
@@ -218,9 +262,11 @@ class PatternSimulator:
         for ind, angle in enumerate(pattern):
             if ind == 0:
                 # extra qubit already entangled at initialization (because nodes in I can have edges)
-                self.measure(angle)
+                self._measure(angle, correct_for_outcome=correct_for_outcome)
             else:
-                self.entangle_and_measure(angle)
+                self._entangle_and_measure(
+                    angle, correct_for_outcome=correct_for_outcome
+                )
 
         return self.measurement_outcomes, self.current_sim_state
 
