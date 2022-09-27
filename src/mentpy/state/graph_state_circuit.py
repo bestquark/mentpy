@@ -53,6 +53,10 @@ class GraphStateCircuit:
             f"Graph state with {self.graph.number_of_nodes()} nodes and "
             f"{self.graph.number_of_edges()} edges."
         )
+    
+    def __len__(self) -> int:
+        """Return the number of nodes in the GraphStateCircuit"""
+        return len(self.graph)
 
     @property
     def graph(self) -> nx.Graph:

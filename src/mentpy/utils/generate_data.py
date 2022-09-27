@@ -23,7 +23,7 @@ def generate_random_input_states(
 def generate_haar_random_state(n_qubits: int) -> np.ndarray:
     r"""Makes one Haar random state over n_qubits"""
 
-    zero_list = n_qubits * [cirq.KET_ZERO]
+    zero_list = n_qubits * [cirq.KET_ZERO.state_vector()]
     ket_zeros = cirq.kron(*zero_list)
     haar_random_u = cirq.testing.random_special_unitary(dim=int(2**n_qubits))
-    return haar_random_u @ ket_zeros
+    return (haar_random_u @ ket_zeros.T).T
