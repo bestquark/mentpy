@@ -98,7 +98,6 @@ class GraphStateCircuit:
         # TODO: Check that it is the correct size compared to input nodes!
         self._input_state = quantum_state
 
-
 def lc_reduce(state: GraphStateCircuit):
     """Reduce graph state
 

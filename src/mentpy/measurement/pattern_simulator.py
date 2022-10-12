@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 import cirq
 from typing import Union, Callable, List, Optional
+import networkx as nx
 
 from mentpy import GraphStateCircuit
 from mentpy import find_flow
@@ -279,3 +280,26 @@ class PatternSimulator:
             top_order=self.top_order,
             input_state=input_state,
         )
+
+
+
+def draw_mbqc_circuit(circuit: PatternSimulator, **kwargs):
+    """Draws mbqc circuit with flow.
+    
+    :groups: measurements
+    """
+    options = {'node_color': '#FFBD59'}
+    options.update(kwargs)
+
+    node_pos = nx.spring_layout(circuit.state.graph)
+    nx.draw(circuit.state.graph, pos = node_pos, **options)
+    nx.draw(_graph_with_flow(circuit), pos = node_pos, **options)
+
+def _graph_with_flow(circuit: PatternSimulator):
+    """Return digraph with flow (but does not have all CZ edges!)"""
+    g = circuit.state.graph
+    gflow = nx.DiGraph()
+    gflow.add_nodes_from(g.nodes)
+    for node in circuit.state.outputc:
+        gflow.add_edge(node, circuit.flow(node))
+    return gflow

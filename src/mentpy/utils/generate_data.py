@@ -27,3 +27,15 @@ def generate_haar_random_state(n_qubits: int) -> np.ndarray:
     ket_zeros = cirq.kron(*zero_list)
     haar_random_u = cirq.testing.random_special_unitary(dim=int(2**n_qubits))
     return (haar_random_u @ ket_zeros.T).T
+
+def random_special_unitary(n_qubits : int):
+    """Returns a random special unitary in ``n_qubits`` sampled from the Haar distribution."""
+    return cirq.testing.random_special_unitary(dim=int(2**n_qubits))
+
+def random_training_data_for_unitary(mbqc_circuit: GraphStateCircuit,  n_samples: int, unitary: np.ndarray) -> tuple:
+    r"Return random training data (input, target) for a given unitary gate ``unitary``."
+    random_inputs = generate_random_input_states(mbqc_circuit, n_samples = n_samples)
+    random_targets = [(unitary @ st.T).T for st in random_inputs]
+    return random_inputs, random_targets
+
+    
