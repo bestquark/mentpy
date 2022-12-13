@@ -1,10 +1,11 @@
+from turtle import position
 import warnings
 from abc import ABCMeta, abstractmethod
 import numpy as np
 import cirq
-from typing import Union, Callable, List, Optional
+from typing import Union, Callable, List, Optional, Any
 import networkx as nx
-
+import pennylane as qml
 from mentpy import GraphStateCircuit
 from mentpy import find_flow
 
@@ -22,10 +23,12 @@ class PatternSimulator:
         flow: Optional[Callable] = None,
         top_order: Optional[np.ndarray] = None,
         input_state: Optional[np.ndarray] = None,
+        trace_in_middle = False,
     ):
         """Initializes Pattern object"""
         self.state = state
         self.measure_number = 0
+        self.trace_in_middle = trace_in_middle
 
         if flow is None:
             flow, top_order = find_flow(state)
@@ -46,13 +49,21 @@ class PatternSimulator:
         else:
             pass  # TODO: Check size of input state is right
 
-        self.current_sim_state = self.append_plus_state(
-            input_state, self.current_sim_graph.edges()
-        )
+        if self.trace_in_middle:
+            self.current_sim_state = self.append_plus_state(
+                input_state, self.current_sim_graph.edges()
+            )
+        else:
+            self.current_sim_state = state.input_state
+            self.qubit_register = cirq.LineQubit.range(len(self.state.graph))
 
         self.max_measure_number = len(state.outputc)
         self.state_rank = len(self.current_sim_state.shape)
         self.measurement_outcomes = {}
+        self._circuit = self.graphstate_to_circuit()
+    
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        return self._circuit(*args, **kwds)
 
     def __repr__(self) -> str:
         return f"PatternSimulator of a graph state with {len(self.state.graph)} nodes"
@@ -94,7 +105,11 @@ class PatternSimulator:
         else:
             for qq in id_on_qubits:
                 circ.append(cirq.I.on(qq))
-        circ.append(moment())
+
+        if isinstance(moment, list):
+            for m in moment:
+                circ.append(m())
+        else: circ.append(moment())
         return self.simulator.simulate(circ, initial_state=init_state)
 
     def entangling_moment(self, cz_neighbors):
@@ -102,19 +117,22 @@ class PatternSimulator:
 
         def czs_moment():
             for i, j in cz_neighbors:
-                qi, qj = self.simind2qubitind[i], self.simind2qubitind[j]
+                if self.trace_in_middle:
+                    qi, qj = self.simind2qubitind[i], self.simind2qubitind[j]
+                else:
+                    qi, qj = i, j
                 yield cirq.CZ(self.qubit_register[qi], self.qubit_register[qj])
 
         return czs_moment
 
-    def measurement_moment(self, angle, qindex):
+    def measurement_moment(self, angle, qindex, key=None):
         """Return a measurement moment of qubit at qindex with angle ``angle``."""
 
         def measure_moment():
             qi = self.qubit_register[qindex]
             yield cirq.Rz(rads=angle).on(qi)
             yield cirq.H(qi)
-            yield cirq.measure(qi)
+            yield cirq.measure(qi, key=key)
 
         return measure_moment
 
@@ -251,7 +269,7 @@ class PatternSimulator:
         if self.measure_number != 0:
             warnings.warn(f"Graph state was measured before, so it was reset.")
             self.reset()
-
+ 
         # Simulates with input_state as input
         if input_state is not None:
             self.reset(input_state)
@@ -260,16 +278,64 @@ class PatternSimulator:
         if isinstance(pattern, dict):
             pattern = [pattern[q] for q in self.top_order]
 
-        for ind, angle in enumerate(pattern):
-            if ind == 0:
-                # extra qubit already entangled at initialization (because nodes in I can have edges)
-                self._measure(angle, correct_for_outcome=correct_for_outcome)
-            else:
-                self._entangle_and_measure(
-                    angle, correct_for_outcome=correct_for_outcome
-                )
+        if self.trace_in_middle:
+            for ind, angle in enumerate(pattern):
+                if ind == 0:
+                    # extra qubit already entangled at initialization (because nodes in I can have edges)
+                    self._measure(angle, correct_for_outcome=correct_for_outcome)
+                else:
+                    self._entangle_and_measure(
+                        angle, correct_for_outcome=correct_for_outcome
+                    )
+
+        else:
+            notrace_moment = self._measure_pattern_notrace_moment(pattern)
+            in_state = self._make_input_state_notrace(self.current_sim_state)
+            result = self._run_short_circuit(notrace_moment, init_state = in_state)
+            self.current_sim_state = cirq.partial_trace_of_state_vector_as_mixture(
+                result.final_state_vector, keep_indices=self.state.output_nodes)[0][1]
+            self.measurement_outcomes = {q : result.measurements[f'q{q}'] for q in self.state.outputc }
 
         return self.measurement_outcomes, self.current_sim_state
+    
+    def _make_input_state_notrace(self, input_state):
+        r"""Returns the quantum state :math:`|\psi\rangle \otimes |+\rangle^n`."""
+        inputc_state = len(self.state.inputc) * [cirq.KET_PLUS.state_vector()]
+        in_state = [input_state] + inputc_state
+        return cirq.kron(*in_state)
+
+    def _measure_pattern_notrace_moment(self, angles):
+        """Measures in the pattern specified by the given list. Return the quantum state obtained
+        after the measurement pattern.
+
+        Args:
+            pattern: dict specifying the operator (value) to be measured at qubit :math:`i` (key)
+        """
+        measure_correct_moments = []
+        entangle_moment = self.entangling_moment(self.state.graph.edges())
+        measure_correct_moments.append(entangle_moment)
+        for angle, q in zip(angles, self.top_order):
+            mm = self.measurement_moment(angle, q, key=f"q{q}") # measure moment
+            measure_correct_moments.append(mm)
+            cm = self._correction_moment_notrace(q)
+            measure_correct_moments.append(cm)
+
+        return measure_correct_moments
+
+    
+    def _correction_moment_notrace(self, q):
+        """Returns the correction moment for qubit q"""
+        fqubit = self.flow(q)
+        def stabilizer_circuit():
+            yield cirq.X(self.qubit_register[fqubit]).with_classical_controls(f'q{q}')
+            for qj in self.state.graph.neighbors(fqubit):
+                qj = self.qubit_register[qj]
+                yield cirq.Z(qj).with_classical_controls(f'q{q}')
+        return stabilizer_circuit
+            
+
+
+
 
     def reset(self, input_state=None):
         """Resets the state to run another simulation."""
@@ -279,11 +345,52 @@ class PatternSimulator:
             flow=self.flow,
             top_order=self.top_order,
             input_state=input_state,
+            trace_in_middle=self.trace_in_middle
         )
+        
+    def graphstate_to_circuit(self) -> qml.QNode:
+        """Converts a graph state mbq"""
+        gs = self.state
+        gr = gs.graph
+        N = gr.number_of_nodes()
+        dev = qml.device("default.qubit", wires=N)
+        @qml.qnode(dev)
+        def circuit(param, output = 'expval', st = None):
+            assert len(param) == N or len(param)==N-len(gs.output_nodes), f"Length of param is {len(param)}, but expected {N} or {N-len(gs.output_nodes)}."
+            if len(param)!=N:
+                param = np.append(param, np.zeros_like(gs.output_nodes))
+            input_v = st if st is not None else gs.input_state[0]
+            qml.QubitStateVector(input_v, wires=gs.input_nodes)
+            for j in gs.inputc:
+                qml.Hadamard(j)
+            for i,j in gr.edges():
+                qml.CZ(wires=[i,j])
+            
+            topord_no_output = [x for x in self.top_order if (x not in gs.output_nodes)]
+            for indx,p in zip(topord_no_output, param[:len(gs.outputc)]):
+                qml.RZ(p, wires = indx)
+                qml.Hadamard(wires= indx)
+                m_0 = qml.measure(indx)
+                qml.cond(m_0, qml.PauliX)(wires=self.flow(indx))
+                for neigh in gr.neighbors(self.flow(indx)):
+                    if neigh!=indx and (self.top_order.index(neigh)>self.top_order.index(indx)):
+                        qml.cond(m_0, qml.PauliZ)(wires=neigh)
+            
+            if output == 'expval':
+                for indx,p in zip(gs.output_nodes, param[len(gs.outputc):]):
+                    qml.RZ(p, wires = indx)
+                return [qml.expval(qml.PauliX(j)) for j in gs.output_nodes]
+            elif output == 'sample':
+                for indx,p in zip(gs.output_nodes, param[len(gs.outputc):]):
+                    qml.RZ(p, wires = indx)
+                return [qml.sample(qml.PauliX(j)) for j in gs.output_nodes]
+            elif output == 'density':
+                return qml.density_matrix(gs.output_nodes)
+        return circuit
 
 
 
-def draw_mbqc_circuit(circuit: PatternSimulator, **kwargs):
+def draw_mbqc_circuit(circuit: PatternSimulator, fix_wires = None, **kwargs):
     """Draws mbqc circuit with flow.
     
     :groups: measurements
@@ -291,7 +398,28 @@ def draw_mbqc_circuit(circuit: PatternSimulator, **kwargs):
     options = {'node_color': '#FFBD59'}
     options.update(kwargs)
 
-    node_pos = nx.spring_layout(circuit.state.graph)
+    fixed_nodes = circuit.state.input_nodes + circuit.state.output_nodes
+    position_xy = {}
+    for indx, p in enumerate(circuit.state.input_nodes):
+        position_xy[p] = (0, -2*indx)
+    
+    separation = len(circuit.state.outputc)//len(circuit.state.output_nodes)
+    if fix_wires is not None:
+        for wire in fix_wires:
+            if len(wire)+2>separation:
+                separation =len(wire)+2
+    for indx, p in enumerate(circuit.state.output_nodes):
+        position_xy[p] = (2*(separation), -2*indx)
+    
+
+    if fix_wires is not None:
+        x = [list(x) for x in fix_wires]
+        fixed_nodes += sum(x, [])
+        for indw, wire in enumerate(fix_wires):
+            for indx, p in enumerate(wire):
+                position_xy[p] = (2*(indx+1), -2*indw)
+
+    node_pos = nx.spring_layout(circuit.state.graph, pos=position_xy, fixed = fixed_nodes, k=1/len(circuit.state.graph))
     nx.draw(circuit.state.graph, pos = node_pos, **options)
     nx.draw(_graph_with_flow(circuit), pos = node_pos, **options)
 
@@ -303,3 +431,5 @@ def _graph_with_flow(circuit: PatternSimulator):
     for node in circuit.state.outputc:
         gflow.add_edge(node, circuit.flow(node))
     return gflow
+
+

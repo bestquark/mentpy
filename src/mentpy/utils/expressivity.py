@@ -1,12 +1,17 @@
 import numpy as np
 import cirq
 import networkx as nx
+
 from scipy.spatial import distance
 from scipy.special import kl_div, rel_entr
-from mentpy import GraphStateCircuit, PatternSimulator, are_lc_equivalent
-from mentpy.measurement import pattern_simulator
+
+import pennylane as qml
+
+from mentpy import GraphStateCircuit, PatternSimulator
+from mentpy.utils.lc_equivalence import are_lc_equivalent
 from mentpy.utils.generate_data import generate_random_input_states
 from mentpy.utils.flow_space import FlowSpace
+
 
 
 def haar_probability_density_of_fidelities(F: float, n_qubits: int):
@@ -72,7 +77,7 @@ def expressivity_with_histogram(graph_state_circuit: GraphStateCircuit, n_sample
 
 
 def sample_probability_density_of_fidelities(
-    graph_state_circuit: GraphStateCircuit, n_samples=1000
+    graph_state_circuit: GraphStateCircuit, n_samples=1000, backend = 'pennylane'
 ):
     r"""Calculates samples of the probability of fidelities of the given graph state circuit"""
 
@@ -81,16 +86,33 @@ def sample_probability_density_of_fidelities(
         pattern_simulator.state, n_samples
     )
     fidelities = []
-    for random_st in random_input_states:
-        pattern_simulator.reset(input_state=random_st)
-        random_pattern = (
-            2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
-        )
-        _ = pattern_simulator.measure_pattern(random_pattern)
-        final_state = pattern_simulator.current_sim_state
-        fidelities.append(cirq.fidelity(random_st, final_state))
+
+    if backend == 'pennylane':
+        qmlcircuit = pattern_simulator.graphstate_to_circuit()
+        for random_st in random_input_states:
+            random_pattern = (
+                2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
+            )
+            final_state = qmlcircuit(random_pattern, output='density')
+            fid = qml.math.fidelity(np.kron(random_st.T, random_st), final_state)
+            fidelities.append(fid)
+
+    elif backend == 'cirq':
+        for random_st in random_input_states:
+            random_pattern = (
+                2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
+            )
+            pattern_simulator.reset(input_state=random_st)
+
+            _ = pattern_simulator.measure_pattern(random_pattern)
+            final_state = pattern_simulator.current_sim_state
+            fidelities.append(cirq.fidelity(random_st, final_state))
+            
+    else:
+        print(f"Unsupported backend {backend}")
 
     return fidelities
+
 
 def digraph_expressivity_of_flow_space(flow_space: FlowSpace, method = 'KL', **kwargs):
     """Returns digraph given the expressivity of a ``FlowSpace`` object.

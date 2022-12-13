@@ -1,48 +1,37 @@
 import numpy as np
-from mentpy import PatternSimulator
-from typing import Optional, Union
+
 
 #TODO!!
 
-def finite_difference(circuit : PatternSimulator, indices: Optional[Union[list, np.ndarray]] = None , h=1e-5, samples_per_param = 1000, type="central"):
-    """Returns a function that calculates the finite difference gradient of the given circuit.
-    
-    Args
-    ----
-        circuit: Circuit we want to calculate the finite difference from
-        indices: List or  np.ndarray with integer entries. Indices where we will calculate the 
-                 gradient. If None, then it calculates the gradient to all entries. 
-        h: float equal to the step size
-        samples_per_param: number of samples taken from the circuit per parameter to estimate gradient.
-        type: str equal to "central", "forward", or "backward" 
 
-    """
+def estimate_gradient(f, x, h=1e-5, type="central"):
 
     if type not in ["central", "forward", "backward"]:
         raise UserWarning(f"Expected type to be 'central', 'forward', or 'backward' but {type} was given")
-    
 
-    if indices is None:
-        indices = np.arange(len(circuit.state.outputc))
-    
-    def fin_diff(args: np.ndarray):
-        grad = args.copy()
-        for ind in indices:
-
-            pass
-    
-    return fin_diff
-
-
-def _finite_diff_ind(circuit: PatternSimulator, index: int, h=1e-5, samples_per_param = 1000, type="central"):
-
-    def fin_diff(arg):
-
-        pass
-
-    return fin_diff
-
-
+    grad = np.zeros(len(x))
+    for i in range(len(x)):
+        if type == "central":
+            grad[i] = (f(x + h*np.eye(len(x))[i]) - f(x - h*np.eye(len(x))[i]))/(2*h)
+        elif type == "forward":
+            grad[i] = (f(x + h*np.eye(len(x))[i]) - f(x))/h
+        elif type == "backward":
+            grad[i] = (f(x) - f(x - h*np.eye(len(x))[i]))/h
+    return grad
 
     
-    
+def estimate_hessian(f, x, h=1e-5, type="central"):
+
+    if type not in ["central", "forward", "backward"]:
+        raise UserWarning(f"Expected type to be 'central', 'forward', or 'backward' but {type} was given")
+
+    hess = np.zeros((len(x), len(x)))
+    for i in range(len(x)):
+        for j in range(len(x)):
+            if type == "central":
+                hess[i, j] = (f(x + h*np.eye(len(x))[i] + h*np.eye(len(x))[j]) - f(x + h*np.eye(len(x))[i] - h*np.eye(len(x))[j]) - f(x - h*np.eye(len(x))[i] + h*np.eye(len(x))[j]) + f(x - h*np.eye(len(x))[i] - h*np.eye(len(x))[j]))/(4*h**2)
+            elif type == "forward":
+                hess[i, j] = (f(x + h*np.eye(len(x))[i] + h*np.eye(len(x))[j]) - f(x + h*np.eye(len(x))[i]) - f(x + h*np.eye(len(x))[j]) + f(x))/h**2
+            elif type == "backward":
+                hess[i, j] = (f(x) - f(x - h*np.eye(len(x))[i]) - f(x - h*np.eye(len(x))[j]) + f(x - h*np.eye(len(x))[i] - h*np.eye(len(x))[j]))/h**2
+    return hess

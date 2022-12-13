@@ -1,6 +1,5 @@
 """This is the Flow module. It deals with the flow of a given graph state"""
 import math
-from graphviz import Graph
 import numpy as np
 import networkx as nx
 
