@@ -1,3 +1,4 @@
+# NOTE: THIS PROJECT IS REALLY BAD ORGANIZED AT THE MOMENT PLEASE DON'T USE OR LOOK AT IT THANKS :) 
 # ![MentPy: A modular Measurement-Based Quantum computing simulator.](./docs/_static/logo.png)
 
 <div align=center>
