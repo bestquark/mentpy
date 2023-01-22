@@ -31,7 +31,7 @@ pip install git+https://github.com/BestQuark/mentpy.git
 
 ## Documentation
 
-The documentation for `MentPy` can be found at [https://bestquark.github.io/mentpy/](https://bestquark.github.io/mentpy/).
+The documentation for `MentPy` can be found [here](./docs).
 
 ## Contributing
 
