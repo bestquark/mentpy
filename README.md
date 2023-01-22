@@ -1,5 +1,5 @@
-**Warning**
-This library is under development. 
+:warning: **This library is under development.**
+
 # ![MentPy: A Measurement-Based Quantum computing simulator.](./docs/_static/logo.png)
 
 <div align=center>
