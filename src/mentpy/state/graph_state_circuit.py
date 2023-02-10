@@ -11,7 +11,7 @@ import cirq
 
 
 class MBQCGraph:
-    r"""The GraphStateCircuit class that deals with operations and manipulations of graph states
+    r"""The MBQCGraph class that deals with operations and manipulations of graph states
     Args
     ----
     graph: nx.Graph
@@ -44,6 +44,15 @@ class MBQCGraph:
         else:
             self._input_state = self.create_plus_states(len(input_nodes))
 
+        # check input and output nodes are in graph. If not, raise error with the node(s) that are not in the graph
+        if not all([v in self.graph.nodes for v in input_nodes]):
+            raise ValueError(
+                f"Input nodes {input_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
+            )
+        if not all([v in self.graph.nodes for v in output_nodes]):
+            raise ValueError(
+                f"Output nodes {output_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
+            )
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
 

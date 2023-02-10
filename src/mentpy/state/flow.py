@@ -36,6 +36,19 @@ def find_flow(state: MBQCGraph, sanity_check=True):
         raise ValueError(
             f"Cannot find flow. Input ({n_input}) and output ({n_output}) nodes have different size."
         )
+    
+    update_labels = False
+    # check if labels of graph are integers going from 0 to n-1 and if not, create a mapping
+    if not all([i in state.graph.nodes for i in range(len(state.graph))]):
+        mapping = {v: i for i, v in enumerate(state.graph.nodes)}
+        inverse_mapping = {i: v for i, v in enumerate(state.graph.nodes)}
+        # create a copy of the object state
+        old_state = state
+        new_graph = nx.relabel_nodes(state.graph.copy(), mapping)
+        inp, outp = [mapping[v] for v in state.input_nodes], [mapping[v] for v in state.output_nodes]
+
+        state = MBQCGraph(new_graph, input_nodes = inp, output_nodes = outp)
+        update_labels = True
 
     tau = _build_path_cover(state)
     if tau:
@@ -43,11 +56,20 @@ def find_flow(state: MBQCGraph, sanity_check=True):
         sigma = _compute_suprema(state, f, P, L)
 
         if sigma is not None:
-            flow = _flow_from_array(state, f)
-            g = _get_flowgraph(state, flow)
+            int_flow = _flow_from_array(state, f)
             vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
-            def partial_order(x,y):
+            def int_partial_order(x,y):
                 return sigma[vertex2index[int(P[y])], int(x)] <= L[y]
+
+            # if labels were updated, update them back
+            if update_labels:
+                state = old_state
+                flow = lambda v: inverse_mapping[int_flow(mapping[v])]
+                partial_order = lambda x,y: int_partial_order(mapping[x], mapping[y])
+            else:
+                flow = int_flow
+                partial_order = int_partial_order
+
             state_flow = (flow, partial_order)
             if sanity_check:
                 if not _check_if_flow(state, flow, partial_order):
@@ -55,6 +77,9 @@ def find_flow(state: MBQCGraph, sanity_check=True):
                         "Sanity check found that flow does not satisfy flow conditions."
                     )
             return state_flow
+
+        else: 
+            raise UserWarning("The given state does not have a flow.")
     else:
         raise UserWarning("Could not find a flow for the given state.")
 
@@ -221,7 +246,7 @@ def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
         )
         conds = conds * c1 * c2 * c3
         if not c1:
-            print(f"Condition 1 failed for node {i}. {i} not int {nfi}")
+            print(f"Condition 1 failed for node {i}. {i} not in {nfi}")
         if not c2:
             print(f"Condition 2 failed for node {i}. {i} ≮ {flow(i)}")
         if not c3:
@@ -230,12 +255,3 @@ def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
                 if not partial_order(i, k):
                     print(f"{i} ≮ {k}")
     return conds
-
-
-def _get_flowgraph(state: MBQCGraph, flow):
-    """Get graph with flow"""
-    H = nx.DiGraph()
-    for v in state.outputc:
-        H.add_edge(v, flow(v))
-
-    return H

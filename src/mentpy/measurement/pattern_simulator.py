@@ -22,6 +22,7 @@ class PatternSimulator:
         simulator: cirq.SimulatorBase = cirq.Simulator(),
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,
+        measurement_order: Optional[List[int]] = None,
         input_state: Optional[np.ndarray] = None,
         trace_in_middle = False,
     ):
@@ -30,11 +31,23 @@ class PatternSimulator:
         self.measure_number = 0
         self.trace_in_middle = trace_in_middle
 
-        if flow is None:
+        if (flow is None) or (partial_order is None):
             flow, partial_order = find_flow(state)
 
         self.flow = flow
         self.partial_order = partial_order
+        
+        mat = np.zeros((n,n))
+        if measurement_order is None:
+            n = len(state)
+            for i in range(n):
+                for j in range(n):
+                    mat[i,j] = partial_order[i,j]
+                    
+                    
+
+
+
         self.simulator = simulator
 
         self.total_simu = len(state.input_nodes) + 1
