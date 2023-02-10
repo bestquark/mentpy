@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod
 import numpy as np
 from typing import Tuple, Callable
 
-from mentpy import GraphStateCircuit
+from mentpy import MBQCGraph
 
 # from mentpy.measurement import pattern
 
@@ -15,7 +15,7 @@ class BaseMeasurement(metaclass=ABCMeta):
     :group: measurements
     """
 
-    def __init__(self, state: GraphStateCircuit, qubit: int):
+    def __init__(self, state: MBQCGraph, qubit: int):
         """Initialize a base measurement"""
         self.state = state
         self.qubit = qubit

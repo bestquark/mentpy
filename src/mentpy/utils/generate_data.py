@@ -1,11 +1,11 @@
 import numpy as np
 import cirq
 
-from mentpy import GraphStateCircuit
+from mentpy import MBQCGraph
 
 
 def generate_random_input_states(
-    mbqc_circuit: GraphStateCircuit, n_samples: int = 1
+    mbqc_circuit: MBQCGraph, n_samples: int = 1
 ) -> list:
     r"""Generates ``n_samples`` random states for the given ``mbqc_circuit``
     sampled using the Haar measure."""
@@ -54,7 +54,7 @@ def _train_test_split(inputs, targets, test_size: float = 0.3) -> tuple:
     n_train_samples = n_samples - n_test_samples
     return (inputs[:n_train_samples], targets[:n_train_samples]), (inputs[n_train_samples:], targets[n_train_samples:])
 
-def random_training_data_for_unitary(mbqc_circuit: GraphStateCircuit,  n_samples: int, unitary: np.ndarray) -> tuple:
+def random_training_data_for_unitary(mbqc_circuit: MBQCGraph,  n_samples: int, unitary: np.ndarray) -> tuple:
     r"Return random training data (input, target) for a given unitary gate ``unitary``."
     random_inputs = generate_random_input_states(mbqc_circuit, n_samples = n_samples)
     random_targets = [(unitary @ st.T).T for st in random_inputs]

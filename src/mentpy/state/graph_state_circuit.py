@@ -10,7 +10,7 @@ import mentpy as mtp
 import cirq
 
 
-class GraphStateCircuit:
+class MBQCGraph:
     r"""The GraphStateCircuit class that deals with operations and manipulations of graph states
     Args
     ----
@@ -25,7 +25,7 @@ class GraphStateCircuit:
 
         g = nx.Graph()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-        state = mtp.GraphStateCircuit(g, input_nodes=[0], output_nodes=[4])
+        state = mtp.MBQCGraph(g, input_nodes=[0], output_nodes=[4])
 
     :group: states
     """
@@ -98,7 +98,7 @@ class GraphStateCircuit:
         # TODO: Check that it is the correct size compared to input nodes!
         self._input_state = quantum_state
 
-def lc_reduce(state: GraphStateCircuit):
+def lc_reduce(state: MBQCGraph):
     """Reduce graph state
 
     :group: states
@@ -107,8 +107,8 @@ def lc_reduce(state: GraphStateCircuit):
 
 
 def merge(
-    state1: GraphStateCircuit, state2: GraphStateCircuit, indices_tuple: List[Tuple]
-) -> GraphStateCircuit:
+    state1: MBQCGraph, state2: MBQCGraph, indices_tuple: List[Tuple]
+) -> MBQCGraph:
     """Merge two graph states into a larger graph state
 
     :group: states
@@ -117,7 +117,7 @@ def merge(
 
 
 def entanglement_entropy(
-    state: GraphStateCircuit, subRegionA: List, subRegionB: Optional[List] = None
+    state: MBQCGraph, subRegionA: List, subRegionB: Optional[List] = None
 ):
     """Calculates the entanglement entropy between subRegionA and subRegionB
     of state. If subRegionB is None, then :python:`subRegionB = set(state.graph.nodes()) - set(subRegionA)`

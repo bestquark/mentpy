@@ -7,7 +7,7 @@ from scipy.special import kl_div, rel_entr
 
 import pennylane as qml
 
-from mentpy import GraphStateCircuit, PatternSimulator
+from mentpy import MBQCGraph, PatternSimulator
 from mentpy.utils.lc_equivalence import are_lc_equivalent
 from mentpy.utils.generate_data import generate_random_input_states
 from mentpy.utils.flow_space import FlowSpace
@@ -32,7 +32,7 @@ def haar_probability_density_of_fidelities(F: float, n_qubits: int):
     N = int(2**n_qubits)
     return ((N - 1) * ((1 - F) ** (N - 2)))
 
-def expressivity_with_histogram(graph_state_circuit: GraphStateCircuit, n_samples :int =10000, n_bins: int=1000, method :str='KL'):
+def expressivity_with_histogram(graph_state_circuit: MBQCGraph, n_samples :int =10000, n_bins: int=1000, method :str='KL'):
     r"""Returns the expressivity calculated using the Kullback-Leiber entropy
     
     Args
@@ -77,7 +77,7 @@ def expressivity_with_histogram(graph_state_circuit: GraphStateCircuit, n_sample
 
 
 def sample_probability_density_of_fidelities(
-    graph_state_circuit: GraphStateCircuit, n_samples=1000, backend = 'pennylane'
+    graph_state_circuit: MBQCGraph, n_samples=1000, backend = 'pennylane'
 ):
     r"""Calculates samples of the probability of fidelities of the given graph state circuit"""
 

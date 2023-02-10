@@ -6,7 +6,7 @@ import cirq
 from typing import Union, Callable, List, Optional, Any
 import networkx as nx
 import pennylane as qml
-from mentpy import GraphStateCircuit
+from mentpy import MBQCGraph
 from mentpy import find_flow
 
 
@@ -18,10 +18,10 @@ class PatternSimulator:
 
     def __init__(
         self,
-        state: GraphStateCircuit,
+        state: MBQCGraph,
         simulator: cirq.SimulatorBase = cirq.Simulator(),
         flow: Optional[Callable] = None,
-        top_order: Optional[np.ndarray] = None,
+        partial_order: Optional[callable] = None,
         input_state: Optional[np.ndarray] = None,
         trace_in_middle = False,
     ):
@@ -31,10 +31,10 @@ class PatternSimulator:
         self.trace_in_middle = trace_in_middle
 
         if flow is None:
-            flow, top_order = find_flow(state)
+            flow, partial_order = find_flow(state)
 
         self.flow = flow
-        self.top_order = top_order
+        self.partial_order = partial_order
         self.simulator = simulator
 
         self.total_simu = len(state.input_nodes) + 1
@@ -244,7 +244,7 @@ class PatternSimulator:
         else:
             raise UserWarning(
                 "All measurable qubits have been measured."
-                " Consider reseting the GraphStateCircuit"
+                " Consider reseting the MBQCGraph"
             )
 
     def measure_pattern(

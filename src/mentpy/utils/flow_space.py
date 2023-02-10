@@ -1,4 +1,4 @@
-from mentpy import GraphStateCircuit, find_flow
+from mentpy import MBQCGraph, find_flow
 
 import networkx as nx
 import itertools
@@ -6,16 +6,16 @@ import itertools
 
 
 class FlowSpace():
-    r"""The flow space graph of a GraphStateCircuit. 
+    r"""The flow space graph of a MBQCGraph. 
 
     Each node corresponds to a possible graph over ``len(graph_state)`` qubits. 
     Each edge between nodes represent going from one graph to another via adding or removing edges.
     
-    .. note::  ``flow_space()`` will only work for GraphStateCircuits with less 
+    .. note::  ``flow_space()`` will only work for MBQCGraph with less 
     than 8 qubits.
     """
 
-    def __init__(self, graph_state: GraphStateCircuit, allow_any_size_graphs: bool = False):
+    def __init__(self, graph_state: MBQCGraph, allow_any_size_graphs: bool = False):
         """Creates the flow graph space of a graph state circuit."""
 
         if len(graph_state)>7 and (not allow_any_size_graphs):
@@ -61,7 +61,7 @@ class FlowSpace():
         wflow = []
         woflow = []
         for ind, g in enumerate(graphs_list):
-            gs = GraphStateCircuit(g, input_nodes = self.input_nodes, output_nodes = self.output_nodes)
+            gs = MBQCGraph(g, input_nodes = self.input_nodes, output_nodes = self.output_nodes)
             try:
                 fl, _ = find_flow(gs)
             except:

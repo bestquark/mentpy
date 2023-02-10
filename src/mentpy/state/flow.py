@@ -3,19 +3,18 @@ import math
 import numpy as np
 import networkx as nx
 
-from mentpy.state import GraphStateCircuit
+from mentpy.state import MBQCGraph
 from typing import List
 
 
-def find_flow(state: GraphStateCircuit, sanity_check=False):
+def find_flow(state: MBQCGraph, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
 
     Implementation of https://arxiv.org/pdf/quant-ph/0603072.pdf.
 
     Returns
     -------
-    The flow function ``flow`` and the list ``top_order`` corresponding to the
-    topological order induced by ``flow`` on ``state.graph``.
+    The flow function ``flow`` and the partial order function.
 
     Examples
     --------
@@ -25,10 +24,10 @@ def find_flow(state: GraphStateCircuit, sanity_check=False):
 
         g = nx.Graph()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-        state = mtp.GraphStateCircuit(g, input_nodes = [0], output_nodes = [4])
-        flow, top_order = mtp.find_flow(state)
+        state = mtp.MBQCGraph(g, input_nodes = [0], output_nodes = [4])
+        flow, partial_order = mtp.find_flow(state)
         print("Flow of node 1: ", flow(1))
-        print("Topological order: ", top_order)
+        print("Partial order: ", partial_order)
 
     :group: states
     """
@@ -46,10 +45,12 @@ def find_flow(state: GraphStateCircuit, sanity_check=False):
         if sigma is not None:
             flow = _flow_from_array(state, f)
             g = _get_flowgraph(state, flow)
-            top_order = list(nx.topological_sort(g))
-            state_flow = (flow, top_order)
+            vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
+            def partial_order(x,y):
+                return sigma[vertex2index[int(P[y])], int(x)] <= L[y]
+            state_flow = (flow, partial_order)
             if sanity_check:
-                if not _check_if_flow(state, flow, top_order):
+                if not _check_if_flow(state, flow, partial_order):
                     raise RuntimeError(
                         "Sanity check found that flow does not satisfy flow conditions."
                     )
@@ -58,7 +59,7 @@ def find_flow(state: GraphStateCircuit, sanity_check=False):
         raise UserWarning("Could not find a flow for the given state.")
 
 
-def _flow_from_array(state: GraphStateCircuit, f: List):
+def _flow_from_array(state: MBQCGraph, f: List):
     """Create a flow function from a given array f"""
 
     def flow(v):
@@ -70,7 +71,7 @@ def _flow_from_array(state: GraphStateCircuit, f: List):
     return flow
 
 
-def _get_chain_decomposition(state: GraphStateCircuit, C: nx.DiGraph):
+def _get_chain_decomposition(state: MBQCGraph, C: nx.DiGraph):
     """Gets the chain decomposition"""
     P = np.zeros(len(state.graph))
     L = np.zeros(len(state.graph))
@@ -87,7 +88,7 @@ def _get_chain_decomposition(state: GraphStateCircuit, C: nx.DiGraph):
     return (f, P, L)
 
 
-def _compute_suprema(state: GraphStateCircuit, f, P, L):
+def _compute_suprema(state: MBQCGraph, f, P, L):
     """Compute suprema
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -103,13 +104,16 @@ def _compute_suprema(state: GraphStateCircuit, f, P, L):
     return sup
 
 
-def _traverse_infl_walk(state: GraphStateCircuit, f, sup, status, v):
-    """Compute the suprema by traversing influencing walks"""
+def _traverse_infl_walk(state: MBQCGraph, f, sup, status, v):
+    """Compute the suprema by traversing influencing walks
+    
+    status: 0 if none, 1 if pending, 2 if fixed.
+    """
     status[v] = 1
     vertex2index = {v: index for index, v in enumerate(state.input_nodes)}
 
-    for w in state.graph.neighbors(v):
-        if w == f[v] and w != v:
+    for w in list(state.graph.neighbors(f[v])) + [f[v]]:
+        if w != v:
             if status[w] == 0:
                 (sup, status) = _traverse_infl_walk(state, f, sup, status, w)
             if status[w] == 1:
@@ -122,7 +126,7 @@ def _traverse_infl_walk(state: GraphStateCircuit, f, sup, status, v):
     return sup, status
 
 
-def _init_status(state: GraphStateCircuit, P, L):
+def _init_status(state: MBQCGraph, P, L):
     """Initialize the supremum function
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -142,7 +146,7 @@ def _init_status(state: GraphStateCircuit, P, L):
     return sup, status
 
 
-def _build_path_cover(state: GraphStateCircuit):
+def _build_path_cover(state: MBQCGraph):
     """Builds a path cover
 
     status: 0 if 'fail', 1 if 'success'
@@ -162,7 +166,7 @@ def _build_path_cover(state: GraphStateCircuit):
     return 0
 
 
-def _augmented_search(state: GraphStateCircuit, fam: nx.DiGraph, iter: int, visited, v):
+def _augmented_search(state: MBQCGraph, fam: nx.DiGraph, iter: int, visited, v):
     """Does an augmented search
 
     status: 0 if 'fail', 1 if 'success'
@@ -205,21 +209,30 @@ def _augmented_search(state: GraphStateCircuit, fam: nx.DiGraph, iter: int, visi
     return (fam, visited, 0)
 
 
-def _check_if_flow(state: GraphStateCircuit, flow, top_order) -> bool:
+def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
     """Checks if flow satisfies conditions on state."""
     conds = True
     for i in state.outputc:
-        nfi = state.graph.neighbors(flow(i))
+        nfi = list(state.graph.neighbors(flow(i)))
         c1 = i in nfi
-        c2 = top_order.index(i) < top_order.index(flow(i))
+        c2 = partial_order(i, flow(i))
         c3 = math.prod(
-            [top_order.index(i) < top_order.index(k) for k in set(nfi) - {i}]
+            [partial_order(i, k) for k in set(nfi) - {i}]
         )
         conds = conds * c1 * c2 * c3
+        if not c1:
+            print(f"Condition 1 failed for node {i}. {i} not int {nfi}")
+        if not c2:
+            print(f"Condition 2 failed for node {i}. {i} ≮ {flow(i)}")
+        if not c3:
+            print(f"Condition 3 failed for node {i}.")
+            for k in set(nfi) - {i}:
+                if not partial_order(i, k):
+                    print(f"{i} ≮ {k}")
     return conds
 
 
-def _get_flowgraph(state: GraphStateCircuit, flow):
+def _get_flowgraph(state: MBQCGraph, flow):
     """Get graph with flow"""
     H = nx.DiGraph()
     for v in state.outputc:
