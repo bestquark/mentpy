@@ -20,14 +20,14 @@ def graphstate_to_circuit(gsc):
         for i,j in gr.edges():
             qml.CZ(wires=[i,j])
         
-        topord_no_output = [x for x in gsc.top_order if (x not in gs.output_nodes)]
+        topord_no_output = [x for x in gsc.measurement_order if (x not in gs.output_nodes)]
         for indx,p in zip(topord_no_output, param[:len(gs.outputc)]):
             qml.RZ(p, wires = indx)
             qml.Hadamard(wires= indx)
             m_0 = qml.measure(indx)
             qml.cond(m_0, qml.PauliX)(wires=gsc.flow(indx))
             for neigh in gr.neighbors(gsc.flow(indx)):
-                if neigh!=indx and (gsc.top_order.index(neigh)>gsc.top_order.index(indx)):
+                if neigh!=indx and (gsc.measurement_order.index(neigh)>gsc.measurement_order.index(indx)):
                     qml.cond(m_0, qml.PauliZ)(wires=neigh)
         
         if output == 'expval':

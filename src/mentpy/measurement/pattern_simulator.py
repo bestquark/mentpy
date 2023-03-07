@@ -37,16 +37,10 @@ class PatternSimulator:
         self.flow = flow
         self.partial_order = partial_order
         
-        mat = np.zeros((n,n))
         if measurement_order is None:
-            n = len(state)
-            for i in range(n):
-                for j in range(n):
-                    mat[i,j] = partial_order[i,j]
-                    
-                    
+            measurement_order = self.calculate_order()
 
-
+        self.measurement_order = measurement_order
 
         self.simulator = simulator
 
@@ -84,7 +78,7 @@ class PatternSimulator:
     @property
     def current_sim_ind(self):
         r"""Returns the current simulated indices"""
-        return self.top_order[
+        return self.measurement_order[
             self.measure_number : self.measure_number + self.total_simu
         ]
 
@@ -99,6 +93,24 @@ class PatternSimulator:
         r"""Returns a dictionary to translate from qubit indices (eg. [1, 3, 2]) to simulated
         indices (eg. [6, 15, 4])"""
         return {ind: q for ind, q in enumerate(self.current_sim_ind)}
+
+    def calculate_order(self):
+        r"""Returns the order of the measurements"""
+        n = len(self.state.graph)
+        mat = np.zeros((n,n))
+
+        for indi, i in enumerate(list(self.state.graph.nodes())):
+            for indj, j in enumerate(list(self.state.graph.nodes())):
+                if self.partial_order(i, j):
+                    mat[indi,indj] = 1
+
+        sum_mat = np.sum(mat, axis=1) 
+        order = np.argsort(sum_mat)[::-1]
+
+        # turn order into labels of graph
+        order = [list(self.state.graph.nodes())[i] for i in order]
+
+        return order
 
     def append_plus_state(self, psi, cz_neighbors):
         r"""Return :math:`\prod_{Neigh} CZ_{ij} |\psi \rangle \otimes |+\rangle`"""
@@ -289,7 +301,7 @@ class PatternSimulator:
 
         # Makes the dictionary pattern into a list
         if isinstance(pattern, dict):
-            pattern = [pattern[q] for q in self.top_order]
+            pattern = [pattern[q] for q in self.measurement_order]
 
         if self.trace_in_middle:
             for ind, angle in enumerate(pattern):
@@ -327,7 +339,7 @@ class PatternSimulator:
         measure_correct_moments = []
         entangle_moment = self.entangling_moment(self.state.graph.edges())
         measure_correct_moments.append(entangle_moment)
-        for angle, q in zip(angles, self.top_order):
+        for angle, q in zip(angles, self.measurement_order):
             mm = self.measurement_moment(angle, q, key=f"q{q}") # measure moment
             measure_correct_moments.append(mm)
             cm = self._correction_moment_notrace(q)
@@ -356,7 +368,7 @@ class PatternSimulator:
             self.state,
             self.simulator,
             flow=self.flow,
-            top_order=self.top_order,
+            measurement_order=self.measurement_order,
             input_state=input_state,
             trace_in_middle=self.trace_in_middle
         )
@@ -379,14 +391,14 @@ class PatternSimulator:
             for i,j in gr.edges():
                 qml.CZ(wires=[i,j])
             
-            topord_no_output = [x for x in self.top_order if (x not in gs.output_nodes)]
+            topord_no_output = [x for x in self.measurement_order if (x not in gs.output_nodes)]
             for indx,p in zip(topord_no_output, param[:len(gs.outputc)]):
                 qml.RZ(p, wires = indx)
                 qml.Hadamard(wires= indx)
                 m_0 = qml.measure(indx)
                 qml.cond(m_0, qml.PauliX)(wires=self.flow(indx))
                 for neigh in gr.neighbors(self.flow(indx)):
-                    if neigh!=indx and (self.top_order.index(neigh)>self.top_order.index(indx)):
+                    if neigh!=indx and (self.measurement_order.index(neigh)>self.measurement_order.index(indx)):
                         qml.cond(m_0, qml.PauliZ)(wires=neigh)
             
             if output == 'expval':
