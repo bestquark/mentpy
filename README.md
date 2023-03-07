@@ -17,8 +17,7 @@
 </div>
 
 The `MentPy` library is an open-source software for simulations of 
-measurement-based quantum computing circuits. This is an ongoing project by Luis Mantilla,
-Dmytro Bondarenko, Polina Feldmann, and Robert Raussendorf. Currently, this package is under 
+measurement-based quantum computing circuits. Currently, this package is under 
 development and is not ready for public use.
 
 ## Installation
