@@ -25,6 +25,7 @@ class PatternSimulator:
         measurement_order: Optional[List[int]] = None,
         input_state: Optional[np.ndarray] = None,
         trace_in_middle = False,
+        device = "default.qubit"
     ):
         """Initializes Pattern object"""
         self.state = state
@@ -67,7 +68,7 @@ class PatternSimulator:
         self.max_measure_number = len(state.outputc)
         self.state_rank = len(self.current_sim_state.shape)
         self.measurement_outcomes = {}
-        self._circuit = self.graphstate_to_circuit()
+        self._circuit = self.graphstate_to_circuit(device=device)
     
     def __call__(self, *args: Any, **kwds: Any) -> Any:
         return self._circuit(*args, **kwds)
@@ -359,9 +360,6 @@ class PatternSimulator:
         return stabilizer_circuit
             
 
-
-
-
     def reset(self, input_state=None):
         """Resets the state to run another simulation."""
         self.__init__(
@@ -373,12 +371,12 @@ class PatternSimulator:
             trace_in_middle=self.trace_in_middle
         )
         
-    def graphstate_to_circuit(self) -> qml.QNode:
+    def graphstate_to_circuit(self, device = "default.qubit") -> qml.QNode:
         """Converts a graph state mbq"""
         gs = self.state
         gr = gs.graph
         N = gr.number_of_nodes()
-        dev = qml.device("default.qubit", wires=N)
+        dev = qml.device(device, wires=N)
         @qml.qnode(dev)
         def circuit(param, output = 'expval', st = None):
             assert len(param) == N or len(param)==N-len(gs.output_nodes), f"Length of param is {len(param)}, but expected {N} or {N-len(gs.output_nodes)}."

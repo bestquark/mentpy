@@ -176,9 +176,3 @@ def draw_digraph_flow_space(digraph_expr : nx.digraph, **kwargs):
     """Draws the expressivity digraph of flow space"""
     pospos = nx.spring_layout(digraph_expr.to_undirected())
     nx.draw(digraph_expr, node_size = 55, pos = pospos, **kwargs)
-        
-
-    
-
-
-                

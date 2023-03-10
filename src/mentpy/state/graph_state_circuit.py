@@ -108,6 +108,16 @@ class MBQCGraph:
         # TODO: Check that it is the correct size compared to input nodes!
         self._input_state = quantum_state
 
+    def add_edge(self, u, v):
+        r"""Adds an edge between nodes u and v"""
+        self.graph.add_edge(u, v)
+        # try resetting self with new graph, if it fails, remove the edge
+        try:
+            self.__init__(self.graph, self.input_state, self.input_nodes, self.output_nodes)
+        except:
+            self.graph.remove_edge(u, v)
+            raise ValueError(f"Cannot add edge between {u} and {v}.")
+        
 def lc_reduce(state: MBQCGraph):
     """Reduce graph state
 
@@ -155,3 +165,4 @@ def entanglement_entropy(
         subRegionB = subRegionB[0]
 
     return nx.minimum_cut(G, subRegionA, subRegionB)[0]
+

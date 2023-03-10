@@ -255,3 +255,65 @@ def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
                 if not partial_order(i, k):
                     print(f"{i} ≮ {k}")
     return conds
+
+### This section implements causal flow
+
+def causal_flow(state: MBQCGraph) -> object:
+    """Finds the causal flow of a ``MBQCGraph`` if it exists"""
+    l = {}
+    for v in state.output_nodes:
+        l[v] = 0
+    
+    result, flow = causal_flow_aux(state, state.input_nodes, state.output_nodes, set(state.output_nodes)-set(state.input_nodes), 1, l)
+    
+    return result, lambda x: flow[x]   
+
+def causal_flow_aux(state: MBQCGraph, inputs, outputs, C, k, l) -> object:
+    """Aux function for causal_flow"""
+    V = set(state.graph.nodes())
+    out_prime = set()
+    C_prime = set()
+    g = {}
+    l = {}
+
+    for v in C:
+        # get intersection of neighbors of v and (V \ output nodes
+        intersection = set(state.graph.neighbors(v)) & (set(state.graph.nodes()) - set(outputs))
+        if len(intersection)==1:
+            u = intersection.pop()
+            g[u] = v
+            l[v] = k
+            out_prime.add(u)
+            C_prime.add(v)
+    
+    if len(out_prime) == 0:
+        if set(outputs) == V:
+            return True, l
+        else:
+            return False, l
+    else:
+        return causal_flow_aux(state, inputs, outputs | out_prime, (C - C_prime) | ((out_prime & V) - inputs), k+1, l)
+
+### This section is for GFlow ###
+
+# def gflow(state: MBQCGraph) -> object:
+#     """Finds the generalized flow of a ``MBQCGraph`` if it exists"""
+#     gamma = nx.adjacency_matrix(state.graph)
+#     l = {}
+#     for v in state.output_nodes:
+#         l[v] = 0
+    
+#     gflowaux(state, state.input_nodes, state.output_nodes, set(state.output_nodes)-set(state.input_nodes), 1)
+#     return lambda x: l[x]
+
+# def gflowaux(state: MBQCGraph, input, output, C, k) -> object:
+#     """Aux function for gflow"""
+#     out_prime = set()
+#     C_prime = set()
+#     for v in C:
+#         intersection = ...
+#         if len(intersection)==1:
+#             ...
+#     return 0
+    
+
