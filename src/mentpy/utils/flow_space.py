@@ -1,4 +1,4 @@
-from mentpy import MBQCGraph, find_flow
+from mentpy import GraphState, find_flow
 
 import networkx as nx
 import itertools
@@ -15,7 +15,7 @@ class FlowSpace():
     than 8 qubits.
     """
 
-    def __init__(self, graph_state: MBQCGraph, allow_any_size_graphs: bool = False):
+    def __init__(self, graph_state: GraphState, allow_any_size_graphs: bool = False):
         """Creates the flow graph space of a graph state circuit."""
 
         if len(graph_state)>7 and (not allow_any_size_graphs):
@@ -61,7 +61,7 @@ class FlowSpace():
         wflow = []
         woflow = []
         for ind, g in enumerate(graphs_list):
-            gs = MBQCGraph(g, input_nodes = self.input_nodes, output_nodes = self.output_nodes)
+            gs = GraphState(g, input_nodes = self.input_nodes, output_nodes = self.output_nodes)
             try:
                 fl, _ = find_flow(gs)
             except:

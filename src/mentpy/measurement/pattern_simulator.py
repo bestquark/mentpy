@@ -6,7 +6,7 @@ import cirq
 from typing import Union, Callable, List, Optional, Any
 import networkx as nx
 import pennylane as qml
-from mentpy import MBQCGraph
+from mentpy import GraphState
 from mentpy import find_flow
 
 
@@ -18,7 +18,7 @@ class PatternSimulator:
 
     def __init__(
         self,
-        state: MBQCGraph,
+        state: GraphState,
         simulator: cirq.SimulatorBase = cirq.Simulator(),
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,

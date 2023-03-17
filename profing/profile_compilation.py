@@ -19,7 +19,7 @@ startTime = datetime.now()
 
 g = nx.Graph()
 g.add_edges_from([(0,1), (1,2), (2,3), (3,4)])
-gs = MBQCGraph(g, input_nodes = [0], output_nodes = [4])
+gs = GraphState(g, input_nodes = [0], output_nodes = [4])
 gp = mtp.PatternSimulator(gs, trace_in_middle = False)
 
 def average_cost(pattern, n_samples=100):

@@ -1,5 +1,5 @@
 import numpy as np
-
+import cirq
 
 CNOT = np.array([[1, 0, 0, 0],
                 [0, 1, 0, 0],
@@ -30,3 +30,7 @@ PauliZ = np.array([[1, 0],
 
 T = np.array([[1, 0],
                 [0, np.exp(1j*np.pi/4)]])
+
+def random_special_unitary(n_qubits : int):
+    """Returns a random special unitary in ``n_qubits`` sampled from the Haar distribution."""
+    return cirq.testing.random_special_unitary(dim=int(2**n_qubits))

@@ -3,11 +3,13 @@ import math
 import numpy as np
 import networkx as nx
 
-from mentpy.state import MBQCGraph
+from mentpy.state import GraphState
 from typing import List
 
+import galois
 
-def find_flow(state: MBQCGraph, sanity_check=True):
+
+def find_flow(state: GraphState, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
 
     Implementation of https://arxiv.org/pdf/quant-ph/0603072.pdf.
@@ -47,7 +49,7 @@ def find_flow(state: MBQCGraph, sanity_check=True):
         new_graph = nx.relabel_nodes(state.graph.copy(), mapping)
         inp, outp = [mapping[v] for v in state.input_nodes], [mapping[v] for v in state.output_nodes]
 
-        state = MBQCGraph(new_graph, input_nodes = inp, output_nodes = outp)
+        state = GraphState(new_graph, input_nodes = inp, output_nodes = outp)
         update_labels = True
 
     tau = _build_path_cover(state)
@@ -84,7 +86,7 @@ def find_flow(state: MBQCGraph, sanity_check=True):
         raise UserWarning("Could not find a flow for the given state.")
 
 
-def _flow_from_array(state: MBQCGraph, f: List):
+def _flow_from_array(state: GraphState, f: List):
     """Create a flow function from a given array f"""
 
     def flow(v):
@@ -96,7 +98,7 @@ def _flow_from_array(state: MBQCGraph, f: List):
     return flow
 
 
-def _get_chain_decomposition(state: MBQCGraph, C: nx.DiGraph):
+def _get_chain_decomposition(state: GraphState, C: nx.DiGraph):
     """Gets the chain decomposition"""
     P = np.zeros(len(state.graph))
     L = np.zeros(len(state.graph))
@@ -113,7 +115,7 @@ def _get_chain_decomposition(state: MBQCGraph, C: nx.DiGraph):
     return (f, P, L)
 
 
-def _compute_suprema(state: MBQCGraph, f, P, L):
+def _compute_suprema(state: GraphState, f, P, L):
     """Compute suprema
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -129,7 +131,7 @@ def _compute_suprema(state: MBQCGraph, f, P, L):
     return sup
 
 
-def _traverse_infl_walk(state: MBQCGraph, f, sup, status, v):
+def _traverse_infl_walk(state: GraphState, f, sup, status, v):
     """Compute the suprema by traversing influencing walks
     
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -151,7 +153,7 @@ def _traverse_infl_walk(state: MBQCGraph, f, sup, status, v):
     return sup, status
 
 
-def _init_status(state: MBQCGraph, P, L):
+def _init_status(state: GraphState, P, L):
     """Initialize the supremum function
 
     status: 0 if none, 1 if pending, 2 if fixed.
@@ -171,7 +173,7 @@ def _init_status(state: MBQCGraph, P, L):
     return sup, status
 
 
-def _build_path_cover(state: MBQCGraph):
+def _build_path_cover(state: GraphState):
     """Builds a path cover
 
     status: 0 if 'fail', 1 if 'success'
@@ -191,7 +193,7 @@ def _build_path_cover(state: MBQCGraph):
     return 0
 
 
-def _augmented_search(state: MBQCGraph, fam: nx.DiGraph, iter: int, visited, v):
+def _augmented_search(state: GraphState, fam: nx.DiGraph, iter: int, visited, v):
     """Does an augmented search
 
     status: 0 if 'fail', 1 if 'success'
@@ -234,7 +236,7 @@ def _augmented_search(state: MBQCGraph, fam: nx.DiGraph, iter: int, visited, v):
     return (fam, visited, 0)
 
 
-def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
+def _check_if_flow(state: GraphState, flow, partial_order) -> bool:
     """Checks if flow satisfies conditions on state."""
     conds = True
     for i in state.outputc:
@@ -258,27 +260,33 @@ def _check_if_flow(state: MBQCGraph, flow, partial_order) -> bool:
 
 ### This section implements causal flow
 
-def causal_flow(state: MBQCGraph) -> object:
-    """Finds the causal flow of a ``MBQCGraph`` if it exists"""
+def causal_flow(state: GraphState) -> object:
+    """Finds the causal flow of a ``MBQCGraph`` if it exists.
+    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
+    """
     l = {}
+
     for v in state.output_nodes:
         l[v] = 0
     
-    result, flow = causal_flow_aux(state, state.input_nodes, state.output_nodes, set(state.output_nodes)-set(state.input_nodes), 1, l)
+    result, flow = causal_flow_aux(state, set(state.input_nodes), set(state.output_nodes), set(state.output_nodes)-set(state.input_nodes), 1, l)
     
-    return result, lambda x: flow[x]   
+    if not result:
+        raise UserWarning("No causal flow exists for this graph.")
 
-def causal_flow_aux(state: MBQCGraph, inputs, outputs, C, k, l) -> object:
+    # return flow and partial order
+    return lambda x: flow[x] , lambda u, v: l[u] > l[v]
+
+def causal_flow_aux(state: GraphState, inputs, outputs, C, k, l) -> object:
     """Aux function for causal_flow"""
     V = set(state.graph.nodes())
     out_prime = set()
     C_prime = set()
     g = {}
-    l = {}
 
-    for v in C:
+    for _, v in enumerate(C):
         # get intersection of neighbors of v and (V \ output nodes
-        intersection = set(state.graph.neighbors(v)) & (set(state.graph.nodes()) - set(outputs))
+        intersection = set(state.graph.neighbors(v)) & (V - outputs)
         if len(intersection)==1:
             u = intersection.pop()
             g[u] = v
@@ -297,23 +305,109 @@ def causal_flow_aux(state: MBQCGraph, inputs, outputs, C, k, l) -> object:
 ### This section is for GFlow ###
 
 # def gflow(state: MBQCGraph) -> object:
-#     """Finds the generalized flow of a ``MBQCGraph`` if it exists"""
-#     gamma = nx.adjacency_matrix(state.graph)
+#     """Finds the generalized flow of a ``MBQCGraph`` if it exists.
+#    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
+#    """
+#     gamma = nx.adjacency_matrix(state.graph).toarray()
 #     l = {}
+#     g = {}
+
 #     for v in state.output_nodes:
 #         l[v] = 0
     
-#     gflowaux(state, state.input_nodes, state.output_nodes, set(state.output_nodes)-set(state.input_nodes), 1)
-#     return lambda x: l[x]
-
-# def gflowaux(state: MBQCGraph, input, output, C, k) -> object:
-#     """Aux function for gflow"""
-#     out_prime = set()
-#     C_prime = set()
-#     for v in C:
-#         intersection = ...
-#         if len(intersection)==1:
-#             ...
-#     return 0
     
+#     result, flow, g = gflowaux(set(state.graph.nodes()), gamma, set(state.input_nodes), set(state.output_nodes), 1, l, g)
+
+#     return lambda x: flow[x], lambda u, v: l[u] > l[v], lambda u: g[u]
+
+# def gflowaux(V, gamma, inputs, outputs, k, l, g) -> object:
+#     """Aux function for gflow"""
+#     GF = galois.GF(2)
+#     node_mapping = {i: node for i, node in enumerate(V)}
+
+#     C = set()
+#     for u in V-outputs:
+#         # submatrix = gamma[np.ix_(list(V-outputs), list(outputs - inputs))]
+#         # get submatrix with rows corresponding to V-outputs and columns corresponding to outputs - inputs 
+#         # but use the node_mapping to get the correct indices
+#         submatrix = np.zeros((len(V-outputs), len(outputs - inputs)), dtype=int)
+#         for i, v in enumerate(V-outputs):
+#             for j, w in enumerate(outputs - inputs):
+#                 submatrix[i, j] = gamma[node_mapping[v], node_mapping[w]]
+
+#         iu = np.zeros(len(V-outputs), dtype=int)
+#         iu[list(V-outputs).index(u)] = 1
+#         # use node_mapping to get the correct index
+        
+#         submatrix, iu = GF(submatrix), GF(np.array([iu]).T)
+#         #solve submatrix @ X = iu using galois in mod2
+#         sys = np.hstack((submatrix, iu))
+#         row_reduced = sys.row_reduce()
+        
+#         # FILL HERE TO GET SOLUTION
+
+        
+
+#         # check if solution is a valid solution
+#         if np.linalg.norm(submatrix @ solution - iu) <= 1e-5:
+#             l[u] = k
+#             C.add(u)
+#             g[u] = solution
+    
+#     if len(C) == 0:
+#         return True, l, g
+#     else:
+#         return gflowaux(V, gamma, inputs, outputs | C, k+1, l, g)
+
+
+# def _check_if_gflow(state: MBQCGraph, gflow, partial_order) -> bool:
+#     """Checks if gflow satisfies conditions on state."""
+    
+def gflow(state: GraphState) -> object:
+    """Finds the generalized flow of a ``MBQCGraph`` if it exists.
+   Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
+   """
+    gamma = nx.adjacency_matrix(state.graph).toarray()
+    l = {}
+    g = {}
+
+    for v in state.output_nodes:
+        l[v] = 0
+    
+    
+    result, flow, g = gflowaux(state, gamma, set(state.input_nodes), set(state.output_nodes)-set(state.input_nodes), 1, l, g)
+
+    return lambda x: flow[x], lambda u, v: l[u] > l[v], lambda u: g[u]
+
+def gflowaux(state: GraphState, gamma, inputs, outputs, k, l, g) -> object:
+    """Aux function for gflow"""
+    out_prime = set()
+    GF = galois.GF(2)
+    V = set(state.graph.nodes())
+    C = set()
+    for u in V - outputs:
+        submatrix = np.zeros((len(V-outputs), len(outputs)), dtype=int)
+        b = np.zeros((len(V-outputs), 1), dtype=int)
+        b[list(V-outputs).index(u)] = 1
+        syst = np.hstack((submatrix, b))
+        row_reduced = syst.row_reduce()
+        solution = np.zeros((len(outputs), 1), dtype=int)
+        for i, v in enumerate(outputs):
+            if row_reduced[i, i] == 1:
+                solution[i] = row_reduced[i, -1]
+        
+        solution, b = GF(solution), GF(b)
+        if np.linalg.norm(submatrix @ solution - b) <= 1e-5:
+            l[u] = k
+            C.add(u)
+            g[u] = solution
+    
+    if len(C) == 0:
+        if set(outputs) == V:
+            return True, l, g
+        else:
+            return False, l, g
+    
+    else:
+        return gflowaux(state, gamma, inputs, outputs | C, k+1, l, g)
 

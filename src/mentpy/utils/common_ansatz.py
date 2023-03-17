@@ -5,7 +5,7 @@ It has several common ansatzes that can be used for MBQC algorithms
 
 import networkx as nx
 from typing import List, Tuple, Optional, Union
-from mentpy.state import MBQCGraph
+from mentpy.state import GraphState
 
 def linear_cluster(n):
     r"""Returns a linear cluster state of n qubits.
@@ -25,7 +25,7 @@ def linear_cluster(n):
     """
     g = nx.Graph()
     g.add_edges_from([(i, i + 1) for i in range(n - 1)])
-    gs = MBQCGraph(g, input_nodes=[0], output_nodes=[n - 1])
+    gs = GraphState(g, input_nodes=[0], output_nodes=[n - 1])
     return gs
 
 def many_wires(n_wires: List):
@@ -55,5 +55,5 @@ def many_wires(n_wires: List):
         g.add_edges_from([(j + sum(n_wires[:i]), j + sum(n_wires[:i]) + 1) for j in range(n - 1)])
     
     # input nodes are the first qubit in each wire and output nodes are the last qubit in each wire
-    gs = MBQCGraph(g, input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))], output_nodes=[sum(n_wires[:i + 1]) - 1 for i in range(len(n_wires))])
+    gs = GraphState(g, input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))], output_nodes=[sum(n_wires[:i + 1]) - 1 for i in range(len(n_wires))])
     return gs
