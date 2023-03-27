@@ -10,7 +10,7 @@ import scipy as scp
 import networkx as nx
 
 from mentpy.states.graphstate import GraphState
-from mentpy.states.flow import find_gflow, find_cflow, check_if_flow
+from mentpy.states.flow import find_gflow, find_cflow, find_flow , check_if_flow
 
 __all__ = ["MBQCState", "draw", "merge", "hstack", "vstack"]
 
@@ -75,6 +75,7 @@ class MBQCState:
 
         if (flow is None) or (partial_order is None):
             flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
+
         elif (flow is not None) and (partial_order is not None):
             check_if_flow(graph, input_nodes, output_nodes, flow, partial_order)
 
@@ -348,12 +349,15 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
 
     TODO: Add support for graphs without flow, but with gflow
     """
-    node_colors = {
-        i: "#FFBD59"
-        if i in set(state.inputc).intersection(set(state.outputc))
-        else "#CCCCCC"
-        for i in state.graph.nodes()
-    }
+    node_colors = {}
+    for i in state.graph.nodes():
+        if i in state.input_nodes:
+            node_colors[i] = "#CCCCCC"
+        elif i in state.output_nodes:
+            node_colors[i] = "#ADD8E6"
+        else:
+            node_colors[i] = "#FFBD59"
+
     # options = {'node_color': '#FFBD59'}
     options = {"node_color": [node_colors[node] for node in state.graph.nodes()]}
     options.update(kwargs)
@@ -373,14 +377,21 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
                 if len(wire) + 2 > separation:
                     separation = len(wire) + 2
         for indx, p in enumerate(state.output_nodes):
-            position_xy[p] = (2 * (separation), -2 * indx)
+            position_xy[p] = (2 * (separation) - 2, -2 * indx)
 
         if fix_wires is not None:
             x = [list(x) for x in fix_wires]
+            
             fixed_nodes += sum(x, [])
+            
+
             for indw, wire in enumerate(fix_wires):
                 for indx, p in enumerate(wire):
-                    position_xy[p] = (2 * (indx + 1), -2 * indw)
+                    if p != '*':
+                        position_xy[p] = (2 * (indx + 1), -2 * indw)
+
+        # remove all '*' from fixed_nodes
+        fixed_nodes = [x for x in fixed_nodes if x != '*']
 
         node_pos = nx.spring_layout(
             state.graph, pos=position_xy, fixed=fixed_nodes, k=1 / len(state.graph)

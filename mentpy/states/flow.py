@@ -341,9 +341,9 @@ def find_cflow(graph: GraphState, input_nodes, output_nodes) -> object:
     )
 
     flow = {k: v for k, v in flow.items() if k not in input_nodes_extended}
-    l = {k: v for k, v in l.items() if k not in input_nodes_extended}
+    ln = {k: v for k, v in l.items() if k not in input_nodes_extended}
 
-    return lambda x: flow[x], lambda u, v: l[u] > l[v], max(flow.values())
+    return lambda x: flow[x], lambda u, v: ln[u] > ln[v], max(flow.values())
 
 
 def causal_flow_aux(graph: GraphState, inputs, outputs, C, past, k, g, l) -> object:
@@ -357,7 +357,7 @@ def causal_flow_aux(graph: GraphState, inputs, outputs, C, past, k, g, l) -> obj
         if len(intersection) == 1:
             u = intersection.pop()
             g[u] = v
-            l[v] = k
+            l[u] = k
             outputs.add(u)
             if u not in inputs:
                 past[u] = len(set(graph.neighbors(u)) & (V - outputs))
@@ -472,12 +472,17 @@ def gflowaux(graph: GraphState, gamma, inputs, outputs, k, g, l) -> object:
 
 
 def find_pflow(
-    graph: GraphState, input_nodes, output_nodes, plane, testing=False
+    graph: GraphState, input_nodes, output_nodes, basis = 'XY', testing=False
 ) -> object:
     """Implementation of pauli flow algorithm in https://arxiv.org/pdf/2109.05654v1.pdf"""
 
     if not testing:
         raise NotImplementedError("This algorithm is not yet implemented.")
+
+    if type(basis) == str:
+        basis = {v: basis for v in graph.nodes()}
+    elif type(basis) != dict:
+        raise TypeError("Basis must be a string or a dictionary.")
 
     lx = set()
     ly = set()
@@ -490,14 +495,14 @@ def find_pflow(
     for v in graph.nodes():
         if v in output_nodes:
             d[v] = 0
-        if plane[v] == "X":
+        if basis[v] == "X":
             lx = lx.add(v)
-        elif plane[v] == "Y":
+        elif basis[v] == "Y":
             ly = ly.add(v)
-        elif plane[v] == "Z":
+        elif basis[v] == "Z":
             lz = lz.add(v)
 
-    return pflowaux(graph, gamma, input_nodes, plane, set(), output_nodes, 0, d, p)
+    return pflowaux(graph, gamma, input_nodes, basis, set(), output_nodes, 0, d, p)
 
 
 def pflowaux(graph: GraphState, gamma, inputs, plane, A, B, k, d, p) -> object:
