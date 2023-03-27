@@ -55,7 +55,7 @@ For visualization of circuits, you can use the `mp.draw` function
 
 ## Documentation
 
-The documentation for `MentPy` can be found [here](./docs).
+The documentation for `MentPy` can be found [here](https://mentpy.readthedocs.io/en/latest/).
 
 ## Contributing
 
