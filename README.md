@@ -40,7 +40,7 @@ pip install git+https://github.com/BestQuark/mentpy.git
 ```
 
 ## Usage
-
+To simulate a measurement pattern, you can use the `mp.PatternSimulator`.
 ```python
 import mentpy as mp
 
@@ -48,6 +48,10 @@ st = mp.templates.grid_cluster(4,2)
 ps = mp.PatternSimulator(st)
 output = ps(np.random.rand(len(st.outputc)))
 ```
+
+For visualization of circuits, you can use the `mp.draw` function
+
+![d1f73211-1ff7-4988-9fce-d39a34f98937](https://user-images.githubusercontent.com/52287586/228085615-f6ced98c-3866-4c23-9b2e-ab8e22a6e2b7.png)
 
 ## Documentation
 
