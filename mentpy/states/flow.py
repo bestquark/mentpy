@@ -13,6 +13,7 @@ import galois
 
 ## Not used in main mbqcstate module
 
+
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
 
@@ -470,7 +471,9 @@ def gflowaux(graph: GraphState, gamma, inputs, outputs, k, g, l) -> object:
 ## This section implements PauliFlow
 
 
-def find_pflow(graph: GraphState, input_nodes, output_nodes, plane, testing=False) -> object:
+def find_pflow(
+    graph: GraphState, input_nodes, output_nodes, plane, testing=False
+) -> object:
     """Implementation of pauli flow algorithm in https://arxiv.org/pdf/2109.05654v1.pdf"""
 
     if not testing:
