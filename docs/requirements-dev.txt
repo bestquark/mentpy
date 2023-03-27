@@ -1,0 +1,9 @@
+networkx
+numpy
+PennyLane
+cirq
+scipy
+galois
+sphinx==5
+sphinx_immaterial
+ipykernel
