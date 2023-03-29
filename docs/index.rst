@@ -33,10 +33,15 @@ Features
 Roadmap
 -------
 * Improve current simulators for MBQC circuits.
-* Fix many bugs in the library (lol).
+* Fix many bugs in the library 🐛.
 * Improve tests on current functions.
-* Add a :obj:`tensornetwork`` simulator for MBQC circuits.
+* Add a :obj:`tensornetwork` simulator for MBQC circuits.
 * Add support for more general MBQC states.
+
+
+Contributing
+------------
+If you would like to contribute to this project, please feel free to open an issue or pull request 😄.
 
 Acknowledgements
 ----------------
