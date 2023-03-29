@@ -26,9 +26,9 @@ release = mentpy.__version__
 
 extensions = [
     "sphinx.ext.autodoc",
-    'sphinx.ext.todo', 
-    'sphinx.ext.mathjax', 
-    'sphinx.ext.ifconfig',
+    "sphinx.ext.todo",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "sphinx_immaterial",
@@ -170,6 +170,7 @@ ipython_execlines = [
     "import math",
     "import numpy as np",
     "import networkx as nx",
+    "import matplotlib.pyplot as plt",
     "import mentpy as mp",
 ]
 

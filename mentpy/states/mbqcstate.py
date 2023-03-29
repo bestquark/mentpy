@@ -220,11 +220,11 @@ def _check_measurement_order(measurement_order: List, partial_order: Callable):
     return True
 
 
-def merge(state1: MBQCState, state2: MBQCState, concat_indices=[]) -> MBQCState:
+def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
     """Merge two graph states into a larger graph state. This is, the input and
     output of the new MBQC state will depend on the concat_indices."""
 
-    for (i, j) in concat_indices:
+    for (i, j) in along:
         if i not in state1.output_nodes or j not in state2.input_nodes:
             raise ValueError(f"Cannot merge states at indices {i} and {j}")
 
@@ -236,7 +236,7 @@ def merge(state1: MBQCState, state2: MBQCState, concat_indices=[]) -> MBQCState:
         i + len(state1.graph) for i in state2.output_nodes
     ]
 
-    for (i, j) in concat_indices:
+    for (i, j) in along:
         input_nodes.remove(j + len(state1.graph))
         output_nodes.remove(i)
         graph.add_edge(i, j + len(state1.graph))

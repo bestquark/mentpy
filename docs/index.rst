@@ -23,7 +23,7 @@ byproduct operators in MBQC circuits.
 Features
 --------
 
-* Manipulate of graph states.
+* Manipulation of graph states.
 * Automatically calculate the causal flow or generalized flow of a graph.
 * Simulate MBQC circuits.
 * Optimize measurement angles in MBQC ansatzes used for QML.
@@ -102,6 +102,7 @@ If you find MentPy useful in your research, please consider citing us 🙂
 
    tutorials/intro-to-graphstates.rst
    tutorials/intro-to-mbqc.rst
+   tutorials/intro-to-mbqml.rst
 
 .. toctree::
    :caption: API Reference
