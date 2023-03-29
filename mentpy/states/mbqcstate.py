@@ -343,11 +343,11 @@ def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
 def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
     """Draws mbqc circuit with flow.
 
+    TODO: Add support for graphs without flow, but with gflow
+
     Group
     -----
     states
-
-    TODO: Add support for graphs without flow, but with gflow
     """
     node_colors = {}
     for i in state.graph.nodes():
