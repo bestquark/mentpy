@@ -83,20 +83,36 @@ def random_train_test_states_unitary_noise(
         noise_type (str): type of noise. Either 'brownian' or 'bitflip'
         test_size (float): percentage of test data
     """
+    if noise_level > 1 or noise_level < 0:
+        raise ValueError("noise_level must be between 0 and 1")
+
     n_qubits = int(np.log2(unitary.shape[0]))
     random_inputs = generate_haar_random_states(n_qubits, n_samples=n_samples)
-    if noise_type == "brownian":
-        noise_u = randomUnitary_closetoid(2**n_qubits, noise_level, 20)
-    elif noise_type == "bitflip":
-        noise_u = 1
-        for i in range(n_qubits):
-            if np.random.rand() < noise_level:
-                noise_u = np.kron(noise_u, np.array([[0, 1], [1, 0]]))
-            else:
-                noise_u = np.kron(noise_u, np.eye(2))
+    n_samples = len(random_inputs)
+    n_test_samples = int(n_samples * test_size)
+    n_train_samples = n_samples - n_test_samples
 
-    random_targets = [
-        (noise_u @ unitary @ np.conj(noise_u.T) @ st.T).T for st in random_inputs
-    ]
+    random_targets_train = []
 
-    return _train_test_split(random_inputs, random_targets, test_size=test_size)
+    for curr_st in range(n_train_samples):
+        if noise_type == "brownian":
+            noise_u = randomUnitary_closetoid(2**n_qubits, noise_level, 20)
+            random_targets_train += [
+                (noise_u @ unitary @ np.conj(noise_u.T) @ random_inputs[curr_st].T).T
+            ]
+
+        elif noise_type == "bitflip":
+            noise_u = 1
+            for i in range(n_qubits):
+                if np.random.rand() < noise_level:
+                    noise_u = np.kron(noise_u, np.array([[0, 1], [1, 0]]))
+                else:
+                    noise_u = np.kron(noise_u, np.eye(2))
+            random_targets_train += [(noise_u @ unitary @ random_inputs[curr_st].T).T]
+
+    random_targets_test = [(unitary @ st.T).T for st in random_inputs[n_train_samples:]]
+
+    return (random_inputs[:n_train_samples], random_targets_train), (
+        random_inputs[n_train_samples:],
+        random_targets_test,
+    )

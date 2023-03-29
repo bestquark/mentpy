@@ -472,7 +472,7 @@ def gflowaux(graph: GraphState, gamma, inputs, outputs, k, g, l) -> object:
 
 
 def find_pflow(
-    graph: GraphState, input_nodes, output_nodes, basis = 'XY', testing=False
+    graph: GraphState, input_nodes, output_nodes, basis="XY", testing=False
 ) -> object:
     """Implementation of pauli flow algorithm in https://arxiv.org/pdf/2109.05654v1.pdf"""
 

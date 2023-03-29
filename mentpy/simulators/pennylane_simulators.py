@@ -34,7 +34,10 @@ class PennylaneSimulator(BaseSimulator):
         self, mbqcstate: MBQCState, input_state: np.ndarray, *args, **kwargs
     ) -> None:
         self.circuit = graphstate_to_circuit(
-            mbqcstate, kwargs.pop("device", "default.qubit")
+            mbqcstate,
+            kwargs.pop("device", "default.qubit"),
+            kwargs.pop("circuit_noise", None),
+            p=kwargs.pop("p", 0),
         )
         super().__init__(mbqcstate, input_state)
 
@@ -62,7 +65,9 @@ class PennylaneSimulator(BaseSimulator):
         self.input_state = input_state
 
 
-def graphstate_to_circuit(gsc, device="default.qubit"):
+def graphstate_to_circuit(
+    gsc, device="default.qubit", circuit_noise=None, *args, **kwargs
+):
     """Converts a MBQCState to a PennyLane circuit."""
     gr = gsc.graph
     N = gr.number_of_nodes()
@@ -75,15 +80,31 @@ def graphstate_to_circuit(gsc, device="default.qubit"):
                 len(param) == N
             ), f"Length of param is {len(param)}, but expected {N}."
         else:
-            assert (
-                len(param) == N - 2
-            ), f"Length of param is {len(param)}, but expected {N-2}."
+            assert len(param) == N - len(
+                gsc.output_nodes
+            ), f"Length of param is {len(param)}, but expected {N-len(gsc.output_nodes)}."
         input_v = st
         qml.QubitStateVector(input_v, wires=gsc.input_nodes)
+
         for j in gsc.inputc:
             qml.Hadamard(j)
         for i, j in gr.edges():
             qml.CZ(wires=[i, j])
+
+        if circuit_noise is not None:
+            for i in range(N):
+                if circuit_noise == "depolarizing":
+                    qml.DepolarizingChannel(wires=i, *args, **kwargs)
+                elif circuit_noise == "amplitude_damping":
+                    qml.AmplitudeDamping(wires=i, *args, **kwargs)
+                elif circuit_noise == "phase_damping":
+                    qml.PhaseDamping(wires=i, *args, **kwargs)
+                elif circuit_noise == "phase_flip":
+                    qml.PhaseFlip(wires=i, *args, **kwargs)
+                elif circuit_noise == "generalized_amplitude_damping":
+                    qml.GeneralizedAmplitudeDamping(wires=i, *args, **kwargs)
+                else:
+                    raise ValueError(f"Unrecognized circuit noise: {circuit_noise}")
 
         topord_no_output = [
             x for x in gsc.measurement_order if (x not in gsc.output_nodes)

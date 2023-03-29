@@ -10,7 +10,7 @@ import scipy as scp
 import networkx as nx
 
 from mentpy.states.graphstate import GraphState
-from mentpy.states.flow import find_gflow, find_cflow, find_flow , check_if_flow
+from mentpy.states.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
 __all__ = ["MBQCState", "draw", "merge", "hstack", "vstack"]
 
@@ -381,17 +381,16 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
 
         if fix_wires is not None:
             x = [list(x) for x in fix_wires]
-            
+
             fixed_nodes += sum(x, [])
-            
 
             for indw, wire in enumerate(fix_wires):
                 for indx, p in enumerate(wire):
-                    if p != '*':
+                    if p != "*":
                         position_xy[p] = (2 * (indx + 1), -2 * indw)
 
         # remove all '*' from fixed_nodes
-        fixed_nodes = [x for x in fixed_nodes if x != '*']
+        fixed_nodes = [x for x in fixed_nodes if x != "*"]
 
         node_pos = nx.spring_layout(
             state.graph, pos=position_xy, fixed=fixed_nodes, k=1 / len(state.graph)
