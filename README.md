@@ -44,14 +44,14 @@ To simulate a measurement pattern, you can use the `mp.PatternSimulator`.
 ```python
 import mentpy as mp
 
-st = mp.templates.grid_cluster(4,2)
+st = mp.templates.grid_cluster(2,4)
 ps = mp.PatternSimulator(st)
 output = ps(np.random.rand(len(st.outputc)))
 ```
 
 For visualization of circuits, you can use the `mp.draw` function
 
-![d1f73211-1ff7-4988-9fce-d39a34f98937](https://user-images.githubusercontent.com/52287586/228085615-f6ced98c-3866-4c23-9b2e-ab8e22a6e2b7.png)
+![28a47037-4988-4442-b35f-88359c6a54c4](https://user-images.githubusercontent.com/52287586/228745684-dc2b4712-f66e-4d36-8941-2b4ada22008d.png)
 
 ## Documentation
 
