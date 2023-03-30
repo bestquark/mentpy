@@ -8,6 +8,7 @@ from typing import Optional, List, Tuple, Callable, Union, Any
 import numpy as np
 import scipy as scp
 import networkx as nx
+import matplotlib.pyplot as plt
 
 from mentpy.states.graphstate import GraphState
 from mentpy.states.flow import find_gflow, find_cflow, find_flow, check_if_flow
@@ -17,8 +18,9 @@ __all__ = ["MBQCState", "draw", "merge", "hstack", "vstack"]
 
 class MBQCState:
     r"""The MBQCGraph class that deals with operations and manipulations of graph states
-    Args
-    ----
+
+    Parameters
+    ----------
     graph: mp.GraphState
         The graph state of the MBQC state.
     input_nodes: list
@@ -359,17 +361,34 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
             node_colors[i] = "#FFBD59"
 
     # options = {'node_color': '#FFBD59'}
-    options = {"node_color": [node_colors[node] for node in state.graph.nodes()]}
+    options = {"node_color": [node_colors[node] for node in state.graph.nodes()],
+               "font_family": "Dejavu Sans",
+                "font_weight": "medium",
+                "edgecolors": "k",
+                "node_size": 500,
+                "edge_color":'grey',
+                "with_labels": True,
+                "transparent": False,
+                "figsize": (8, 3),
+              }
+    
     options.update(kwargs)
 
+    transp = options.pop("transparent")
+    fig, ax = plt.subplots(figsize=options.pop("figsize"))
+
+    if transp:
+        fig.patch.set_alpha(0)
+        ax.patch.set_alpha(0)
+
     if isinstance(state, GraphState):
-        nx.draw(state, **options)
+        nx.draw(state, ax=ax, **options)
 
     elif isinstance(state, MBQCState):
         fixed_nodes = state.input_nodes + state.output_nodes
         position_xy = {}
         for indx, p in enumerate(state.input_nodes):
-            position_xy[p] = (0, -2 * indx)
+            position_xy[p] = (0, -1 * indx)
 
         separation = len(state.outputc) // len(state.output_nodes)
         if fix_wires is not None:
@@ -377,7 +396,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
                 if len(wire) + 2 > separation:
                     separation = len(wire) + 2
         for indx, p in enumerate(state.output_nodes):
-            position_xy[p] = (2 * (separation) - 2, -2 * indx)
+            position_xy[p] = (2 * (separation) - 2, -1 * indx)
 
         if fix_wires is not None:
             x = [list(x) for x in fix_wires]
@@ -387,7 +406,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
             for indw, wire in enumerate(fix_wires):
                 for indx, p in enumerate(wire):
                     if p != "*":
-                        position_xy[p] = (2 * (indx + 1), -2 * indw)
+                        position_xy[p] = (2 * (indx + 1), -1 * indw)
 
         # remove all '*' from fixed_nodes
         fixed_nodes = [x for x in fixed_nodes if x != "*"]
@@ -395,9 +414,10 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         node_pos = nx.spring_layout(
             state.graph, pos=position_xy, fixed=fixed_nodes, k=1 / len(state.graph)
         )
-        nx.draw(state.graph, pos=node_pos, **options)
+        nx.draw(state.graph, ax=ax, pos=node_pos, **options)
         if state.flow is not None:
-            nx.draw(_graph_with_flow(state), pos=node_pos, **options)
+            nx.draw(_graph_with_flow(state), pos=node_pos, ax=ax, **options)
+        
 
 
 def _graph_with_flow(state):

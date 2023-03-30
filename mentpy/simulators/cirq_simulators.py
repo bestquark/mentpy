@@ -11,8 +11,8 @@ class CirqSimulator(BaseSimulator):
     ----
     This is a placeholder for the Cirq simulator. It is not yet implemented.
 
-    Args
-    ----
+    Parameters
+    ----------
     mbqcstate: mp.MBQCState
         The MBQC state used for the simulation.
     simulator: str

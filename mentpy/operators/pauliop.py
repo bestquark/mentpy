@@ -10,8 +10,8 @@ GF = galois.GF(2)
 class PauliOp:
     """Class for representing Pauli operators as matrices and strings.
 
-    Args
-    ----
+    Parameters
+    ----------
     op: Union[np.ndarray, str, List[str]]
         The Pauli operator to be represented. Can be a matrix, a string, or a list of strings.
 
@@ -164,8 +164,8 @@ class PauliOp:
     def get_subset(self, indices):
         """Returns a subset of the Pauli operator.
 
-        Args
-        ----
+        Parameters
+        ----------
         indices: List[int]
             The indices of the Pauli operators to be returned.
 

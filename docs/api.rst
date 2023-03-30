@@ -12,6 +12,7 @@ Operators
 
 .. automodule:: mentpy.operators
     :members:
+    :undoc-members:
 
 
 States
@@ -21,6 +22,7 @@ States
 
 .. automodule:: mentpy.states
     :members:
+    :undoc-members:
 
 Simulators
 ------------
@@ -29,6 +31,7 @@ Simulators
 
 .. automodule:: mentpy.simulators
     :members:
+    :undoc-members:
 
 Optimizers
 ----------
@@ -36,6 +39,15 @@ Optimizers
 .. python-apigen-group:: optimizers
 
 .. automodule:: mentpy.optimizers
+    :members:
+    :undoc-members:
+
+Templates
+---------
+
+.. python-apigen-group:: templates
+
+.. automodule:: mentpy.templates
     :members:
     :undoc-members:
 

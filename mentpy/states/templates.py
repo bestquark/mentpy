@@ -9,11 +9,10 @@ from typing import List
 from mentpy.states.graphstate import GraphState
 from mentpy.states.mbqcstate import MBQCState, hstack
 
-__all__ = ["linear_cluster", "many_wires"]
-
 
 def linear_cluster(n) -> MBQCState:
     r"""Returns a linear cluster state of n qubits.
+
     Args
     ----
     n: int
@@ -26,14 +25,16 @@ def linear_cluster(n) -> MBQCState:
     Examples
     --------
     Create a 1D cluster state :math:`|G>` of five qubits
+
     .. ipython:: python
 
         g = mp.templates.linear_cluster(5)
-        print(g)
+        @savefig linear_cluster.png width=1000px
+        mp.draw(g, transparent=True, fix_wires=[(0,1,2,3,4)])
 
     Group
     -----
-    states
+    templates
     """
     g = GraphState()
     g.add_edges_from([(i, i + 1) for i in range(n - 1)])
@@ -43,6 +44,7 @@ def linear_cluster(n) -> MBQCState:
 
 def many_wires(n_wires: List) -> MBQCState:
     r"""Returns a graph state with many wires.
+
     Args
     ----
     n_wires: List
@@ -55,14 +57,16 @@ def many_wires(n_wires: List) -> MBQCState:
     Examples
     --------
     Create a graph state with three wires of 2, 3, and 4 qubits respectively
+
     .. ipython:: python
 
         g = mp.templates.many_wires([2, 3, 4])
-        print(g)
+        @savefig many_wires.png width=1000px
+        mp.draw(g, transparent=True, fix_wires=[(0,1), (2,3,4), (5,6,7,8)])
 
     Group
     -----
-    states
+    templates
     """
     # require n_wires to be a list of integers greater than 1
     if not all([isinstance(n, int) and n > 1 for n in n_wires]):
@@ -85,6 +89,7 @@ def many_wires(n_wires: List) -> MBQCState:
 
 def grid_cluster(n, m) -> MBQCState:
     r"""Returns a grid cluster state of n x m qubits.
+
     Args
     ----
     n: int
@@ -103,23 +108,24 @@ def grid_cluster(n, m) -> MBQCState:
     .. ipython:: python
 
         g = mp.templates.grid_cluster(2, 3)
-        print(g)
+        @savefig grid_cluster.png width=1000px
+        mp.draw(g, transparent=True, fix_wires=[(0,1,2), (3,4,5)])
 
     Group
     -----
-    states
+    templates
     """
     g = GraphState()
     # add edges between rows
-    n_wires = [n] * m
-    for i, n in enumerate(n_wires):
+    n_wires = [m] * n
+    for i, m in enumerate(n_wires):
         g.add_edges_from(
-            [(j + sum(n_wires[:i]), j + sum(n_wires[:i]) + 1) for j in range(n - 1)]
+            [(j + sum(n_wires[:i]), j + sum(n_wires[:i]) + 1) for j in range(m - 1)]
         )
 
     # add edges between columns
-    for i in range(m - 1):
-        g.add_edges_from([(i * n + j, (i + 1) * n + j) for j in range(n)])
+    for i in range(n - 1):
+        g.add_edges_from([(i * m + j, (i + 1) * m + j) for j in range(m)])
 
     gs = MBQCState(
         g,
@@ -130,7 +136,23 @@ def grid_cluster(n, m) -> MBQCState:
 
 
 def muta(n_wires, n_layers):
-    """This is the Multiple Triangle Ansatz (MuTA) template."""
+    """This is the Multiple Triangle Ansatz (MuTA) template.
+    
+    Args
+    ----
+    n_wires: int
+        The number of wires in the graph state.
+    n_layers: int
+        The number of layers in the graph state.
+    
+    Returns
+    -------
+    The graph state with the MuTA template.
+
+    Group
+    -----
+    templates
+    """
 
     SIZE_TRIANGLE = 4
 

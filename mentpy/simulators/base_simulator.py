@@ -59,8 +59,8 @@ class BaseSimulator(abc.ABC):
     def measure(self, angle: float, plane: str = "XY", **kwargs):
         """Measures the state of the system.
 
-        Args
-        ----
+        Parameters
+        ----------
         angle: float
             The angle of measurement.
         plane: str
@@ -74,8 +74,8 @@ class BaseSimulator(abc.ABC):
     ) -> Tuple[List[int], np.ndarray]:
         """Measures the state of the system.
 
-        Args
-        ----
+        Parameters
+        ----------
         angles: List[float]
             The angles of measurement.
         planes: List[str]

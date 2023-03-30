@@ -12,8 +12,8 @@ __all__ = ["PatternSimulator"]
 class PatternSimulator:
     """Simulator for measuring patterns of MBQC states.
 
-    Args
-    ----
+    Parameters
+    ----------
     mbqcstate: mp.MBQCState
         The MBQC state used for the simulation.
     simulator: str
