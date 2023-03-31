@@ -30,7 +30,7 @@ def linear_cluster(n) -> MBQCState:
 
         g = mp.templates.linear_cluster(5)
         @savefig linear_cluster.png width=1000px
-        mp.draw(g, transparent=True, fix_wires=[(0,1,2,3,4)])
+        mp.draw(g)
 
     Group
     -----
@@ -62,7 +62,7 @@ def many_wires(n_wires: List) -> MBQCState:
 
         g = mp.templates.many_wires([2, 3, 4])
         @savefig many_wires.png width=1000px
-        mp.draw(g, transparent=True, fix_wires=[(0,1), (2,3,4), (5,6,7,8)])
+        mp.draw(g)
 
     Group
     -----
@@ -109,7 +109,7 @@ def grid_cluster(n, m) -> MBQCState:
 
         g = mp.templates.grid_cluster(2, 3)
         @savefig grid_cluster.png width=1000px
-        mp.draw(g, transparent=True, fix_wires=[(0,1,2), (3,4,5)])
+        mp.draw(g)
 
     Group
     -----
@@ -137,17 +137,27 @@ def grid_cluster(n, m) -> MBQCState:
 
 def muta(n_wires, n_layers):
     """This is the Multiple Triangle Ansatz (MuTA) template.
-    
+
     Args
     ----
     n_wires: int
         The number of wires in the graph state.
     n_layers: int
         The number of layers in the graph state.
-    
+
     Returns
     -------
     The graph state with the MuTA template.
+
+    Examples
+    --------
+    Create a MuTA ansatz with 3 wires and 2 layers
+
+    .. ipython:: python
+
+        g = mp.templates.muta(3, 2)
+        @savefig muta.png width=1000px
+        mp.draw(g, figsize=(16,5))
 
     Group
     -----
@@ -178,4 +188,4 @@ def muta(n_wires, n_layers):
         else:
             bigger_graph = hstack((bigger_graph, big_graph))
 
-    return big_graph
+    return bigger_graph

@@ -343,6 +343,9 @@ def find_cflow(graph: GraphState, input_nodes, output_nodes) -> object:
     flow = {k: v for k, v in flow.items() if k not in input_nodes_extended}
     ln = {k: v for k, v in l.items() if k not in input_nodes_extended}
 
+    if len(flow) != len(graph.nodes()) - len(output_nodes):
+        return None, None, None
+
     return lambda x: flow[x], lambda u, v: ln[u] > ln[v], max(flow.values())
 
 

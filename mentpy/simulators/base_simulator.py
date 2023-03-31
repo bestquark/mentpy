@@ -28,9 +28,15 @@ class BaseSimulator(abc.ABC):
     simulators
     """
 
-    def __init__(self, mbqcstate: MBQCState, input_state: np.ndarray = None) -> None:
+    def __init__(
+        self,
+        mbqcstate: MBQCState,
+        input_state: np.ndarray = None,
+        trainable_nodes: List = None,
+    ) -> None:
         self._mbqcstate = mbqcstate
         self._input_state = input_state
+        self._trainable_nodes = trainable_nodes
 
     @property
     def mbqcstate(self) -> MBQCState:
@@ -46,6 +52,11 @@ class BaseSimulator(abc.ABC):
     def input_state(self, input_state: np.ndarray):
         """Sets the input state of the simulator."""
         self._input_state = input_state
+
+    @property
+    def trainable_nodes(self) -> List:
+        """The nodes that are trainable."""
+        return self._trainable_nodes
 
     def __call__(
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs

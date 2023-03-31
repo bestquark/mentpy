@@ -361,17 +361,18 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
             node_colors[i] = "#FFBD59"
 
     # options = {'node_color': '#FFBD59'}
-    options = {"node_color": [node_colors[node] for node in state.graph.nodes()],
-               "font_family": "Dejavu Sans",
-                "font_weight": "medium",
-                "edgecolors": "k",
-                "node_size": 500,
-                "edge_color":'grey',
-                "with_labels": True,
-                "transparent": False,
-                "figsize": (8, 3),
-              }
-    
+    options = {
+        "node_color": [node_colors[node] for node in state.graph.nodes()],
+        "font_family": "Dejavu Sans",
+        "font_weight": "medium",
+        "edgecolors": "k",
+        "node_size": 500,
+        "edge_color": "grey",
+        "with_labels": True,
+        "transparent": True,
+        "figsize": (8, 3),
+    }
+
     options.update(kwargs)
 
     transp = options.pop("transparent")
@@ -380,6 +381,19 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
     if transp:
         fig.patch.set_alpha(0)
         ax.patch.set_alpha(0)
+
+    if fix_wires is None and isinstance(state, MBQCState):
+        if state.flow is not None:
+            fix_wires = []
+            for inp in state.input_nodes:
+                is_output = False
+                wire = [inp]
+                while not is_output:
+                    out = state.flow(wire[-1])
+                    wire.append(out)
+                    if out in state.output_nodes:
+                        is_output = True
+                fix_wires.append(tuple(wire))
 
     if isinstance(state, GraphState):
         nx.draw(state, ax=ax, **options)
@@ -417,7 +431,6 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         nx.draw(state.graph, ax=ax, pos=node_pos, **options)
         if state.flow is not None:
             nx.draw(_graph_with_flow(state), pos=node_pos, ax=ax, **options)
-        
 
 
 def _graph_with_flow(state):

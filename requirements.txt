@@ -4,3 +4,4 @@ PennyLane
 cirq
 scipy
 galois
+quimb
