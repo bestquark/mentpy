@@ -10,7 +10,7 @@ from mentpy.states.graphstate import GraphState
 from mentpy.states.mbqcstate import MBQCState, hstack
 
 
-def linear_cluster(n) -> MBQCState:
+def linear_cluster(n, **kwargs) -> MBQCState:
     r"""Returns a linear cluster state of n qubits.
 
     Args
@@ -38,11 +38,11 @@ def linear_cluster(n) -> MBQCState:
     """
     g = GraphState()
     g.add_edges_from([(i, i + 1) for i in range(n - 1)])
-    gs = MBQCState(g, input_nodes=[0], output_nodes=[n - 1])
+    gs = MBQCState(g, input_nodes=[0], output_nodes=[n - 1], **kwargs)
     return gs
 
 
-def many_wires(n_wires: List) -> MBQCState:
+def many_wires(n_wires: List, **kwargs) -> MBQCState:
     r"""Returns a graph state with many wires.
 
     Args
@@ -83,11 +83,12 @@ def many_wires(n_wires: List) -> MBQCState:
         g,
         input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))],
         output_nodes=[sum(n_wires[: i + 1]) - 1 for i in range(len(n_wires))],
+        **kwargs,
     )
     return gs
 
 
-def grid_cluster(n, m) -> MBQCState:
+def grid_cluster(n, m, **kwargs) -> MBQCState:
     r"""Returns a grid cluster state of n x m qubits.
 
     Args
@@ -131,11 +132,12 @@ def grid_cluster(n, m) -> MBQCState:
         g,
         input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))],
         output_nodes=[sum(n_wires[: i + 1]) - 1 for i in range(len(n_wires))],
+        **kwargs,
     )
     return gs
 
 
-def muta(n_wires, n_layers):
+def muta(n_wires, n_layers, **kwargs):
     """This is the Multiple Triangle Ansatz (MuTA) template.
 
     Args

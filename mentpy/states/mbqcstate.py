@@ -53,14 +53,43 @@ class MBQCState:
     def __init__(
         self,
         graph: GraphState,
-        input_nodes: np.ndarray = np.array([]),
-        output_nodes: np.ndarray = np.array([]),
+        input_nodes: List[int] = [],
+        output_nodes: List[int] = [],
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,
         measurement_order: Optional[List[int]] = None,
         gflow: Optional[Callable] = None,
+        trainable_nodes: Optional[List[int]] = None,
+        planes: Optional[dict] = None,
+        relabel_indices: bool = True,
     ) -> None:
         """Initializes a graph state"""
+
+        if relabel_indices:
+            N = graph.number_of_nodes()
+            mapping = dict(zip(sorted(graph.nodes), range(N)))
+            inv_mapping = dict(zip(range(N), sorted(graph.nodes)))
+            graph = nx.relabel_nodes(graph, mapping)
+            input_nodes = [mapping[i] for i in input_nodes]
+            output_nodes = [mapping[i] for i in output_nodes]
+            if flow is not None:
+                flow = lambda x: mapping[flow(inv_mapping[x])]
+            if partial_order is not None:
+                partial_order = lambda x, y: partial_order(
+                    inv_mapping[x], inv_mapping[y]
+                )
+            if gflow is not None:
+                gflow = lambda x: mapping[
+                    gflow(inv_mapping[x])
+                ]  # FIX THIS... gflow output is not a number
+                raise NotImplementedError
+            if measurement_order is not None:
+                measurement_order = [mapping[i] for i in measurement_order]
+            if trainable_nodes is not None:
+                trainable_nodes = [mapping[i] for i in trainable_nodes]
+            if planes is not None:
+                planes = {mapping[k]: v for k, v in planes.items()}
+
         self._graph = graph
 
         # check input and output nodes are in graph. If not, raise error with the node(s) that are not in the graph
@@ -74,6 +103,50 @@ class MBQCState:
             )
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
+
+        if trainable_nodes is None:
+            trainable_nodes = list(set(graph.nodes) - set(output_nodes))
+        else:
+            if not all([v in self.graph.nodes for v in trainable_nodes]):
+                raise ValueError(
+                    f"Trainable nodes {trainable_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
+                )
+
+        self._trainable_nodes = trainable_nodes
+
+        if planes is None:
+            planes = {
+                node: "X"
+                for node in set(graph.nodes) - set(trainable_nodes) - set(output_nodes)
+            }
+            for node in trainable_nodes:
+                planes[node] = "XY"
+            for node in output_nodes:
+                planes[node] = ""
+        else:
+            for node, plane in planes.items():
+                if node not in graph.nodes:
+                    raise ValueError(
+                        f"Node {node} is not in the graph. Graph nodes are {self.graph.nodes}"
+                    )
+                if plane not in ["X", "Y", "XY", "Z", "XZ", "YZ", ""]:
+                    raise ValueError(
+                        f"Plane {plane} is not a valid plane. Valid planes are 'X', 'Y', 'XY', 'Z', 'XZ', 'YZ', ''"
+                    )
+                if node in trainable_nodes and plane not in ["XY", "XZ", "YZ"]:
+                    raise ValueError(
+                        f"Node {node} is trainable but its plane is {plane}. Trainable nodes must have plane 'XY', 'XZ', or 'YZ'"
+                    )
+
+            for node in set(graph.nodes) - set(planes.keys()):
+                if node in trainable_nodes:
+                    planes[node] = "XY"
+                elif node in output_nodes:
+                    planes[node] = ""
+                else:
+                    planes[node] = "X"
+
+        self._planes = planes
 
         if (flow is None) or (partial_order is None):
             flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
@@ -123,14 +196,24 @@ class MBQCState:
         return self._graph
 
     @property
-    def input_nodes(self) -> np.ndarray:
+    def input_nodes(self) -> List[int]:
         r"""Return the input nodes of the MBQC circuit."""
         return self._input_nodes
 
     @property
-    def output_nodes(self) -> np.ndarray:
+    def output_nodes(self) -> List[int]:
         r"""Return the output nodes of the MBQC circuit."""
         return self._output_nodes
+
+    @property
+    def trainable_nodes(self) -> List[int]:
+        r"""Return the trainable nodes of the MBQC circuit."""
+        return self._trainable_nodes
+
+    @property
+    def planes(self) -> dict:
+        r"""Return the planes of the MBQC circuit."""
+        return self._planes
 
     @property
     def flow(self) -> Callable:
@@ -231,19 +314,43 @@ def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
             raise ValueError(f"Cannot merge states at indices {i} and {j}")
 
     graph = nx.disjoint_union(state1.graph, state2.graph)
+    along1, along2 = zip(*along)
+
     input_nodes = state1.input_nodes + [
-        i + len(state1.graph) for i in state2.input_nodes
+        i + len(state1.graph) for i in state2.input_nodes if i not in along2
     ]
-    output_nodes = state1.output_nodes + [
-        i + len(state1.graph) for i in state2.output_nodes
+    output_nodes = []
+    added_ind = []
+    for j in state1.output_nodes:
+        if j in along1:
+            output_ind = along1.index(j)
+            inputnode = along2[output_ind]
+            input_index = state2.input_nodes.index(inputnode)
+            added_ind.append(input_index)
+            output_nodes.append(state2.output_nodes[input_index] + len(state1.graph))
+        else:
+            output_nodes.append(j)
+    output_nodes += [
+        i + len(state1.graph)
+        for indx, i in enumerate(state2.output_nodes)
+        if indx not in added_ind
     ]
+
+    trainable_nodes = state1.trainable_nodes + [
+        i + len(state1.graph) for i in state2.trainable_nodes
+    ]
+    planes = state1.planes
+    planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
 
     for (i, j) in along:
-        input_nodes.remove(j + len(state1.graph))
-        output_nodes.remove(i)
         graph.add_edge(i, j + len(state1.graph))
+        graph = nx.contracted_edge(graph, (i, j + len(state1.graph)), self_loops=False)
+        planes[i] = planes[j + len(state1.graph)]
+        del planes[j + len(state1.graph)]
 
-    return MBQCState(graph, input_nodes, output_nodes)
+    return MBQCState(
+        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
+    )
 
 
 def vstack(states):
@@ -295,8 +402,16 @@ def _vstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
         i + len(state1.graph) for i in state2.output_nodes
     ]
 
+    trainable_nodes = state1.trainable_nodes + [
+        i + len(state1.graph) for i in state2.trainable_nodes
+    ]
+    planes = state1.planes
+    planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
+
     # TODO: Compute flow and partial order
-    return MBQCState(graph, input_nodes, output_nodes)
+    return MBQCState(
+        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
+    )
 
 
 def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
@@ -336,10 +451,25 @@ def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
         )
 
     input_nodes = [nodes1.index(i) for i in state1.input_nodes]
-    output_nodes = [nodes1.index(j) + len(nodes1) for j in state2.output_nodes]
+    output_nodes = [nodes2.index(j) + len(nodes1) for j in state2.output_nodes]
+    trainable_nodes = [nodes1.index(i) for i in state1.trainable_nodes] + [
+        nodes2.index(i) + len(nodes1) for i in state2.trainable_nodes
+    ]
+    planes = {nodes1.index(i): plane for i, plane in state1.planes.items()}
+    planes.update(
+        {nodes2.index(i) + len(nodes1): plane for i, plane in state2.planes.items()}
+    )
+
+    for (i, j) in zip(state1.output_nodes, state2.input_nodes):
+        graph.add_edge(i, j + len(state1.graph))
+        graph = nx.contracted_edge(graph, (i, j + len(state1.graph)), self_loops=False)
+        planes[i] = planes[j + len(state1.graph)]
+        del planes[j + len(state1.graph)]
 
     # TODO: Compute flow and partial order
-    return MBQCState(graph, input_nodes, output_nodes)
+    return MBQCState(
+        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
+    )
 
 
 def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
@@ -353,10 +483,10 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
     """
     node_colors = {}
     for i in state.graph.nodes():
-        if i in state.input_nodes:
-            node_colors[i] = "#CCCCCC"
-        elif i in state.output_nodes:
+        if i in state.output_nodes:
             node_colors[i] = "#ADD8E6"
+        elif i in set(state.nodes()) - set(state.trainable_nodes):
+            node_colors[i] = "#CCCCCC"
         else:
             node_colors[i] = "#FFBD59"
 
@@ -369,6 +499,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         "node_size": 500,
         "edge_color": "grey",
         "with_labels": True,
+        "label": "indices",
         "transparent": True,
         "figsize": (8, 3),
     }
@@ -428,6 +559,21 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         node_pos = nx.spring_layout(
             state.graph, pos=position_xy, fixed=fixed_nodes, k=1 / len(state.graph)
         )
+
+        if options["label"] == "index" or options["label"] == "indices":
+            pass
+        elif options["label"] == "plane" or options["label"] == "planes":
+            labels = {node: state.planes[node] for node in state.graph.nodes()}
+            options["labels"] = labels
+        else:
+            raise ValueError(
+                "label must be either 'index' or 'plane', not {}".format(
+                    options["label"]
+                )
+            )
+
+        del options["label"]
+
         nx.draw(state.graph, ax=ax, pos=node_pos, **options)
         if state.flow is not None:
             nx.draw(_graph_with_flow(state), pos=node_pos, ax=ax, **options)
