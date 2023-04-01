@@ -27,7 +27,7 @@ functions.
 
             new_circ = mp.merge(mbcirc, mbcirc, along=[(4,0)])  # specify nodes to merge
             @savefig merge_mbqc.png width=1000px
-            mp.draw(new_circ, transparent=True, fix_wires=[tuple(range(10))])
+            mp.draw(new_circ)
     
     .. md-tab-item:: hstack
             
@@ -35,7 +35,7 @@ functions.
 
             new_circ = mp.hstack((mbcirc, mbcirc))
             @savefig hstack_mbqc.png width=1000px
-            mp.draw(new_circ, transparent=True, fix_wires=[tuple(range(10))])
+            mp.draw(new_circ)
         
     .. md-tab-item:: vstack
 
@@ -43,7 +43,7 @@ functions.
 
             new_circ = mp.vstack((mbcirc, mbcirc))
             @savefig vstack_mbqc.png width=1000px
-            mp.draw(new_circ, transparent=True, fix_wires=[(0,1,2,3,4), (5,6,7,8,9)])
+            mp.draw(new_circ)
 
 To use pre-defined MBQC circuits, we can use the :obj:`templates` module. 
 
@@ -52,7 +52,6 @@ To use pre-defined MBQC circuits, we can use the :obj:`templates` module.
     grid_cluster = mp.templates.grid_cluster(3, 5)
     linear_cluster = mp.templates.linear_cluster(4)
     grid_and_linear = mp.merge(grid_cluster, linear_cluster, along=[(9,0)])
-    node_wires = [(0,1,2,3,4), (5,6,7,8,9,15,16,17,18), (10,11,12,13,14)]
     @savefig template_merge.png width=1000px
-    mp.draw(grid_and_linear, transparent=True, fix_wires=node_wires)
+    mp.draw(grid_and_linear)
     
