@@ -565,6 +565,20 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         elif options["label"] == "plane" or options["label"] == "planes":
             labels = {node: state.planes[node] for node in state.graph.nodes()}
             options["labels"] = labels
+        elif options["label"] == "plane-arrow" or options["label"] == "planes-arrow":
+            
+            plane2arrow = {'X': r'$\uparrow$', 
+                           'Y': r'$\rightarrow$', 
+                           'XY': r'$\nearrow$',
+                           'Z': r'$\cdot$',
+                           'XZ': 'r$\nearrow$',
+                            'YZ': r'$\nearrow$',
+                            '': '',
+                           }
+
+            labels = {node: plane2arrow[state.planes[node]] for node in state.graph.nodes()}
+            options["labels"] = labels
+
         else:
             raise ValueError(
                 "label must be either 'index' or 'plane', not {}".format(
