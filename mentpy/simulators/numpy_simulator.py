@@ -5,26 +5,32 @@ import math
 from mentpy.states.mbqcstate import MBQCState
 from mentpy.simulators.base_simulator import BaseSimulator
 
+#COMMON GATES
+H = np.array([[1,1],[1,-1]])/np.sqrt(2)
+S = np.array([[1,0],[0,1j]])
+Pi8 = np.array([[1,0],[0,np.exp(1j*np.pi/4)]])
+sx = np.array([[0,1],[1,0]])
+sz = np.array([[1,0],[0,-1]])
+
+#COMMON QUANTUM STATES
+q_zero = np.array([[1],[0]])
+qubit_plus = H@q_zero
 
 class NumpySimulator(BaseSimulator):
     def __init__(self, mbqcstate: MBQCState, input_state: np.ndarray = None) -> None:
         super().__init__(mbqcstate, input_state)
 
-        self.n_qubits = n_qubits
+        # REMOVE DEPENDENCY OF THESE
         self.width = width
-        
-        self.graph = graph
         self.flow = flow
         
-        self.unitary = unitary
-        self.noise = noise
-        self.noise_type = noise_type
-        self.test_fidelity = test_fidelity
-        self.init_state_random = init_state_random
+        self.n_qubits = len(mbqcstate)
+        self.graph = mbqcstate.graph
         self.init_state = init_state # PF
-        self.init_noise = init_noise # PF
-        self.init_noise_type = init_noise_type # PF
-        
+
+        input_state_indxs = [-1]
+        output_state_indxs=[-1]
+                
         self.state = -4*np.ones(self.n_qubits)
         self.total_measurements = self.n_qubits
         self.measurements_left = self.n_qubits
@@ -33,15 +39,11 @@ class NumpySimulator(BaseSimulator):
         for i in range(self.width):
             q_zeros = np.kron(q_zeros,H@q_zero) # PF: H@q_zero already defined as qubit_plus
         
-        if self.init_state_random:
-            st = unitary_group.rvs(2**self.width)@q_zeros
-        elif not self.init_state_random:
-            if self.init_state is None: # PF
-                st = np.eye(2**self.width)@q_zeros # PF: what's the use of eye?
-            else:
-                st = self.init_state
 
-        self.final_qstate_test = self.pure2density(self.unitary@st)
+        if self.init_state is None: # PF
+            st = np.eye(2**self.width)@q_zeros # PF: what's the use of eye?
+        else:
+            st = self.init_state
 
         if input_state_indxs == [-1]:
             self.input_state_indices = list(range(self.width+1))
@@ -102,8 +104,7 @@ class NumpySimulator(BaseSimulator):
         self.current_simulated_nodes = np.delete(self.current_simulated_nodes, np.where(self.current_simulated_nodes==current_measurement))        
         
         err_temp = False
-        # if (qubit_to_measure not in self.output_state_indices):
-        # if (np.min(self.current_simulated_nodes) not in self.output_state_indices):
+
         if self.measurements_left!=0:
             new_qubit_indx = self.flow(np.min(self.current_simulated_nodes))
             if new_qubit_indx in self.current_simulated_nodes:
@@ -111,7 +112,6 @@ class NumpySimulator(BaseSimulator):
             elif new_qubit_indx in list(self.graph.nodes()):
                 self.current_simulated_nodes = np.append(self.current_simulated_nodes, [new_qubit_indx])
 
-        # if self.measurements_left!=0:
             if err_temp:
                 print("ERROR, CHECK FLOW?")
             self.qstate = np.kron(self.qstate, self.pure2density(qubit_plus))
@@ -122,7 +122,6 @@ class NumpySimulator(BaseSimulator):
                     cgate=self.controlled_z(q1,q2, self.width+1)
                     self.qstate = cgate@self.qstate@np.conj(cgate.T)      
         
-        reward = 0 #fidelity
         
         if self.measurements_left == 0:  
             sorted_nodes = self.current_simulated_nodes.copy()
@@ -136,18 +135,13 @@ class NumpySimulator(BaseSimulator):
                     sim_nodes[n_iteret], sim_nodes[ll+n_iteret] =sim_nodes[ll+n_iteret], sim_nodes[n_iteret]  
                     swapgate = self.swap_ij(ll+n_iteret-1,n_iteret,len(sim_nodes))
                     self.qstate =swapgate@self.qstate@np.conj(swapgate.T)
-            
-            if not self.test_fidelity:
-                reward = self.fidelity(self.final_qstate_train, self.qstate)
-            elif self.test_fidelity:
-                reward = self.fidelity(self.final_qstate_test, self.qstate)
             done = True
         else:
             done = False
         
         info = {}
 
-        return self.state, reward, done, info
+        return self.state, done, info
     
 
     def reset(self):
@@ -162,17 +156,13 @@ class NumpySimulator(BaseSimulator):
         for i in range(self.width):
             q_zeros = np.kron(q_zeros, H@q_zero)
         
-        if self.init_state_random:
-            st = unitary_group.rvs(2**self.width)@q_zeros
-        elif not self.init_state_random:
-            if self.init_state is None: # PF
-                st = np.eye(2**self.width)@q_zeros # PF: what's the use of eye?
-            else:
-                st = self.init_state
+
+        if self.init_state is None: # PF
+            st = np.eye(2**self.width)@q_zeros # PF: what's the use of eye?
+        else:
+            st = self.init_state
                 
-            
-        self.final_qstate_test = self.pure2density(self.unitary@st)
-        
+                    
 
         subgr = self.graph.subgraph(self.input_state_indices).copy()
         mapping = {nod:idx for idx,nod in enumerate(self.input_state_indices)}
