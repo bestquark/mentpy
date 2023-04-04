@@ -41,7 +41,7 @@ class PatternSimulator:
         supported_simulators = {
             "pennylane": PennylaneSimulator,
             "cirq": CirqSimulator,
-            # "numpy": NumpySimulator,
+            "numpy": NumpySimulator,
         }
 
         if simulator not in supported_simulators:

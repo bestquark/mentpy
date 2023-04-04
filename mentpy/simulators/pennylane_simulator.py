@@ -57,7 +57,34 @@ class PennylaneSimulator(BaseSimulator):
         if planes != "XY":
             raise NotImplementedError
 
-        return self.circuit(angles, st=self.input_state, **kwargs)
+        if isinstance(planes, str):
+            planes = [planes] * len(angles)
+
+        # extend angles to all nodes
+
+        extended_angles = []
+
+        if len(self.mbqcstate.trainable_nodes) != len(self.mbqcstate.outputc):
+            for i in self.mbqcstate.outputc:
+                if i in self.mbqcstate.trainable_nodes:
+                    angle = angles[self.mbqcstate.trainable_nodes.index(i)]
+                    plane = planes[self.mbqcstate.trainable_nodes.index(i)]
+                else:
+                    plane = self.mbqcstate.planes[i]
+                    if plane == "X":
+                        angle = 0
+                    elif plane == "Y":
+                        angle = np.pi / 2
+                    else:
+                        raise ValueError(
+                            f"Plane {plane} is not supported for numpy simulator."
+                        )
+
+                extended_angles.append(angle)
+        else:
+            extended_angles = angles
+
+        return self.circuit(extended_angles, st=self.input_state, **kwargs)
 
     def reset(self, input_state=None):
         if input_state is None:

@@ -22,17 +22,29 @@ qubit_plus = H @ q_zero
 class NumpySimulator(BaseSimulator):
     """Simulator that uses numpy to simulate the quantum circuit."""
 
-    def __init__(self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs) -> None:
+    def __init__(
+        self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
+    ) -> None:
         super().__init__(mbqcstate, input_state)
 
         self.window_size = kwargs.pop("window_size", 1)
         self.schedule = kwargs.pop("schedule", None)
+        self.force0 = kwargs.pop("force0", False)
+
+        if not self.force0:
+            raise NotImplementedError("Numpy simulator does not support force0=False.")
 
         # TODO: FIND SCHEDULE IF NOT PROVIDED
-        if mbqcstate.flow is None:
-            raise ValueError("Schedule must be provided for numpy simulator as the MBQCState does not have a flow.")
-        
-        self.input_state = input_state 
+        if mbqcstate.measurement_order is None:
+            raise ValueError(
+                "Schedule must be provided for numpy simulator as the MBQCState does not have a flow."
+            )
+        else:
+            self.schedule_measure = list(
+                set(mbqcstate.measurement_order) - set(mbqcstate.output_nodes)
+            )
+
+        self.input_state = input_state
 
         n_qubits_input = int(math.log2(len(self.input_state)))
 
@@ -41,10 +53,10 @@ class NumpySimulator(BaseSimulator):
                 f"Input state has {n_qubits_input} qubits, but window size is set to {self.window_size}."
                 " Input state must have at most as many qubits as the window size minus one."
             )
-        
-        if self.window_size > len(self.schedule):
+
+        if self.window_size > len(self.schedule_measure):
             raise ValueError(
-                f"Window size is set to {self.window_size}, but schedule only has {len(self.schedule)} measurements."
+                f"Window size is set to {self.window_size}, but schedule only has {len(self.schedule_measure)} measurements."
             )
 
         self.current_measurement = 0
@@ -54,8 +66,8 @@ class NumpySimulator(BaseSimulator):
 
         self.qstate = self.pure2density(self.input_state)
 
-        # get subgraph of the first window_size nodes 
-        self.subgraph = self.mbqcstate.graph.subgraph(self.schedule[:self.window_size])
+        # get subgraph of the first window_size nodes
+        self.subgraph = self.mbqcstate.graph.subgraph(self.schedule[: self.window_size])
 
         # apply cz gates to neighboring qubits
         for node in self.subgraph.nodes:
@@ -65,51 +77,51 @@ class NumpySimulator(BaseSimulator):
                     indx = self.schedule.index(node)
                     indy = self.schedule.index(neighbour)
                     cz = self.controlled_z(indx, indy, self.window_size)
-                    self.input_state = cz @ self.input_state @ np.conj(cz).T
+                    self.qstate = cz @ self.qstate @ np.conj(cz).T
 
-        self.proyectors_x = (self.get_proyectors(0, 0))
-        self.proyectors_y = (self.get_proyectors(np.pi/2, 0))
+        self.proyectors_x = self.get_proyectors(0, 0)
+        self.proyectors_y = self.get_proyectors(np.pi / 2, 0)
 
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""
-        return self.schedule[self.current_measurement:self.current_measurement + self.window_size]
+        return self.schedule[
+            self.current_measurement : self.current_measurement + self.window_size
+        ]
 
-    def measure(self, angle: float, plane: str = "XY", force0: bool = False) -> Tuple:
-        if plane != "XY" or plane != "X" or plane != "Y":
+    def measure(self, angle: float, plane: str = "XY") -> Tuple:
+        if plane != "XY" and plane != "X" and plane != "Y":
             raise NotImplementedError("Only XY plane is supported for numpy simulator.")
 
-        if not force0:
-            raise NotImplementedError("Only force0 = True is supported for numpy simulator.")
-
-        if self.current_measurement + self.window_size > len(self.schedule):
+        if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 
-        self.qstate, outcome = self.measure_angle(angle, 0, force0 = force0)
+        self.qstate, outcome = self.measure_angle(angle, 0, force0=self.force0)
+        self.current_measurement += 1
         self.qstate = self.partial_trace(self.qstate, [0])
 
-        self.current_measurement += 1
+        if self.current_measurement + self.window_size <= len(
+            self.mbqcstate.graph.nodes
+        ):
+            self.qstate = np.kron(self.qstate, self.pure2density(qubit_plus))
+            new_qubit = self.current_simulated_nodes()[-1]
 
-        self.qstate = np.kron(self.qstate, qubit_plus)
-        
-        new_qubit = self.current_simulated_nodes()[-1]
+            # get neighbours of new qubit
+            neighbours = nx.neighbors(self.mbqcstate.graph, new_qubit)
 
-        # get neighbours of new qubit
-        neighbours = nx.neighbors(self.mbqcstate.graph, new_qubit)
-
-        # do cz between new qubit and neighbours
-        indx_new = self.current_simulated_nodes().index(new_qubit)
-        for neighbour in neighbours:
-            if neighbour in self.current_simulated_nodes():
-                indxn = self.current_simulated_nodes().index(neighbour)
-                cz = self.controlled_z(indxn, indx_new, self.window_size)
-                self.qstate = cz @ self.qstate @ np.conj(cz.T)
+            # do cz between new qubit and neighbours
+            indx_new = self.current_simulated_nodes().index(new_qubit)
+            for neighbour in neighbours:
+                if neighbour in self.current_simulated_nodes():
+                    indxn = self.current_simulated_nodes().index(neighbour)
+                    cz = self.controlled_z(indxn, indx_new, self.window_size)
+                    self.qstate = cz @ self.qstate @ np.conj(cz.T)
 
         return self.qstate, outcome
 
     def measure_pattern(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", force0: bool = False
+        self, angles: List[float], planes: Union[List[str], str] = "XY"
     ) -> Tuple[List[int], np.ndarray]:
-
+        """Measures the quantum state in the given pattern."""
         if isinstance(planes, str):
             planes = [planes] * len(angles)
 
@@ -117,8 +129,8 @@ class NumpySimulator(BaseSimulator):
             raise ValueError(
                 f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcstate.trainable_nodes)})."
             )
-        
-        for i in self.schedule:
+
+        for i in self.schedule_measure:
             if i in self.mbqcstate.trainable_nodes:
                 angle = angles[self.mbqcstate.trainable_nodes.index(i)]
                 plane = planes[self.mbqcstate.trainable_nodes.index(i)]
@@ -129,24 +141,25 @@ class NumpySimulator(BaseSimulator):
                 elif plane == "Y":
                     angle = np.pi / 2
                 else:
-                    raise ValueError(f"Plane {plane} is not supported for numpy simulator.")
+                    raise ValueError(
+                        f"Plane {plane} is not supported for numpy simulator."
+                    )
 
-            self.qstate, outcome = self.measure(angle, plane, force0=force0)
-            self.current_measurement += 1
-        
+            self.qstate, outcome = self.measure(angle, plane)
+
         return self.qstate
-
 
     def reset(self, input_state: np.ndarray = None):
         """Resets the simulator to the initial state."""
         self.current_measurement = 0
 
-        n_qubits_input = int(math.log2(len(self.input_state)))
-
         if input_state is not None:
+            n_qubits_input = int(math.log2(len(input_state)))
             self.input_state = input_state
             for i in range(self.window_size - n_qubits_input):
                 self.input_state = np.kron(self.input_state, qubit_plus)
+
+        self.qstate = self.pure2density(self.input_state)
 
     def arbitrary_qubit_gate(self, u, i, n):
         """
@@ -221,22 +234,24 @@ class NumpySimulator(BaseSimulator):
             sigma = sigma + np.conjugate(ptrace.T) @ rho @ (ptrace)
         return sigma
 
-
-    def measure_angle(self, angle, i, force0= False):  # PF: made rho optional argument
+    def measure_angle(self, angle, i, force0=False):  # PF: made rho optional argument
         """
         Measures qubit i of state rho with an angle
         """
         rho = self.qstate
         n = self.window_size
-        if angle == 0:
+        n_qubits = min(n, len(self.mbqcstate) - self.current_measurement)
+        cond1 = n == n_qubits
+        if angle == 0 and cond1:
             pi0, pi1 = self.proyectors_x
-        elif np.isclose(angle, np.pi / 2, atol=1e-3):
+        elif np.isclose(angle, np.pi / 2, atol=1e-3) and cond1:
             pi0, pi1 = self.proyectors_y
         else:
-            pi0, pi1 = self.get_proyectors(angle, i, force0=force0)
+            pi0, pi1 = self.get_proyectors(angle, i, n_qubits=n_qubits, force0=force0)
 
-        if not force0:  
-            prob0, prob1 = np.around(np.real(np.trace(rho @ pi0)), 10), np.around(
+        prob0 = np.around(np.real(np.trace(rho @ pi0)), 10)
+        if not force0:
+            prob1 = np.around(
                 np.real(np.trace(rho @ pi1)), 10
             )  # PF: round to deal with deterministic outcomes (0 and 1 can be numerically outside of [0,1])
             measurement = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
@@ -249,12 +264,12 @@ class NumpySimulator(BaseSimulator):
             rho = pi1 @ rho @ pi1 / prob1
 
         return rho, measurement
-    
-    def get_proyectors(self, angle, i, force0 = False):
+
+    def get_proyectors(self, angle, i, n_qubits=None, force0=False):
         """
         Returns the proyectors for the measurement of qubit i with angle
         """
-        n = self.window_size
+        n = n_qubits or self.window_size
         pi0 = 1
         pi1 = 1
         pi0op = np.array([[1, np.exp(-angle * 1j)], [np.exp(angle * 1j), 1]]) / 2
@@ -272,7 +287,7 @@ class NumpySimulator(BaseSimulator):
                     pi1 = np.kron(pi1, pi1op)
                 else:
                     pi1 = np.kron(pi1, np.eye(2))
-                    
+
         return pi0, pi1
 
     def controlled_z(self, i, j, n):
@@ -333,7 +348,6 @@ class NumpySimulator(BaseSimulator):
                 op4 = np.kron(op4, np.eye(2))
 
         return op1 + op2 + op3 + op4
-
 
     def pure2density(self, psi):
         """
