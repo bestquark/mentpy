@@ -566,17 +566,20 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
             labels = {node: state.planes[node] for node in state.graph.nodes()}
             options["labels"] = labels
         elif options["label"] == "plane-arrow" or options["label"] == "planes-arrow":
-            
-            plane2arrow = {'X': r'$\uparrow$', 
-                           'Y': r'$\rightarrow$', 
-                           'XY': r'$\nearrow$',
-                           'Z': r'$\cdot$',
-                           'XZ': 'r$\nearrow$',
-                            'YZ': r'$\nearrow$',
-                            '': '',
-                           }
 
-            labels = {node: plane2arrow[state.planes[node]] for node in state.graph.nodes()}
+            plane2arrow = {
+                "X": r"$\uparrow$",
+                "Y": r"$\rightarrow$",
+                "XY": r"$\nearrow$",
+                "Z": r"$\cdot$",
+                "XZ": "r$\nearrow$",
+                "YZ": r"$\nearrow$",
+                "": "",
+            }
+
+            labels = {
+                node: plane2arrow[state.planes[node]] for node in state.graph.nodes()
+            }
             options["labels"] = labels
 
         else:

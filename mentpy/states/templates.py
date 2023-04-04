@@ -7,7 +7,7 @@ It has several common ansatzes that can be used for MBQC algorithms
 
 from typing import List
 from mentpy.states.graphstate import GraphState
-from mentpy.states.mbqcstate import MBQCState, hstack
+from mentpy.states.mbqcstate import MBQCState, hstack, merge
 
 
 def linear_cluster(n, **kwargs) -> MBQCState:
@@ -191,3 +191,57 @@ def muta(n_wires, n_layers, **kwargs):
             bigger_graph = hstack((bigger_graph, big_graph))
 
     return bigger_graph
+
+
+def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
+    """This is the Symmetry Protected Topological Perturbator Ansatz (SPTurb) template.
+
+    Args
+    ----
+    n_qubits: int
+        The number of qubits in the SPT state.
+    n_layers: int
+        The number of layers in the graph state.
+    periodic: bool
+        Whether to use periodic boundary conditions.
+
+    Returns
+    -------
+    The graph state with the SPTurb template.
+
+    Group
+    -----
+    templates
+    """
+    if n_qubits < 4:
+        raise ValueError("n_qubits must be greater than 4")
+
+    gr = many_wires([5, 2, 5]).graph
+    gr.add_edge(2, 6)
+    gr.add_edge(9, 6)
+    sym_block1 = MBQCState(
+        gr, input_nodes=[0, 7], output_nodes=[4, 11], trainable_nodes=[5]
+    )
+    sym_block2 = MBQCState(
+        gr,
+        input_nodes=[0, 7],
+        output_nodes=[4, 11],
+        trainable_nodes=[5],
+        planes={1: "Y", 3: "Y", 8: "Y", 10: "Y"},
+    )
+    spt_ansatz = many_wires(
+        [3] * n_qubits, trainable_nodes=[3 * i + 1 for i in range(n_qubits)]
+    )
+
+    n_blocks = n_qubits if periodic else n_qubits - 2
+
+    for layer in range(2 * n_layers):
+        for i in range(n_blocks):
+            n1 = spt_ansatz.output_nodes[i]
+            n2 = spt_ansatz.output_nodes[(i + 2) % n_qubits]
+            if layer % 2 == 0:
+                spt_ansatz = merge(spt_ansatz, sym_block1, [(n1, 0), (n2, 7)])
+            else:
+                spt_ansatz = merge(spt_ansatz, sym_block2, [(n1, 0), (n2, 7)])
+
+    return spt_ansatz
