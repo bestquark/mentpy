@@ -190,6 +190,8 @@ def muta(n_wires, n_layers, **kwargs):
         else:
             bigger_graph = hstack((bigger_graph, big_graph))
 
+    # TODO: I think this is ending in a Hadamard rotated state (odd)
+    # It might need a padding of 1 extra qubit in each wire.
     return bigger_graph
 
 

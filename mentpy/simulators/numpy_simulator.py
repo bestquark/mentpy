@@ -17,7 +17,7 @@ sx = np.array([[0, 1], [1, 0]])
 sz = np.array([[1, 0], [0, -1]])
 
 # COMMON QUANTUM STATES
-q_zero = np.array([[1], [0]])
+q_zero = np.array([1, 0])
 qubit_plus = H @ q_zero
 
 
@@ -39,7 +39,11 @@ class NumpySimulator(BaseSimulator):
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if mbqcstate.measurement_order is not None:
             # remove output nodes from the measurement order
-            self.schedule_measure = [i for i in mbqcstate.measurement_order if i not in mbqcstate.output_nodes]
+            self.schedule_measure = [
+                i
+                for i in mbqcstate.measurement_order
+                if i not in mbqcstate.output_nodes
+            ]
             self.schedule = mbqcstate.measurement_order
         elif self.schedule is not None:
             self.schedule_measure = self.schedule
@@ -50,7 +54,7 @@ class NumpySimulator(BaseSimulator):
 
         self.input_state = input_state
 
-        n_qubits_input = int(math.log2(len(self.input_state)))
+        n_qubits_input = len(mbqcstate.input_nodes)
 
         if n_qubits_input > self.window_size:
             raise ValueError(
@@ -72,14 +76,13 @@ class NumpySimulator(BaseSimulator):
         # get subgraph of the first window_size nodes
         self.subgraph = self.mbqcstate.graph.subgraph(self.schedule[: self.window_size])
 
-        self.initial_czs = np.eye(2 ** self.window_size)
+        self.initial_czs = np.eye(2**self.window_size)
 
         # apply cz gates to neighboring qubits
         for node in self.subgraph.nodes:
             for neighbour in self.subgraph.neighbors(node):
                 # avoid repeated application of cz gates
                 if node < neighbour:
-                    print(f"Applying CZ gate between {node} and {neighbour}")
                     indx = self.current_simulated_nodes().index(node)
                     indy = self.current_simulated_nodes().index(neighbour)
                     cz = self.controlled_z(indx, indy, self.window_size)
@@ -108,8 +111,6 @@ class NumpySimulator(BaseSimulator):
 
         self.current_measurement += 1
         self.qstate = self.partial_trace(self.qstate, [0])
-        
-        # print(qml.math.linalg.norm(self.qstate), "MEASUREEE 2")
 
         if self.current_measurement + self.window_size <= len(
             self.mbqcstate.graph.nodes
@@ -124,7 +125,6 @@ class NumpySimulator(BaseSimulator):
             indx_new = self.current_simulated_nodes().index(new_qubit)
             for neighbour in neighbours:
                 if neighbour in self.current_simulated_nodes():
-                    # print("Adding CZ between ", new_qubit, " and ", neighbour, ".")
                     indxn = self.current_simulated_nodes().index(neighbour)
                     cz = self.controlled_z(indxn, indx_new, self.window_size)
                     self.qstate = cz @ self.qstate @ np.conj(cz.T)
@@ -172,7 +172,6 @@ class NumpySimulator(BaseSimulator):
                 self.input_state = np.kron(self.input_state, qubit_plus)
 
         self.qstate = self.pure2density(self.input_state)
-        print(qml.math.linalg.norm(self.qstate), "RESEEET")
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
 
@@ -253,8 +252,6 @@ class NumpySimulator(BaseSimulator):
         """
         Measures qubit i of state rho with an angle
         """
-        # print("measure_angle", angle, force0)
-        # print("current measurement", self.schedule_measure[self.current_measurement])
         rho = self.qstate
         n = self.window_size
         n_qubits = min(n, len(self.mbqcstate) - self.current_measurement)
@@ -264,20 +261,10 @@ class NumpySimulator(BaseSimulator):
         elif np.isclose(angle, np.pi / 2, atol=1e-3) and cond1:
             pi0, pi1 = self.proyectors_y
         else:
-            # pi0, pi1 = self.get_proyectors(angle, i, n_qubits=n_qubits, force0=force0)
-            pi0, pi1 = self.get_proyectors(angle, i, n_qubits=n_qubits, force0=False)
+            pi0, pi1 = self.get_proyectors(angle, i, n_qubits=n_qubits, force0=force0)
 
-        print(((rho @ rho - rho)**2).sum() < 1e-10, "check rho2 - rho = 0")
+        prob0 = np.real(np.trace(rho @ pi0))
 
-        print(np.trace(rho), "traces")
-
-        prob0 = np.real(np.trace(rho @ pi0)) 
-        prob1 = np.real(np.trace(rho @ pi1))
-        # check pi0 + pi1 = I
-        print(((pi0+pi1 - np.eye(pi0.shape[0]))**2).sum() < 1e-10, "check pi0 + pi1 = I")
-        print("prob0", prob0)
-        print("prob1", prob1)
-        print("prob0 + prob1", prob0 + prob1)
         if not force0:
             prob1 = np.around(
                 np.real(np.trace(rho @ pi1)), 10
@@ -287,9 +274,7 @@ class NumpySimulator(BaseSimulator):
             measurement = 0
 
         if measurement == 0:
-            print(qml.math.linalg.norm(rho), "premeasure")
             rho = pi0 @ rho @ np.conj(pi0.T) / prob0
-            print(qml.math.linalg.norm(rho), "postmeasure")
         elif measurement == 1:
             rho = pi1 @ rho @ np.conj(pi1.T) / prob1
 
@@ -385,7 +370,4 @@ class NumpySimulator(BaseSimulator):
         Input: quantum state
         Output: corresponding density matrix
         """
-        # print the norm of psi. ie <psi|psi>
-        print(np.sum(np.abs(psi)**2), "norm of psi")
-
-        return np.outer(psi, np.conj(psi.T))
+        return np.outer(psi, np.conj(psi).T)

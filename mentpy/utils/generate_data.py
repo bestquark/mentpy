@@ -35,10 +35,10 @@ def random_train_test_states_unitary(
     n_qubits = int(np.log2(unitary.shape[0]))
     random_inputs = generate_haar_random_states(n_qubits, n_samples=n_samples)
     random_targets = [(unitary @ st.T).T for st in random_inputs]
-    return _train_test_split(random_inputs, random_targets, test_size=test_size)
+    return train_test_split(random_inputs, random_targets, test_size=test_size)
 
 
-def _train_test_split(inputs, targets, test_size: float = 0.3) -> tuple:
+def train_test_split(inputs, targets, test_size: float = 0.3) -> tuple:
     r"Split the data into training and test sets."
     n_samples = len(inputs)
     n_test_samples = int(n_samples * test_size)
