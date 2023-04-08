@@ -1,0 +1,2521 @@
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      <link rel="icon" href="../_static/favicon-32x32.png">
+    
+    
+      
+        <title>mentpy.GraphState - MentPy</title>
+      
+    
+    
+      
+        
+        
+      
+      
+
+    
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.74678bd4555640f0b.min.css" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="">
+  
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&"object"==typeof palette.color)for(var key of Object.keys(palette.color))document.body.setAttribute("data-md-color-"+key,palette.color[key])</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#examples" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../index.html" title="MentPy" class="md-header__button md-logo" aria-label="MentPy" data-md-component="logo">
+      <img src="../_static/logo-state.png" alt="logo">
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MentPy
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              mentpy.GraphState
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      <form class="md-header__option" data-md-component="palette">
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent=""  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+          
+            <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+            </label>
+          
+        
+          
+          
+          <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent=""  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_2">
+          
+            <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+            </label>
+          
+        
+      </form>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7 0-.24-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91 1.61 0 2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08Z"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/BestQuark/mentpy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MentPy
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../index.html" title="MentPy" class="md-nav__button md-logo" aria-label="MentPy" data-md-component="logo">
+      <img src="../_static/logo-state.png" alt="logo">
+    </a>
+    MentPy
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/BestQuark/mentpy" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    MentPy
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_1">
+          <span class="md-ellipsis">Getting Started</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Getting Started" data-md-level="1">
+        <label class="md-nav__title" for="__nav_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Getting Started</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started.html" class="md-nav__link">
+        <span class="md-ellipsis">Installation</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          <span class="md-ellipsis">Tutorials</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Tutorials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/intro-to-graphstates.html" class="md-nav__link">
+        <span class="md-ellipsis">An introduction to Graph States</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/intro-to-mbqc.html" class="md-nav__link">
+        <span class="md-ellipsis">An introduction to MBQC</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/intro-to-mbqml.html" class="md-nav__link">
+        <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">API Reference</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="API Reference" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">API Reference</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../api.html"><span class="md-ellipsis">Ment<wbr>Py</span></a>
+          
+            <label for="__nav_3_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="MentPy" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Ment<wbr>Py</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html#operators" class="md-nav__link">
+        <span class="md-ellipsis">Operators</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_2" type="checkbox" id="__nav_3_1_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../api.html#states"><span class="md-ellipsis">States</span></a>
+          
+            <label for="__nav_3_1_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="States" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">States</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+    
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__current-nested md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1_2_1" type="checkbox" id="__nav_3_1_2_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index md-nav__link--active">
+          <a href="#"><span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span></a>
+          
+            <label for="__nav_3_1_2_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="GraphState" data-md-level="4">
+        <label class="md-nav__title" for="__nav_3_1_2_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_1" type="checkbox" id="__nav_3_1_2_1_1" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#classes"><span class="md-ellipsis">Classes</span></a>
+          
+            <label for="__nav_3_1_2_1_1">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Classes" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_1">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Classes</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.adjlist_inner_dict_factory.html" class="md-nav__link">
+        <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict" class="md-ellipsis">adjlist_<wbr>inner_<wbr>dict_<wbr>factory</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_2" type="checkbox" id="__nav_3_1_2_1_2" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#constructors"><span class="md-ellipsis">Constructors</span></a>
+          
+            <label for="__nav_3_1_2_1_2">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Constructors" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_2">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Constructors</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__init__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_3" type="checkbox" id="__nav_3_1_2_1_3" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#string-representation"><span class="md-ellipsis">String representation</span></a>
+          
+            <label for="__nav_3_1_2_1_3">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="String representation" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">String representation</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__repr__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__repr__ (Python method) — Return repr(self)." class="md-ellipsis">__<wbr>repr__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__str__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__str__ (Python method) — Returns a short summary of the graph." class="md-ellipsis">__<wbr>str__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_4" type="checkbox" id="__nav_3_1_2_1_4" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#special-methods"><span class="md-ellipsis">Special methods</span></a>
+          
+            <label for="__nav_3_1_2_1_4">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Special methods" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_4">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Special methods</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__contains__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__contains__ (Python method) — Returns True if n is a node, False otherwise. Use: &#39;n in G&#39;." class="md-ellipsis">__<wbr>contains__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__eq__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__eq__ (Python method) — Return self==value." class="md-ellipsis">__<wbr>eq__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__getitem__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__getitem__ (Python method) — Returns a dict of neighbors of node n.  Use: &#39;G[n]&#39;." class="md-ellipsis">__<wbr>getitem__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__iter__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__iter__ (Python method) — Iterate over the nodes. Use: &#39;for n in G&#39;." class="md-ellipsis">__<wbr>iter__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.__len__.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__len__ (Python method) — Returns the number of nodes in the graph. Use: &#39;len(G)&#39;." class="md-ellipsis">__<wbr>len__<wbr></span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_5" type="checkbox" id="__nav_3_1_2_1_5" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#methods"><span class="md-ellipsis">Methods</span></a>
+          
+            <label for="__nav_3_1_2_1_5">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Methods" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_5">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Methods</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.add_edge.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_edge (Python method) — Add an edge between u and v." class="md-ellipsis">add_<wbr>edge</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.add_edges_from.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_edges_from (Python method) — Add all the edges in ebunch_to_add." class="md-ellipsis">add_<wbr>edges_<wbr>from</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.add_node.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_node (Python method) — Add a single node node_for_adding and update node attributes." class="md-ellipsis">add_<wbr>node</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.add_nodes_from.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_nodes_from (Python method) — Add multiple nodes." class="md-ellipsis">add_<wbr>nodes_<wbr>from</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.add_weighted_edges_from.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_weighted_edges_from (Python method) — Add weighted edges in ebunch_to_add with specified weight attr" class="md-ellipsis">add_<wbr>weighted_<wbr>edges_<wbr>from</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.adjacency.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.adjacency (Python method) — Returns an iterator over (node, adjacency dict) tuples for all nodes." class="md-ellipsis">adjacency</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.clear.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.clear (Python method) — Remove all nodes and edges from the graph." class="md-ellipsis">clear</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.clear_edges.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.clear_edges (Python method) — Remove all edges from the graph without altering nodes." class="md-ellipsis">clear_<wbr>edges</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.copy.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.copy (Python method) — Returns a copy of the graph." class="md-ellipsis">copy</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.edge_subgraph.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.edge_subgraph (Python method) — Returns the subgraph induced by the specified edges." class="md-ellipsis">edge_<wbr>subgraph</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.get_edge_data.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.get_edge_data (Python method) — Returns the attribute dictionary associated with edge (u, v)." class="md-ellipsis">get_<wbr>edge_<wbr>data</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.has_edge.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.has_edge (Python method) — Returns True if the edge (u, v) is in the graph." class="md-ellipsis">has_<wbr>edge</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.has_node.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.has_node (Python method) — Returns True if the graph contains the node n." class="md-ellipsis">has_<wbr>node</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.index_mapping.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.index_mapping (Python method) — Return a mapping of the nodes to their indices." class="md-ellipsis">index_<wbr>mapping</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.is_directed.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.is_directed (Python method) — Returns True if graph is directed, False otherwise." class="md-ellipsis">is_<wbr>directed</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.is_multigraph.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.is_multigraph (Python method) — Returns True if graph is a multigraph, False otherwise." class="md-ellipsis">is_<wbr>multigraph</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.nbunch_iter.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.nbunch_iter (Python method) — Returns an iterator over nodes contained in nbunch that are also in the graph." class="md-ellipsis">nbunch_<wbr>iter</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.neighbors.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.neighbors (Python method) — Returns an iterator over all neighbors of node n." class="md-ellipsis">neighbors</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.number_of_edges.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.number_of_edges (Python method) — Returns the number of edges between two nodes." class="md-ellipsis">number_<wbr>of_<wbr>edges</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.number_of_nodes.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.number_of_nodes (Python method) — Returns the number of nodes in the graph." class="md-ellipsis">number_<wbr>of_<wbr>nodes</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.order.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.order (Python method) — Returns the number of nodes in the graph." class="md-ellipsis">order</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.remove_edge.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_edge (Python method) — Remove the edge between u and v." class="md-ellipsis">remove_<wbr>edge</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.remove_edges_from.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_edges_from (Python method) — Remove all edges specified in ebunch." class="md-ellipsis">remove_<wbr>edges_<wbr>from</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.remove_node.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_node (Python method) — Remove node n." class="md-ellipsis">remove_<wbr>node</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.remove_nodes_from.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_nodes_from (Python method) — Remove multiple nodes." class="md-ellipsis">remove_<wbr>nodes_<wbr>from</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.size.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.size (Python method) — Returns the number of edges or total of all edge weights." class="md-ellipsis">size</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.stabilizers.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.stabilizers (Python method) — Generate the stabilizers of a graph state." class="md-ellipsis">stabilizers</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.subgraph.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.subgraph (Python method) — Returns a SubGraph view of the subgraph induced on nodes." class="md-ellipsis">subgraph</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.to_directed.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_directed (Python method) — Returns a directed representation of the graph." class="md-ellipsis">to_<wbr>directed</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.to_directed_class.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_directed_class (Python method) — Returns the class to use for empty directed copies." class="md-ellipsis">to_<wbr>directed_<wbr>class</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.to_undirected.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_undirected (Python method) — Returns an undirected copy of the graph." class="md-ellipsis">to_<wbr>undirected</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.to_undirected_class.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_undirected_class (Python method) — Returns the class to use for empty undirected copies." class="md-ellipsis">to_<wbr>undirected_<wbr>class</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.update.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.update (Python method) — Update the graph using nodes/edges/graphs as input." class="md-ellipsis">update</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_1_2_1_6" type="checkbox" id="__nav_3_1_2_1_6" checked>
+      
+      
+      
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="#properties"><span class="md-ellipsis">Properties</span></a>
+          
+            <label for="__nav_3_1_2_1_6">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Properties" data-md-level="5">
+        <label class="md-nav__title" for="__nav_3_1_2_1_6">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Properties</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.adj.html" class="md-nav__link">
+        <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.adj (Python property) — Graph adjacency object holding the neighbors of each node." class="md-ellipsis">adj</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.degree.html" class="md-nav__link">
+        <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.degree (Python property) — A DegreeView for the Graph as G.degree or G.degree()." class="md-ellipsis">degree</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.edges.html" class="md-nav__link">
+        <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.edges (Python property) — An EdgeView of the Graph as G.edges or G.edges()." class="md-ellipsis">edges</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.name.html" class="md-nav__link">
+        <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.name (Python property) — String identifier of the graph." class="md-ellipsis">name</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.GraphState.nodes.html" class="md-nav__link">
+        <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.nodes (Python property) — A NodeView of the Graph as G.nodes or G.nodes()." class="md-ellipsis">nodes</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+      
+    <li class="md-nav__item md-nav__item--active md-nav__current-toc">
+      
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span>
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span>
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">Examples</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">Classes</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Classes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.adjlist_inner_dict_factory.html" class="md-nav__link">
+    <span aria-label="Python attribute" class="objinfo-icon objinfo-icon__alias" title="Python attribute">A</span><span title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict" class="md-ellipsis">adjlist_<wbr>inner_<wbr>dict_<wbr>factory</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constructors" class="md-nav__link">
+    <span class="md-ellipsis">Constructors</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Constructors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__init__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#string-representation" class="md-nav__link">
+    <span class="md-ellipsis">String representation</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="String representation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__repr__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__repr__ (Python method) — Return repr(self)." class="md-ellipsis">__<wbr>repr__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__str__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__str__ (Python method) — Returns a short summary of the graph." class="md-ellipsis">__<wbr>str__<wbr></span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-methods" class="md-nav__link">
+    <span class="md-ellipsis">Special methods</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__contains__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__contains__ (Python method) — Returns True if n is a node, False otherwise. Use: &#39;n in G&#39;." class="md-ellipsis">__<wbr>contains__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__eq__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__eq__ (Python method) — Return self==value." class="md-ellipsis">__<wbr>eq__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__getitem__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__getitem__ (Python method) — Returns a dict of neighbors of node n.  Use: &#39;G[n]&#39;." class="md-ellipsis">__<wbr>getitem__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__iter__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__iter__ (Python method) — Iterate over the nodes. Use: &#39;for n in G&#39;." class="md-ellipsis">__<wbr>iter__<wbr></span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.__len__.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__len__ (Python method) — Returns the number of nodes in the graph. Use: &#39;len(G)&#39;." class="md-ellipsis">__<wbr>len__<wbr></span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">Methods</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Methods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.add_edge.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_edge (Python method) — Add an edge between u and v." class="md-ellipsis">add_<wbr>edge</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.add_edges_from.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_edges_from (Python method) — Add all the edges in ebunch_to_add." class="md-ellipsis">add_<wbr>edges_<wbr>from</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.add_node.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_node (Python method) — Add a single node node_for_adding and update node attributes." class="md-ellipsis">add_<wbr>node</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.add_nodes_from.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_nodes_from (Python method) — Add multiple nodes." class="md-ellipsis">add_<wbr>nodes_<wbr>from</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.add_weighted_edges_from.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.add_weighted_edges_from (Python method) — Add weighted edges in ebunch_to_add with specified weight attr" class="md-ellipsis">add_<wbr>weighted_<wbr>edges_<wbr>from</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.adjacency.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.adjacency (Python method) — Returns an iterator over (node, adjacency dict) tuples for all nodes." class="md-ellipsis">adjacency</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.clear.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.clear (Python method) — Remove all nodes and edges from the graph." class="md-ellipsis">clear</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.clear_edges.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.clear_edges (Python method) — Remove all edges from the graph without altering nodes." class="md-ellipsis">clear_<wbr>edges</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.copy.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.copy (Python method) — Returns a copy of the graph." class="md-ellipsis">copy</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.edge_subgraph.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.edge_subgraph (Python method) — Returns the subgraph induced by the specified edges." class="md-ellipsis">edge_<wbr>subgraph</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.get_edge_data.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.get_edge_data (Python method) — Returns the attribute dictionary associated with edge (u, v)." class="md-ellipsis">get_<wbr>edge_<wbr>data</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.has_edge.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.has_edge (Python method) — Returns True if the edge (u, v) is in the graph." class="md-ellipsis">has_<wbr>edge</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.has_node.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.has_node (Python method) — Returns True if the graph contains the node n." class="md-ellipsis">has_<wbr>node</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.index_mapping.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.index_mapping (Python method) — Return a mapping of the nodes to their indices." class="md-ellipsis">index_<wbr>mapping</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.is_directed.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.is_directed (Python method) — Returns True if graph is directed, False otherwise." class="md-ellipsis">is_<wbr>directed</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.is_multigraph.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.is_multigraph (Python method) — Returns True if graph is a multigraph, False otherwise." class="md-ellipsis">is_<wbr>multigraph</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.nbunch_iter.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.nbunch_iter (Python method) — Returns an iterator over nodes contained in nbunch that are also in the graph." class="md-ellipsis">nbunch_<wbr>iter</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.neighbors.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.neighbors (Python method) — Returns an iterator over all neighbors of node n." class="md-ellipsis">neighbors</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.number_of_edges.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.number_of_edges (Python method) — Returns the number of edges between two nodes." class="md-ellipsis">number_<wbr>of_<wbr>edges</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.number_of_nodes.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.number_of_nodes (Python method) — Returns the number of nodes in the graph." class="md-ellipsis">number_<wbr>of_<wbr>nodes</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.order.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.order (Python method) — Returns the number of nodes in the graph." class="md-ellipsis">order</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.remove_edge.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_edge (Python method) — Remove the edge between u and v." class="md-ellipsis">remove_<wbr>edge</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.remove_edges_from.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_edges_from (Python method) — Remove all edges specified in ebunch." class="md-ellipsis">remove_<wbr>edges_<wbr>from</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.remove_node.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_node (Python method) — Remove node n." class="md-ellipsis">remove_<wbr>node</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.remove_nodes_from.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.remove_nodes_from (Python method) — Remove multiple nodes." class="md-ellipsis">remove_<wbr>nodes_<wbr>from</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.size.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.size (Python method) — Returns the number of edges or total of all edge weights." class="md-ellipsis">size</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.stabilizers.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.stabilizers (Python method) — Generate the stabilizers of a graph state." class="md-ellipsis">stabilizers</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.subgraph.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.subgraph (Python method) — Returns a SubGraph view of the subgraph induced on nodes." class="md-ellipsis">subgraph</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.to_directed.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_directed (Python method) — Returns a directed representation of the graph." class="md-ellipsis">to_<wbr>directed</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.to_directed_class.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_directed_class (Python method) — Returns the class to use for empty directed copies." class="md-ellipsis">to_<wbr>directed_<wbr>class</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.to_undirected.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_undirected (Python method) — Returns an undirected copy of the graph." class="md-ellipsis">to_<wbr>undirected</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.to_undirected_class.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.to_undirected_class (Python method) — Returns the class to use for empty undirected copies." class="md-ellipsis">to_<wbr>undirected_<wbr>class</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.update.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.update (Python method) — Update the graph using nodes/edges/graphs as input." class="md-ellipsis">update</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">Properties</span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.adj.html" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.adj (Python property) — Graph adjacency object holding the neighbors of each node." class="md-ellipsis">adj</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.degree.html" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.degree (Python property) — A DegreeView for the Graph as G.degree or G.degree()." class="md-ellipsis">degree</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.edges.html" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.edges (Python property) — An EdgeView of the Graph as G.edges or G.edges()." class="md-ellipsis">edges</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.name.html" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.name (Python property) — String identifier of the graph." class="md-ellipsis">name</span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="mentpy.GraphState.nodes.html" class="md-nav__link">
+    <span aria-label="Python property" class="objinfo-icon objinfo-icon__alias" title="Python property">P</span><span title="mentpy.GraphState.nodes (Python property) — A NodeView of the Graph as G.nodes or G.nodes()." class="md-ellipsis">nodes</span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.MBQCState.html" class="md-nav__link">
+        <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.mbqcstate.MBQCState (Python class) — The MBQCGraph class that deals with operations and manipulations of graph states" class="md-ellipsis">MBQCState</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.draw.html" class="md-nav__link">
+        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.draw (Python function) — Draws mbqc circuit with flow." class="md-ellipsis">draw</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.hstack.html" class="md-nav__link">
+        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.hstack (Python function) — Horizontally stack a list of graph states into a larger graph state. This is, the input of the new MBQC state is the input of the first state, and the output is the output of the last state." class="md-ellipsis">hstack</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="mentpy.vstack.html" class="md-nav__link">
+        <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.vstack (Python function) — Vertically stack a list of graph states into a larger graph state. This is, the input of the new MBQC state is the input of the first state, and the output is the output of the last state." class="md-ellipsis">vstack</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api.html#simulators" class="md-nav__link">
+        <span class="md-ellipsis">Simulators</span>
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+  
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      <span aria-label="Python class" class="objinfo-icon objinfo-icon__data" title="Python class">C</span><span title="mentpy.states.graphstate.GraphState (Python class) — A graph state class that inherits from networkx.Graph." class="md-ellipsis">Graph<wbr>State</span>
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#examples" class="md-nav__link">
+    <span class="md-ellipsis">Examples</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">Classes</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#constructors" class="md-nav__link">
+    <span class="md-ellipsis">Constructors</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#string-representation" class="md-nav__link">
+    <span class="md-ellipsis">String representation</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-methods" class="md-nav__link">
+    <span class="md-ellipsis">Special methods</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#methods" class="md-nav__link">
+    <span class="md-ellipsis">Methods</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    <span class="md-ellipsis">Properties</span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                  
+
+
+<dl class="py class objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mentpy.</span></span><span class="sig-name descname"><span class="pre">GraphState</span></span><span class="p"><span class="pre">(</span></span><span class="desctype"><span class="pre">networkx.classes.graph.Graph</span></span><span class="p"><span class="pre">)</span></span></dt>
+<dd><p>A graph state class that inherits from networkx.Graph.</p>
+<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
+<p>Create a 1D cluster state <span class="math notranslate nohighlight">\(|G&gt;\)</span> of five qubits</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">GraphState</span><span class="p">()</span>
+
+<span class="gp">In [2]: </span><span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
+
+<span class="gp">In [3]: </span><span class="nb">print</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+<span class="go">GraphState with 5 nodes and 4 edges</span>
+</code></pre></div>
+</div>
+<div class="seealso admonition">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-class docutils literal notranslate"><span class="pre">mentpy.state.mbqcstate.MBQCState</span></code></p>
+</div>
+<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permalink to this heading">¶</a></h2>
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname pseudo-toc-entry"><span class="pre">adjlist_inner_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname"><span class="pre">adjlist_outer_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname"><span class="pre">edge_attr_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname"><span class="pre">graph_attr_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname"><span class="pre">node_attr_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<dl class="py attribute summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname reference internal" href="mentpy.GraphState.adjlist_inner_dict_factory.html" title="mentpy.GraphState.adjlist_inner_dict_factory (Python attribute) — alias of dict"><span class="sig-name descname"><span class="pre">node_dict_factory</span></span></a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permalink to this heading">¶</a></h2>
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__init__.html" title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">GraphState</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Initialize a graph with edges, name, or graph attributes.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<h2 id="string-representation">String representation<a class="headerlink" href="#string-representation" title="Permalink to this heading">¶</a></h2>
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__repr__.html" title="mentpy.GraphState.__repr__ (Python method) — Return repr(self)."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__repr__</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__str__.html" title="mentpy.GraphState.__str__ (Python method) — Returns a short summary of the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__str__</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns a short summary of the graph.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<h2 id="special-methods">Special methods<a class="headerlink" href="#special-methods" title="Permalink to this heading">¶</a></h2>
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__contains__.html" title="mentpy.GraphState.__contains__ (Python method) — Returns True if n is a node, False otherwise. Use: 'n in G'."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__contains__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns True if n is a node, False otherwise. Use: ‘n in G’.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__eq__.html" title="mentpy.GraphState.__eq__ (Python method) — Return self==value."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__eq__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">other</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__getitem__.html" title="mentpy.GraphState.__getitem__ (Python method) — Returns a dict of neighbors of node n.  Use: 'G[n]'."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__getitem__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.__getitem__.html#p-n" title="mentpy.GraphState.__getitem__.n (Python parameter) — A node in the graph."><span class="n"><span class="pre">n</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns a dict of neighbors of node n.  Use: ‘G[n]’.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__iter__.html" title="mentpy.GraphState.__iter__ (Python method) — Iterate over the nodes. Use: 'for n in G'."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__iter__</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Iterate over the nodes. Use: ‘for n in G’.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.__len__.html" title="mentpy.GraphState.__len__ (Python method) — Returns the number of nodes in the graph. Use: 'len(G)'."><span class="sig-name descname pseudo-toc-entry"><span class="pre">__len__</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of nodes in the graph. Use: ‘len(G)’.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.add_edge.html" title="mentpy.GraphState.add_edge (Python method) — Add an edge between u and v."><span class="sig-name descname pseudo-toc-entry"><span class="pre">add_edge</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_edge.html#p-u_of_edge" title="mentpy.GraphState.add_edge.u_of_edge (Python parameter) — Nodes can be, for example, strings or numbers. Nodes must be hashable (and not None) Python objects."><span class="n"><span class="pre">u_of_edge</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_edge.html#p-v_of_edge" title="mentpy.GraphState.add_edge.v_of_edge (Python parameter) — Nodes can be, for example, strings or numbers. Nodes must be hashable (and not None) Python objects."><span class="n"><span class="pre">v_of_edge</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><a class="n reference internal" href="mentpy.GraphState.add_edge.html#p-attr" title="mentpy.GraphState.add_edge.attr (Python parameter) — Edge data (or labels or objects) can be assigned using keyword arguments."><span class="n"><span class="pre">attr</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Add an edge between u and v.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.add_edges_from.html" title="mentpy.GraphState.add_edges_from (Python method) — Add all the edges in ebunch_to_add."><span class="sig-name descname pseudo-toc-entry"><span class="pre">add_edges_from</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_edges_from.html#p-ebunch_to_add" title="mentpy.GraphState.add_edges_from.ebunch_to_add (Python parameter) — Each edge given in the container will be added to the graph. The edges must be given as 2-tuples (u, v) or 3-tuples (u, v, d) where d is a dictionary containing edge data."><span class="n"><span class="pre">ebunch_to_add</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><a class="n reference internal" href="mentpy.GraphState.add_edges_from.html#p-attr" title="mentpy.GraphState.add_edges_from.attr (Python parameter) — Edge data (or labels or objects) can be assigned using keyword arguments."><span class="n"><span class="pre">attr</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Add all the edges in ebunch_to_add.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.add_node.html" title="mentpy.GraphState.add_node (Python method) — Add a single node node_for_adding and update node attributes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">add_node</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_node.html#p-node_for_adding" title="mentpy.GraphState.add_node.node_for_adding (Python parameter) — A node can be any hashable Python object except None."><span class="n"><span class="pre">node_for_adding</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><a class="n reference internal" href="mentpy.GraphState.add_node.html#p-attr" title="mentpy.GraphState.add_node.attr (Python parameter) — Set or change node attributes using key=value."><span class="n"><span class="pre">attr</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Add a single node <cite>node_for_adding</cite> and update node attributes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.add_nodes_from.html" title="mentpy.GraphState.add_nodes_from (Python method) — Add multiple nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">add_nodes_from</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_nodes_from.html#p-nodes_for_adding" title="mentpy.GraphState.add_nodes_from.nodes_for_adding (Python parameter) — A container of nodes (list, dict, set, etc.). OR A container of (node, attribute dict) tuples. Node attributes are updated using the attribute dict."><span class="n"><span class="pre">nodes_for_adding</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><a class="n reference internal" href="mentpy.GraphState.add_nodes_from.html#p-attr" title="mentpy.GraphState.add_nodes_from.attr (Python parameter) — Update attributes for all nodes in nodes. Node attributes specified in nodes as a tuple take precedence over attributes specified via keyword arguments."><span class="n"><span class="pre">attr</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Add multiple nodes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.add_weighted_edges_from.html" title="mentpy.GraphState.add_weighted_edges_from (Python method) — Add weighted edges in ebunch_to_add with specified weight attr"><span class="sig-name descname pseudo-toc-entry"><span class="pre">add_weighted_edges_from</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_weighted_edges_from.html#p-ebunch_to_add" title="mentpy.GraphState.add_weighted_edges_from.ebunch_to_add (Python parameter) — Each edge given in the list or container will be added to the graph. The edges must be given as 3-tuples (u, v, w) where w is a number."><span class="n"><span class="pre">ebunch_to_add</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.add_weighted_edges_from.html#p-weight" title="mentpy.GraphState.add_weighted_edges_from.weight (Python parameter) — The attribute name for the edge weights to be added."><span class="n"><span class="pre">weight</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;weight&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><a class="n reference internal" href="mentpy.GraphState.add_weighted_edges_from.html#p-attr" title="mentpy.GraphState.add_weighted_edges_from.attr (Python parameter) — Edge attributes to add/update for all edges."><span class="n"><span class="pre">attr</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Add weighted edges in <cite>ebunch_to_add</cite> with specified weight attr</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.adjacency.html" title="mentpy.GraphState.adjacency (Python method) — Returns an iterator over (node, adjacency dict) tuples for all nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">adjacency</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns an iterator over (node, adjacency dict) tuples for all nodes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.clear.html" title="mentpy.GraphState.clear (Python method) — Remove all nodes and edges from the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">clear</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Remove all nodes and edges from the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.clear_edges.html" title="mentpy.GraphState.clear_edges (Python method) — Remove all edges from the graph without altering nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">clear_edges</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Remove all edges from the graph without altering nodes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.copy.html" title="mentpy.GraphState.copy (Python method) — Returns a copy of the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">copy</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.copy.html#p-as_view" title="mentpy.GraphState.copy.as_view (Python parameter) — If True, the returned graph-view provides a read-only view of the original graph without actually copying any data."><span class="n"><span class="pre">as_view</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns a copy of the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.edge_subgraph.html" title="mentpy.GraphState.edge_subgraph (Python method) — Returns the subgraph induced by the specified edges."><span class="sig-name descname pseudo-toc-entry"><span class="pre">edge_subgraph</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.edge_subgraph.html#p-edges" title="mentpy.GraphState.edge_subgraph.edges (Python parameter) — An iterable of edges in this graph."><span class="n"><span class="pre">edges</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the subgraph induced by the specified edges.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.get_edge_data.html" title="mentpy.GraphState.get_edge_data (Python method) — Returns the attribute dictionary associated with edge (u, v)."><span class="sig-name descname pseudo-toc-entry"><span class="pre">get_edge_data</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.get_edge_data.html#p-u" title="mentpy.GraphState.get_edge_data.u (Python parameter)"><span class="n"><span class="pre">u</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.get_edge_data.html#p-v" title="mentpy.GraphState.get_edge_data.v (Python parameter)"><span class="n"><span class="pre">v</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.get_edge_data.html#p-default" title="mentpy.GraphState.get_edge_data.default (Python parameter) — Value to return if the edge (u, v) is not found."><span class="n"><span class="pre">default</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the attribute dictionary associated with edge (u, v).</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.has_edge.html" title="mentpy.GraphState.has_edge (Python method) — Returns True if the edge (u, v) is in the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">has_edge</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.has_edge.html#p-u" title="mentpy.GraphState.has_edge.u (Python parameter) — Nodes can be, for example, strings or numbers. Nodes must be hashable (and not None) Python objects."><span class="n"><span class="pre">u</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.has_edge.html#p-v" title="mentpy.GraphState.has_edge.v (Python parameter) — Nodes can be, for example, strings or numbers. Nodes must be hashable (and not None) Python objects."><span class="n"><span class="pre">v</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns True if the edge (u, v) is in the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.has_node.html" title="mentpy.GraphState.has_node (Python method) — Returns True if the graph contains the node n."><span class="sig-name descname pseudo-toc-entry"><span class="pre">has_node</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.has_node.html#p-n" title="mentpy.GraphState.has_node.n (Python parameter)"><span class="n"><span class="pre">n</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns True if the graph contains the node n.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.index_mapping.html" title="mentpy.GraphState.index_mapping (Python method) — Return a mapping of the nodes to their indices."><span class="sig-name descname pseudo-toc-entry"><span class="pre">index_mapping</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Return a mapping of the nodes to their indices.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.is_directed.html" title="mentpy.GraphState.is_directed (Python method) — Returns True if graph is directed, False otherwise."><span class="sig-name descname pseudo-toc-entry"><span class="pre">is_directed</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns True if graph is directed, False otherwise.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.is_multigraph.html" title="mentpy.GraphState.is_multigraph (Python method) — Returns True if graph is a multigraph, False otherwise."><span class="sig-name descname pseudo-toc-entry"><span class="pre">is_multigraph</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns True if graph is a multigraph, False otherwise.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.nbunch_iter.html" title="mentpy.GraphState.nbunch_iter (Python method) — Returns an iterator over nodes contained in nbunch that are also in the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">nbunch_iter</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.nbunch_iter.html#p-nbunch" title="mentpy.GraphState.nbunch_iter.nbunch (Python parameter) — The view will only report edges incident to these nodes."><span class="n"><span class="pre">nbunch</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns an iterator over nodes contained in nbunch that are
+also in the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.neighbors.html" title="mentpy.GraphState.neighbors (Python method) — Returns an iterator over all neighbors of node n."><span class="sig-name descname pseudo-toc-entry"><span class="pre">neighbors</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.neighbors.html#p-n" title="mentpy.GraphState.neighbors.n (Python parameter) — A node in the graph"><span class="n"><span class="pre">n</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns an iterator over all neighbors of node n.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.number_of_edges.html" title="mentpy.GraphState.number_of_edges (Python method) — Returns the number of edges between two nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">number_of_edges</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.number_of_edges.html#p-u" title="mentpy.GraphState.number_of_edges.u (Python parameter) — If u and v are specified, return the number of edges between u and v. Otherwise return the total number of all edges."><span class="n"><span class="pre">u</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.number_of_edges.html#p-v" title="mentpy.GraphState.number_of_edges.v (Python parameter) — If u and v are specified, return the number of edges between u and v. Otherwise return the total number of all edges."><span class="n"><span class="pre">v</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of edges between two nodes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.number_of_nodes.html" title="mentpy.GraphState.number_of_nodes (Python method) — Returns the number of nodes in the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">number_of_nodes</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of nodes in the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.order.html" title="mentpy.GraphState.order (Python method) — Returns the number of nodes in the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">order</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of nodes in the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.remove_edge.html" title="mentpy.GraphState.remove_edge (Python method) — Remove the edge between u and v."><span class="sig-name descname pseudo-toc-entry"><span class="pre">remove_edge</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.remove_edge.html#p-u" title="mentpy.GraphState.remove_edge.u (Python parameter) — Remove the edge between nodes u and v."><span class="n"><span class="pre">u</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.remove_edge.html#p-v" title="mentpy.GraphState.remove_edge.v (Python parameter) — Remove the edge between nodes u and v."><span class="n"><span class="pre">v</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Remove the edge between u and v.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.remove_edges_from.html" title="mentpy.GraphState.remove_edges_from (Python method) — Remove all edges specified in ebunch."><span class="sig-name descname pseudo-toc-entry"><span class="pre">remove_edges_from</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.remove_edges_from.html#p-ebunch" title="mentpy.GraphState.remove_edges_from.ebunch (Python parameter) — Each edge given in the list or container will be removed from the graph. The edges can be:"><span class="n"><span class="pre">ebunch</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Remove all edges specified in ebunch.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.remove_node.html" title="mentpy.GraphState.remove_node (Python method) — Remove node n."><span class="sig-name descname pseudo-toc-entry"><span class="pre">remove_node</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.remove_node.html#p-n" title="mentpy.GraphState.remove_node.n (Python parameter) — A node in the graph"><span class="n"><span class="pre">n</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Remove node n.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.remove_nodes_from.html" title="mentpy.GraphState.remove_nodes_from (Python method) — Remove multiple nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">remove_nodes_from</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.remove_nodes_from.html#p-nodes" title="mentpy.GraphState.remove_nodes_from.nodes (Python parameter) — A container of nodes (list, dict, set, etc.).  If a node in the container is not in the graph it is silently ignored."><span class="n"><span class="pre">nodes</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Remove multiple nodes.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.size.html" title="mentpy.GraphState.size (Python method) — Returns the number of edges or total of all edge weights."><span class="sig-name descname pseudo-toc-entry"><span class="pre">size</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.size.html#p-weight" title="mentpy.GraphState.size.weight (Python parameter) — The edge attribute that holds the numerical value used as a weight. If None, then each edge has weight 1."><span class="n"><span class="pre">weight</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the number of edges or total of all edge weights.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.stabilizers.html" title="mentpy.GraphState.stabilizers (Python method) — Generate the stabilizers of a graph state."><span class="sig-name descname pseudo-toc-entry"><span class="pre">stabilizers</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Generate the stabilizers of a graph state.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.subgraph.html" title="mentpy.GraphState.subgraph (Python method) — Returns a SubGraph view of the subgraph induced on nodes."><span class="sig-name descname pseudo-toc-entry"><span class="pre">subgraph</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.subgraph.html#p-nodes" title="mentpy.GraphState.subgraph.nodes (Python parameter) — A container of nodes which will be iterated through once."><span class="n"><span class="pre">nodes</span></span></a></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns a SubGraph view of the subgraph induced on <cite>nodes</cite>.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.to_directed.html" title="mentpy.GraphState.to_directed (Python method) — Returns a directed representation of the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">to_directed</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">as_view</span></span><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns a directed representation of the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.to_directed_class.html" title="mentpy.GraphState.to_directed_class (Python method) — Returns the class to use for empty directed copies."><span class="sig-name descname pseudo-toc-entry"><span class="pre">to_directed_class</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the class to use for empty directed copies.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.to_undirected.html" title="mentpy.GraphState.to_undirected (Python method) — Returns an undirected copy of the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">to_undirected</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.to_undirected.html#p-as_view" title="mentpy.GraphState.to_undirected.as_view (Python parameter) — If True return a view of the original undirected graph."><span class="n"><span class="pre">as_view</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">False</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns an undirected copy of the graph.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.to_undirected_class.html" title="mentpy.GraphState.to_undirected_class (Python method) — Returns the class to use for empty undirected copies."><span class="sig-name descname pseudo-toc-entry"><span class="pre">to_undirected_class</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the class to use for empty undirected copies.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.update.html" title="mentpy.GraphState.update (Python method) — Update the graph using nodes/edges/graphs as input."><span class="sig-name descname pseudo-toc-entry"><span class="pre">update</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.update.html#p-edges" title="mentpy.GraphState.update.edges (Python parameter) — The first parameter can be a graph or some edges. If it has attributes nodes and edges, then it is taken to be a Graph-like object and those attributes are used as collections of nodes and edges to be added to the graph. If the first parameter does not have those attributes, it is treated as a collection of edges and added to the graph. If the first argument is None, no edges are added."><span class="n"><span class="pre">edges</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.GraphState.update.html#p-nodes" title="mentpy.GraphState.update.nodes (Python parameter) — The second parameter is treated as a collection of nodes to be added to the graph unless it is None. If edges is None and nodes is None an exception is raised. If the first parameter is a Graph, then nodes is ignored."><span class="n"><span class="pre">nodes</span></span></a><span class="o"><span class="pre">=</span></span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Update the graph using nodes/edges/graphs as input.</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.adj.html" title="mentpy.GraphState.adj (Python property) — Graph adjacency object holding the neighbors of each node."><span class="sig-name descname pseudo-toc-entry"><span class="pre">adj</span></span></a></dt>
+<dd><p>Graph adjacency object holding the neighbors of each node.</p>
+</dd></dl>
+
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.degree.html" title="mentpy.GraphState.degree (Python property) — A DegreeView for the Graph as G.degree or G.degree()."><span class="sig-name descname pseudo-toc-entry"><span class="pre">degree</span></span></a></dt>
+<dd><p>A DegreeView for the Graph as G.degree or G.degree().</p>
+</dd></dl>
+
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.edges.html" title="mentpy.GraphState.edges (Python property) — An EdgeView of the Graph as G.edges or G.edges()."><span class="sig-name descname pseudo-toc-entry"><span class="pre">edges</span></span></a></dt>
+<dd><p>An EdgeView of the Graph as G.edges or G.edges().</p>
+</dd></dl>
+
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.name.html" title="mentpy.GraphState.name (Python property) — String identifier of the graph."><span class="sig-name descname pseudo-toc-entry"><span class="pre">name</span></span></a></dt>
+<dd><p>String identifier of the graph.</p>
+</dd></dl>
+
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.GraphState.nodes.html" title="mentpy.GraphState.nodes (Python property) — A NodeView of the Graph as G.nodes or G.nodes()."><span class="sig-name descname pseudo-toc-entry"><span class="pre">nodes</span></span></a></dt>
+<dd><p>A NodeView of the Graph as G.nodes or G.nodes().</p>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</dd></dl>
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+        </div>
+        
+          <a href="#" class="md-top md-icon" data-md-component="top" hidden>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+            Back to top
+          </a>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+    <nav class="md-footer__inner md-grid" aria-label="Footer" >
+      
+        
+        <a href="mentpy.PauliOp.symplectic_prod.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: mentpy.PauliOp.symplectic_prod" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              mentpy.PauliOp.symplectic_prod
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="mentpy.GraphState.adjlist_inner_dict_factory.html" class="md-footer__link md-footer__link--next" aria-label="Next: mentpy.GraphState.adjlist_inner_dict_factory" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              mentpy.GraphState.adjlist_inner_dict_factory
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2022, Luis Mantilla.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    5.0.0.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.share", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+      
+        <script src="../_static/sphinx_immaterial_theme.cea6a0c1d5b0618cf.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+  </body>
+</html>
