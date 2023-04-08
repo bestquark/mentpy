@@ -37,7 +37,9 @@ class NumpySimulator(BaseSimulator):
             raise NotImplementedError("Numpy simulator does not support force0=False.")
 
         # TODO: FIND SCHEDULE IF NOT PROVIDED
-        if mbqcstate.measurement_order is not None:
+        if self.schedule is not None:
+            self.schedule_measure = [i for i in self.schedule if i not in mbqcstate.output_nodes]
+        elif mbqcstate.measurement_order is not None:
             # remove output nodes from the measurement order
             self.schedule_measure = [
                 i
@@ -47,8 +49,6 @@ class NumpySimulator(BaseSimulator):
             self.schedule = mbqcstate.measurement_order
             if self.window_size == 1 and mbqcstate.flow is not None:
                 self.window_size = len(mbqcstate.input_nodes) + 1
-        elif self.schedule is not None:
-            self.schedule_measure = self.schedule
         else:
             raise ValueError(
                 "Schedule must be provided for numpy simulator as the MBQCState does not have a flow."
