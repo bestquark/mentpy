@@ -237,13 +237,16 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
 
     n_blocks = n_qubits if periodic else n_qubits - 2
 
-    for layer in range(2 * n_layers):
-        for i in range(n_blocks):
-            n1 = spt_ansatz.output_nodes[i]
-            n2 = spt_ansatz.output_nodes[(i + 2) % n_qubits]
-            if layer % 2 == 0:
-                spt_ansatz = merge(spt_ansatz, sym_block1, [(n1, 0), (n2, 7)])
-            else:
-                spt_ansatz = merge(spt_ansatz, sym_block2, [(n1, 0), (n2, 7)])
+    for layer in range(n_layers):
+        if layer != 0:
+            spt_ansatz = hstack((spt_ansatz, many_wires([3] * n_qubits, trainable_nodes=[3 * i + 1 for i in range(n_qubits)])))
+        for m in range(2):
+            for i in range(n_blocks):
+                n1 = spt_ansatz.output_nodes[i]
+                n2 = spt_ansatz.output_nodes[(i + 2) % n_qubits]
+                if m % 2 == 0:
+                    spt_ansatz = merge(spt_ansatz, sym_block1, [(n1, 0), (n2, 7)])
+                else:
+                    spt_ansatz = merge(spt_ansatz, sym_block2, [(n1, 0), (n2, 7)])
 
     return spt_ansatz

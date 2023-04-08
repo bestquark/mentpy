@@ -339,14 +339,13 @@ def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
     trainable_nodes = state1.trainable_nodes + [
         i + len(state1.graph) for i in state2.trainable_nodes
     ]
-    planes = state1.planes
+    planes = dict(state1.planes)
     planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
 
     for (i, j) in along:
         graph.add_edge(i, j + len(state1.graph))
-        graph = nx.contracted_edge(graph, (i, j + len(state1.graph)), self_loops=False)
-        planes[i] = planes[j + len(state1.graph)]
-        del planes[j + len(state1.graph)]
+        graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
+        del planes[i]
 
     return MBQCState(
         graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
@@ -405,7 +404,7 @@ def _vstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
     trainable_nodes = state1.trainable_nodes + [
         i + len(state1.graph) for i in state2.trainable_nodes
     ]
-    planes = state1.planes
+    planes = dict(state1.planes)
     planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
 
     # TODO: Compute flow and partial order
@@ -462,9 +461,8 @@ def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
 
     for (i, j) in zip(state1.output_nodes, state2.input_nodes):
         graph.add_edge(i, j + len(state1.graph))
-        graph = nx.contracted_edge(graph, (i, j + len(state1.graph)), self_loops=False)
-        planes[i] = planes[j + len(state1.graph)]
-        del planes[j + len(state1.graph)]
+        graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
+        del planes[i]
 
     # TODO: Compute flow and partial order
     return MBQCState(
