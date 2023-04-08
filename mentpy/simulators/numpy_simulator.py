@@ -45,6 +45,8 @@ class NumpySimulator(BaseSimulator):
                 if i not in mbqcstate.output_nodes
             ]
             self.schedule = mbqcstate.measurement_order
+            if self.window_size == 1 and mbqcstate.flow is not None:
+                self.window_size = len(mbqcstate.input_nodes) + 1
         elif self.schedule is not None:
             self.schedule_measure = self.schedule
         else:
