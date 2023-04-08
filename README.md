@@ -49,9 +49,9 @@ ps = mp.PatternSimulator(st)
 output = ps(np.random.rand(len(st.outputc)))
 ```
 
-For visualization of circuits, you can use the `mp.draw` function
+For visualization of circuits, you can use the `mp.draw(st)` function
 
-![28a47037-4988-4442-b35f-88359c6a54c4](https://user-images.githubusercontent.com/52287586/228745684-dc2b4712-f66e-4d36-8941-2b4ada22008d.png)
+![image](https://user-images.githubusercontent.com/52287586/230715389-bf280971-c841-437d-8772-bf59557b0875.png)
 
 ## Documentation
 
