@@ -1,0 +1,9 @@
+# Configuration file for GitHub repository
+# Enables issue and pull request templates
+
+# Set issue template path
+issue_template: ISSUE_TEMPLATE/bug_report.md
+issue_template: ISSUE_TEMPLATE/feature_request.md
+
+# Set pull request template path
+pull_request_template: pull_request_template.md
