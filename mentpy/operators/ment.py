@@ -44,19 +44,23 @@ class Ment:
         "Returns True if the measurement is trainable."
         return self.angle is None and self.plane in ["XY", "XZ", "YZ"]
 
-    def matrix(self):
+    def matrix(self, angle: Optional[float] = None):
         "Returns the matrix representation of the measurement."
-        if self.angle is None:
-            raise ValueError("Measurement is trainable.")
+        if self.angle is None and angle is None:
+            raise ValueError("Measurement is trainable, please provide an angle.")
+        elif self.angle is not None and angle is not None:
+            raise ValueError("Measurement is not trainable.")
+        elif self.angle is not None:
+            angle = self.angle
 
         if self.plane == "XY":
-            matrix = np.cos(self.angle) * PauliX + np.sin(self.angle) * PauliY
+            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY
 
         elif self.plane == "XZ":
-            matrix = np.cos(self.angle) * PauliX + np.sin(self.angle) * PauliZ
+            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliZ
 
         elif self.plane == "YZ":
-            matrix = np.cos(self.angle) * PauliY + np.sin(self.angle) * PauliZ
+            matrix = np.cos(angle) * PauliY + np.sin(angle) * PauliZ
 
         elif self.plane in ["X", "Y", "Z"]:
             matrices = {"X": PauliX, "Y": PauliY, "Z": PauliZ}

@@ -19,8 +19,8 @@ q_zero = np.array([1, 0])
 qubit_plus = H @ q_zero
 
 
-class NumpySimulator(BaseSimulator):
-    """Simulator that uses numpy to simulate the quantum circuit"""
+class NumpySimulatorDM(BaseSimulator):
+    """A density matrix simulator that uses numpy to simulate the quantum circuit."""
 
     def __init__(
         self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
@@ -34,7 +34,6 @@ class NumpySimulator(BaseSimulator):
         if not self.force0:
             raise NotImplementedError("Numpy simulator does not support force0=False.")
 
-        self.qstate = self.input_state
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
             self.schedule_measure = [
@@ -93,6 +92,9 @@ class NumpySimulator(BaseSimulator):
                     self.initial_czs = cz @ self.initial_czs
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
+
+        self.proyectors_x = self.get_proyectors(0, 0)
+        self.proyectors_y = self.get_proyectors(np.pi / 2, 0)
 
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""

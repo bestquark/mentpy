@@ -64,6 +64,8 @@ class MBQCState:
         relabel_indices: bool = True,
     ) -> None:
         """Initializes a graph state"""
+        # TODO: Remove trainable_nodes dependency and only have planes argument.
+        # TODO: Remove relabel_indices argument
 
         if relabel_indices:
             N = graph.number_of_nodes()
