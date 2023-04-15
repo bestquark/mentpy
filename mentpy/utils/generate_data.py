@@ -38,11 +38,17 @@ def random_train_test_states_unitary(
     return train_test_split(random_inputs, random_targets, test_size=test_size)
 
 
-def train_test_split(inputs, targets, test_size: float = 0.3) -> tuple:
+def train_test_split(inputs, targets, test_size: float = 0.3, randomize=False) -> tuple:
     r"Split the data into training and test sets."
     n_samples = len(inputs)
     n_test_samples = int(n_samples * test_size)
     n_train_samples = n_samples - n_test_samples
+
+    if randomize:
+        shuffled_indices = np.random.permutation(n_samples)
+        inputs = inputs[shuffled_indices]
+        targets = targets[shuffled_indices]
+
     return (inputs[:n_train_samples], targets[:n_train_samples]), (
         inputs[n_train_samples:],
         targets[n_train_samples:],

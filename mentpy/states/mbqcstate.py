@@ -210,6 +210,15 @@ class MBQCState:
         r"""Return the trainable nodes of the MBQC circuit."""
         return self._trainable_nodes
 
+    @trainable_nodes.setter
+    def trainable_nodes(self, trainable_nodes: List[int]) -> None:
+        r"""Set the trainable nodes of the MBQC circuit."""
+        if not all([v in self.graph.nodes for v in trainable_nodes]):
+            raise ValueError(
+                f"Trainable nodes {trainable_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
+            )
+        self._trainable_nodes = trainable_nodes
+
     @property
     def planes(self) -> dict:
         r"""Return the planes of the MBQC circuit."""

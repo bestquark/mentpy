@@ -5,7 +5,7 @@ from mentpy.states.mbqcstate import MBQCState
 from mentpy.simulators.base_simulator import BaseSimulator
 from mentpy.simulators.pennylane_simulator import *
 from mentpy.simulators.cirq_simulator import *
-from mentpy.simulators.numpy_simulator import *
+from mentpy.simulators.np_simulator_dm import *
 
 __all__ = ["PatternSimulator"]
 
@@ -41,6 +41,7 @@ class PatternSimulator:
         supported_simulators = {
             "pennylane": PennylaneSimulator,
             "cirq": CirqSimulator,
+            "numpy-dm": NumpySimulatorDM,
             "numpy": NumpySimulator,
         }
 

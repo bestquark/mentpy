@@ -7,8 +7,6 @@ import networkx as nx
 from mentpy.states.mbqcstate import MBQCState
 from mentpy.simulators.base_simulator import BaseSimulator
 
-import pennylane as qml
-
 # COMMON GATES
 H = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
 S = np.array([[1, 0], [0, 1j]])
@@ -21,8 +19,8 @@ q_zero = np.array([1, 0])
 qubit_plus = H @ q_zero
 
 
-class NumpySimulator(BaseSimulator):
-    """Simulator that uses numpy to simulate the quantum circuit."""
+class NumpySimulatorDM(BaseSimulator):
+    """A density matrix simulator that uses numpy to simulate the quantum circuit."""
 
     def __init__(
         self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
@@ -32,6 +30,7 @@ class NumpySimulator(BaseSimulator):
         self.window_size = kwargs.pop("window_size", 1)
         self.schedule = kwargs.pop("schedule", None)
         self.force0 = kwargs.pop("force0", True)
+
 
         if not self.force0:
             raise NotImplementedError("Numpy simulator does not support force0=False.")

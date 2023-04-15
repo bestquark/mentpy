@@ -165,14 +165,20 @@ def muta(n_wires, n_layers, **kwargs):
     -----
     templates
     """
+    options = {
+        "restrict-trainable": True,
+    }
 
-    SIZE_TRIANGLE = 4
+    SIZE_TRIANGLE = 5
 
     big_graph = None
     for wire in range(n_wires):
 
         g = many_wires([SIZE_TRIANGLE] * n_wires)
-
+        if options["restrict-trainable"]:
+            g.trainable_nodes = list(set(g.trainable_nodes)-set([i-1 for i in g.output_nodes]))
+            print(g.trainable_nodes)
+            
         for connect in range(n_wires):
             if connect != wire:
                 g.add_edge(SIZE_TRIANGLE * wire + 1, SIZE_TRIANGLE * connect)
