@@ -176,9 +176,11 @@ def muta(n_wires, n_layers, **kwargs):
 
         g = many_wires([SIZE_TRIANGLE] * n_wires)
         if options["restrict-trainable"]:
-            g.trainable_nodes = list(set(g.trainable_nodes)-set([i-1 for i in g.output_nodes]))
+            g.trainable_nodes = list(
+                set(g.trainable_nodes) - set([i - 1 for i in g.output_nodes])
+            )
             print(g.trainable_nodes)
-            
+
         for connect in range(n_wires):
             if connect != wire:
                 g.add_edge(SIZE_TRIANGLE * wire + 1, SIZE_TRIANGLE * connect)
@@ -245,7 +247,15 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
 
     for layer in range(n_layers):
         if layer != 0:
-            spt_ansatz = hstack((spt_ansatz, many_wires([3] * n_qubits, trainable_nodes=[3 * i + 1 for i in range(n_qubits)])))
+            spt_ansatz = hstack(
+                (
+                    spt_ansatz,
+                    many_wires(
+                        [3] * n_qubits,
+                        trainable_nodes=[3 * i + 1 for i in range(n_qubits)],
+                    ),
+                )
+            )
         for m in range(2):
             for i in range(n_blocks):
                 n1 = spt_ansatz.output_nodes[i]

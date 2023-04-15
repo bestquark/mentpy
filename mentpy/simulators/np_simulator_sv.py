@@ -23,7 +23,7 @@ class NumpySimulator(BaseSimulator):
     """Simulator that uses numpy to simulate the quantum circuit"""
 
     def __init__(
-            self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
+        self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
     ) -> None:
         super().__init__(mbqcstate, input_state)
 
@@ -35,9 +35,11 @@ class NumpySimulator(BaseSimulator):
             raise NotImplementedError("Numpy simulator does not support force0=False.")
 
         self.qstate = self.input_state
-                # TODO: FIND SCHEDULE IF NOT PROVIDED
+        # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
-            self.schedule_measure = [i for i in self.schedule if i not in mbqcstate.output_nodes]
+            self.schedule_measure = [
+                i for i in self.schedule if i not in mbqcstate.output_nodes
+            ]
         elif mbqcstate.measurement_order is not None:
             # remove output nodes from the measurement order
             self.schedule_measure = [

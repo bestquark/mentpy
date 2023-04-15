@@ -31,13 +31,14 @@ class NumpySimulatorDM(BaseSimulator):
         self.schedule = kwargs.pop("schedule", None)
         self.force0 = kwargs.pop("force0", True)
 
-
         if not self.force0:
             raise NotImplementedError("Numpy simulator does not support force0=False.")
 
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
-            self.schedule_measure = [i for i in self.schedule if i not in mbqcstate.output_nodes]
+            self.schedule_measure = [
+                i for i in self.schedule if i not in mbqcstate.output_nodes
+            ]
         elif mbqcstate.measurement_order is not None:
             # remove output nodes from the measurement order
             self.schedule_measure = [
