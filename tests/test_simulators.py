@@ -4,7 +4,7 @@ import mentpy as mp
 
 
 # test numpy and pennylane simulators
-@pytest.mark.parametrize("simulator", ["numpy", "pennylane"])
+@pytest.mark.parametrize("simulator", ["numpy-dm", "pennylane"])
 class TestSimulators(object):
     def test_teleportation(cls, simulator):
         """Test teleportation in one wire."""

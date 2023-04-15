@@ -6,7 +6,7 @@ It has several common ansatzes that can be used for MBQC algorithms
 """
 
 from typing import List
-from mentpy.states.graphstate import GraphState
+from mentpy.states.resources.graphstate import GraphState
 from mentpy.states.mbqcstate import MBQCState, hstack, merge
 
 

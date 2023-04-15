@@ -6,6 +6,7 @@ from mentpy.simulators.base_simulator import BaseSimulator
 from mentpy.simulators.pennylane_simulator import *
 from mentpy.simulators.cirq_simulator import *
 from mentpy.simulators.np_simulator_dm import *
+from mentpy.simulators.np_simulator_sv import *
 
 __all__ = ["PatternSimulator"]
 

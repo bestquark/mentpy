@@ -10,7 +10,7 @@ import scipy as scp
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from mentpy.states.graphstate import GraphState
+from mentpy.states.resources.graphstate import GraphState
 from mentpy.states.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
 __all__ = ["MBQCState", "draw", "merge", "hstack", "vstack"]

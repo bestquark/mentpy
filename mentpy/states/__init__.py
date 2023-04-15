@@ -4,7 +4,7 @@
 This module provides the functionalities to define graph states
 """
 
-from .graphstate import *
+from .resources import *
 from .mbqcstate import *
 from .templates import *
 from .flow import *
