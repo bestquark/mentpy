@@ -61,11 +61,6 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
-        
-        <a href="#parameters" class="md-skip">
-          Skip to content
-        </a>
-      
     </div>
     <div data-md-component="announce">
       
@@ -446,7 +441,7 @@
       
         
         <div class="md-nav__link md-nav__link--index ">
-          <a href="../api.html#states"><span class="md-ellipsis">States</span></a>
+          <a href="../api.html#mbqcircuits"><span class="md-ellipsis">MBQCircuits</span></a>
           
             <label for="__nav_3_1_2">
               <span class="md-nav__icon md-icon"></span>
@@ -454,10 +449,10 @@
           
         </div>
       
-      <nav class="md-nav" aria-label="States" data-md-level="3">
+      <nav class="md-nav" aria-label="MBQCircuits" data-md-level="3">
         <label class="md-nav__title" for="__nav_3_1_2">
           <span class="md-nav__icon md-icon"></span>
-          <span class="md-ellipsis">States</span>
+          <span class="md-ellipsis">MBQCircuits</span>
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -554,48 +549,9 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="#" class="md-nav__link md-nav__link--active">
-        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph state. See networkx.Graph for more information." class="md-ellipsis">__<wbr>init__<wbr></span>
       </a>
-      
-        
-
-  
-
-<nav class="md-nav md-nav--secondary">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">Parameters</span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">Examples</span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -789,33 +745,9 @@
                   <div class="md-sidebar__inner">
                     
 
-  
-
 <nav class="md-nav md-nav--secondary">
   
   
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.GraphState.__init__ (Python method) — Initialize a graph with edges, name, or graph attributes." class="md-ellipsis">__<wbr>init__<wbr></span>
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#parameters" class="md-nav__link">
-    <span class="md-ellipsis">Parameters</span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#examples" class="md-nav__link">
-    <span class="md-ellipsis">Examples</span>
-  </a>
-  
-</li>
-      
-    </ul>
   
 </nav>
                   </div>
@@ -832,38 +764,7 @@
 <dl class="py method objdesc">
 <dt class="sig sig-object highlight py">
 <span class="sig-prename descclassname"><span class="pre">mentpy.</span></span><span class="sig-name descname"><span class="pre">GraphState</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Initialize a graph with edges, name, or graph attributes.</p>
-<dl class="field-list simple">
-<dt class="field-odd" id="parameters">Parameters<span class="colon">:</span><a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></dt>
-<dd class="field-odd"><dl class="simple api-field highlight">
-<dt><span class="sig-name descname">incoming_graph_data</span><span class="p"> : </span><span class="desctype"><span class="desctype">input graph (optional, default: None)</span></span></dt><dd><p>Data to initialize graph. If None (default) an empty
-graph is created.  The data can be an edge list, or any
-NetworkX graph object.  If the corresponding optional Python
-packages are installed the data can also be a 2D NumPy array, a
-SciPy sparse matrix, or a PyGraphviz graph.</p>
-</dd>
-<dt><span class="sig-name descname">attr</span><span class="p"> : </span><span class="desctype"><span class="desctype">keyword arguments, optional (default= no attributes)</span></span></dt><dd><p>Attributes to add to graph as key=value pairs.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<div class="seealso admonition">
-<p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">convert</span></code></p>
-</div>
-<p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>  <span class="c1"># or DiGraph, MultiGraph, MultiDiGraph, etc</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my graph&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">e</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span>  <span class="c1"># list of edges</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-</code></pre></div>
-</div>
-<p>Arbitrary graph attribute pairs (key=value) may be assigned</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">day</span><span class="o">=</span><span class="s2">&quot;Friday&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">G</span><span class="o">.</span><span class="n">graph</span>
-<span class="go">{&#39;day&#39;: &#39;Friday&#39;}</span>
-</code></pre></div>
-</div>
+<dd><p>Initialize a graph state. See networkx.Graph for more information.</p>
 </dd></dl>
 
 

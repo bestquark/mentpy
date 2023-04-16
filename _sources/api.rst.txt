@@ -15,17 +15,17 @@ Operators
     :undoc-members:
 
 
-States
-------
+MBQCircuits
+-----------
 
 .. python-apigen-group:: states
 
-.. automodule:: mentpy.states
+.. automodule:: mentpy.mbqc
     :members:
     :undoc-members:
 
 Simulators
-------------
+-----------
 
 .. python-apigen-group:: simulators
 
