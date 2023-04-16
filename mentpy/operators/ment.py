@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 import numpy as np
 
 from .gates import PauliX, PauliY, PauliZ
@@ -15,8 +15,18 @@ class Ment:
         The angle of the measurement. Only used if plane is "XY", "XZ", or "YZ".
     """
 
-    def __init__(self, angle: Optional[float] = None, plane: str = "XY"):
+    def __init__(self, angle_or_plane: Optional[Union[int, float, str]] = None, plane: Optional[str] = "XY"):
         """Measurement operator."""
+        
+        if isinstance(angle_or_plane, (int, float)) or angle_or_plane is None:
+            angle = float(angle_or_plane) if angle_or_plane is not None else None
+            plane = plane if plane is not None else "XY"
+        elif isinstance(angle_or_plane, str):
+            angle = 0.0
+            plane = angle_or_plane
+        else:
+            raise TypeError(f"Invalid argument type. Expected float or str but got {type(angle_or_plane)}")
+
         plane = plane.upper()
         allowd_planes = ["XY", "XZ", "YZ", "X", "Y", "Z"]
         if plane not in allowd_planes:
