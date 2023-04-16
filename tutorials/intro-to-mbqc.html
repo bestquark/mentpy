@@ -454,15 +454,15 @@ information flows through the system by measuring the qubits of the resource sta
 </div>
 <a class="reference internal image-reference" href="../_images/1d_cluster.png"><img alt="../_images/1d_cluster.png" src="../_images/1d_cluster.png" style="width: 1000px;" /></a>
 <p>This circuit is designed to implement a single qubit gate on the input qubit, with qubits
-measured in a left-to-right sequence. To teleport information without modification, we
-measure qubits :math:0, :math:1, :math:2, and :math:3 in the :math:X basis, resulting in the
-information being teleported to the output qubit with a byproduct operator :math:Z that depends
-on the earlier qubits’ measurement outcomes.</p>
-<p>To build this circuit, apply the :obj:Measurement (or its alias :obj:Ment) operator to the
-circuit’s qubits. The :obj:Measurement object is characterized by an angle and a measurement
+measured in a left-to-right sequence. We can use this same circuit to implement a teleportation by
+measuring qubits <span class="math notranslate nohighlight">\(0\)</span>, <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, and <span class="math notranslate nohighlight">\(3\)</span> in the <span class="math notranslate nohighlight">\(X\)</span> basis. However,
+the output qubit with a byproduct operator <span class="math notranslate nohighlight">\(Z\)</span> that depends on the earlier qubits measurement
+outcomes.</p>
+<p>To build this circuit, we can use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> (or its alias <code class="xref py py-obj docutils literal notranslate"><span class="pre">Ment</span></code>) operator to the
+circuit’s qubits. The <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> object is characterized by an angle and a measurement
 plane, which can be “XY”, “XZ”, or “YZ” (“X”, “Y”, and “Z” are also accepted), determining the
-basis in which the qubit is measured. The “XY” plane is most commonly used. The angle can be
-specified or set to None. If not provided, it will be treated as a trainable parameter.</p>
+basis in which the qubit is measured. The angle can be specified or set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.
+If not provided, it will be treated as a trainable parameter.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
