@@ -1,4 +1,4 @@
 import pytest
-from mentpy.states import mbqcstate
+from mentpy.mbqc import mbqcircuit
 
 # write tests

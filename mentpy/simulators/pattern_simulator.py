@@ -1,23 +1,25 @@
 from typing import Union, List, Tuple, Optional
 import numpy as np
 
-from mentpy.states.mbqcstate import MBQCState
+from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 from mentpy.simulators.pennylane_simulator import *
-from mentpy.simulators.cirq_simulator import *
 from mentpy.simulators.np_simulator_dm import *
 from mentpy.simulators.np_simulator_sv import *
+
+# from mentpy.simulators.cirq_simulator import *
+# from mentpy.simulators.qiskit_simulator import *
 
 __all__ = ["PatternSimulator"]
 
 
 class PatternSimulator:
-    """Simulator for measuring patterns of MBQC states.
+    """Simulator for measuring patterns of MBQC circuits.
 
     Parameters
     ----------
-    mbqcstate: mp.MBQCState
-        The MBQC state used for the simulation.
+    mbqcircuit: mp.MBQCircuit
+        The MBQC circuit used for the simulation.
     simulator: str
         The simulator to use. Currently only 'pennylane-default.qubit' is supported.
 
@@ -32,7 +34,7 @@ class PatternSimulator:
 
     def __init__(
         self,
-        mbqcstate: MBQCState,
+        mbqcircuit: MBQCircuit,
         input_state: np.ndarray = None,
         simulator="pennylane",
         *args,
@@ -41,7 +43,8 @@ class PatternSimulator:
 
         supported_simulators = {
             "pennylane": PennylaneSimulator,
-            "cirq": CirqSimulator,
+            # "cirq": CirqSimulator,
+            # "qiskit": QiskitSimulator,
             "numpy-dm": NumpySimulatorDM,
             "numpy": NumpySimulator,
         }
@@ -53,11 +56,11 @@ class PatternSimulator:
 
         if input_state is None:
             input_state = 1
-            for i in range(len(mbqcstate.input_nodes)):
+            for i in range(len(mbqcircuit.input_nodes)):
                 input_state = np.kron(input_state, np.array([1, 1]) / np.sqrt(2))
 
         self.simulator = supported_simulators[simulator](
-            mbqcstate, input_state, *args, **kwargs
+            mbqcircuit, input_state, *args, **kwargs
         )
 
     def __getattr__(self, name):

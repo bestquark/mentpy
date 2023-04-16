@@ -1,7 +1,7 @@
 from itertools import combinations
 
 import numpy as np
-from mentpy import MBQCState, PauliOp
+from mentpy import MBQCircuit, PauliOp
 import galois
 
 GF = galois.GF(2)
@@ -61,7 +61,7 @@ def _find_solution(j, state, stabilizers):
     return op
 
 
-def calculate_lie_algebra(state: MBQCState):
+def calculate_lie_algebra(state: MBQCircuit):
     """Calculates the Lie algebra of a given state"""
     mapping = {
         i: j

@@ -23,7 +23,7 @@ class GraphState(nx.Graph):
 
     See Also
     --------
-    :class:`mentpy.state.mbqcstate.MBQCState`
+    :class:`mentpy.mbqc.MBQCircuit`
 
     Group
     -----

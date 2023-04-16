@@ -4,14 +4,14 @@
 This module provides the functionalities to define graph states
 """
 
-from .resources import *
-from .mbqcstate import *
+from .states import *
+from .mbqcircuit import *
 from .templates import *
 from .flow import *
 
 __all__ = [
     "GraphState",
-    "MBQCState",
+    "MBQCircuit",
     "draw",
     "vstack",
     "hstack",

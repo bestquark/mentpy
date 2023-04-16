@@ -2,7 +2,7 @@ import abc
 import numpy as np
 from typing import Union, List, Tuple, Optional
 
-from mentpy.states.mbqcstate import MBQCState
+from mentpy.mbqc.mbqcircuit import MBQCircuit
 
 
 class BaseSimulator(abc.ABC):
@@ -14,8 +14,8 @@ class BaseSimulator(abc.ABC):
 
     Args
     ----
-    mbqcstate: mp.MBQCState
-        The MBQC state used for the simulation.
+    mbqcircuit: mp.MBQCircuit
+        The MBQC circuit used for the simulation.
     input_state: np.ndarray
         The input state of the simulator.
 
@@ -30,18 +30,16 @@ class BaseSimulator(abc.ABC):
 
     def __init__(
         self,
-        mbqcstate: MBQCState,
+        mbqcircuit: MBQCircuit,
         input_state: np.ndarray = None,
-        trainable_nodes: List = None,
     ) -> None:
-        self._mbqcstate = mbqcstate
+        self._mbqcirc = mbqcircuit
         self._input_state = input_state
-        self._trainable_nodes = trainable_nodes
 
     @property
-    def mbqcstate(self) -> MBQCState:
-        """The MBQC state used for the simulation."""
-        return self._mbqcstate
+    def mbqcircuit(self) -> MBQCircuit:
+        """The MBQC circuit used for the simulation."""
+        return self._mbqcirc
 
     @property
     def input_state(self) -> np.ndarray:
@@ -53,18 +51,13 @@ class BaseSimulator(abc.ABC):
         """Sets the input state of the simulator."""
         self._input_state = input_state
 
-    @property
-    def trainable_nodes(self) -> List:
-        """The nodes that are trainable."""
-        return self._trainable_nodes
-
     def __call__(
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
     ):
         return self.measure_pattern(angles, planes, **kwargs)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__} for {self.mbqcstate}"
+        return f"{self.__class__.__name__} for {self.mbqcircuit}"
 
     @abc.abstractmethod
     def measure(self, angle: float, plane: str = "XY", **kwargs):

@@ -7,11 +7,11 @@ It has several common ansatzes that can be used for MBQC algorithms
 
 from typing import List
 from mentpy.operators import Ment
-from mentpy.states.resources.graphstate import GraphState
-from mentpy.states.mbqcstate import MBQCState, hstack, merge
+from mentpy.mbqc.states.graphstate import GraphState
+from mentpy.mbqc.mbqcircuit import MBQCircuit, hstack, merge
 
 
-def linear_cluster(n, **kwargs) -> MBQCState:
+def linear_cluster(n, **kwargs) -> MBQCircuit:
     r"""Returns a linear cluster state of n qubits.
 
     Args
@@ -39,11 +39,11 @@ def linear_cluster(n, **kwargs) -> MBQCState:
     """
     g = GraphState()
     g.add_edges_from([(i, i + 1) for i in range(n - 1)])
-    gs = MBQCState(g, input_nodes=[0], output_nodes=[n - 1], **kwargs)
+    gs = MBQCircuit(g, input_nodes=[0], output_nodes=[n - 1], **kwargs)
     return gs
 
 
-def many_wires(n_wires: List, **kwargs) -> MBQCState:
+def many_wires(n_wires: List, **kwargs) -> MBQCircuit:
     r"""Returns a graph state with many wires.
 
     Args
@@ -80,7 +80,7 @@ def many_wires(n_wires: List, **kwargs) -> MBQCState:
         )
 
     # input nodes are the first qubit in each wire and output nodes are the last qubit in each wire
-    gs = MBQCState(
+    gs = MBQCircuit(
         g,
         input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))],
         output_nodes=[sum(n_wires[: i + 1]) - 1 for i in range(len(n_wires))],
@@ -89,7 +89,7 @@ def many_wires(n_wires: List, **kwargs) -> MBQCState:
     return gs
 
 
-def grid_cluster(n, m, **kwargs) -> MBQCState:
+def grid_cluster(n, m, **kwargs) -> MBQCircuit:
     r"""Returns a grid cluster state of n x m qubits.
 
     Args
@@ -129,7 +129,7 @@ def grid_cluster(n, m, **kwargs) -> MBQCState:
     for i in range(n - 1):
         g.add_edges_from([(i * m + j, (i + 1) * m + j) for j in range(m)])
 
-    gs = MBQCState(
+    gs = MBQCircuit(
         g,
         input_nodes=[sum(n_wires[:i]) for i in range(len(n_wires))],
         output_nodes=[sum(n_wires[: i + 1]) - 1 for i in range(len(n_wires))],
@@ -230,10 +230,10 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
     gr = many_wires([5, 2, 5]).graph
     gr.add_edge(2, 6)
     gr.add_edge(9, 6)
-    sym_block1 = MBQCState(
+    sym_block1 = MBQCircuit(
         gr, input_nodes=[0, 7], output_nodes=[4, 11], measurements={5: Ment(plane="XZ")}
     )
-    sym_block2 = MBQCState(
+    sym_block2 = MBQCircuit(
         gr,
         input_nodes=[0, 7],
         output_nodes=[4, 11],

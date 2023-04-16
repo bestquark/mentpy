@@ -4,7 +4,7 @@ import numpy as np
 import math
 import networkx as nx
 
-from mentpy.states.mbqcstate import MBQCState
+from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
 # COMMON GATES
@@ -23,9 +23,9 @@ class NumpySimulator(BaseSimulator):
     """Simulator that uses numpy to simulate the quantum circuit"""
 
     def __init__(
-        self, mbqcstate: MBQCState, input_state: np.ndarray = None, **kwargs
+        self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None, **kwargs
     ) -> None:
-        super().__init__(mbqcstate, input_state)
+        super().__init__(mbqcircuit, input_state)
 
         self.window_size = kwargs.pop("window_size", 1)
         self.schedule = kwargs.pop("schedule", None)
@@ -38,26 +38,26 @@ class NumpySimulator(BaseSimulator):
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
             self.schedule_measure = [
-                i for i in self.schedule if i not in mbqcstate.output_nodes
+                i for i in self.schedule if i not in mbqcircuit.output_nodes
             ]
-        elif mbqcstate.measurement_order is not None:
+        elif mbqcircuit.measurement_order is not None:
             # remove output nodes from the measurement order
             self.schedule_measure = [
                 i
-                for i in mbqcstate.measurement_order
-                if i not in mbqcstate.output_nodes
+                for i in mbqcircuit.measurement_order
+                if i not in mbqcircuit.output_nodes
             ]
-            self.schedule = mbqcstate.measurement_order
-            if self.window_size == 1 and mbqcstate.flow is not None:
-                self.window_size = len(mbqcstate.input_nodes) + 1
+            self.schedule = mbqcircuit.measurement_order
+            if self.window_size == 1 and mbqcircuit.flow is not None:
+                self.window_size = len(mbqcircuit.input_nodes) + 1
         else:
             raise ValueError(
-                "Schedule must be provided for numpy simulator as the MBQCState does not have a flow."
+                "Schedule must be provided for numpy simulator as the MBQCircuit does not have a flow."
             )
 
         self.input_state = input_state
 
-        n_qubits_input = len(mbqcstate.input_nodes)
+        n_qubits_input = len(mbqcircuit.input_nodes)
 
         if n_qubits_input > self.window_size:
             raise ValueError(
@@ -77,7 +77,7 @@ class NumpySimulator(BaseSimulator):
 
         self.qstate = self.pure2density(self.input_state)
         # get subgraph of the first window_size nodes
-        self.subgraph = self.mbqcstate.graph.subgraph(self.schedule[: self.window_size])
+        self.subgraph = self.mbqcircuit.graph.subgraph(self.schedule[: self.window_size])
 
         self.initial_czs = np.eye(2**self.window_size)
 
@@ -113,13 +113,13 @@ class NumpySimulator(BaseSimulator):
         self.qstate = self.partial_trace(self.qstate, [0])
 
         if self.current_measurement + self.window_size <= len(
-            self.mbqcstate.graph.nodes
+            self.mbqcircuit.graph.nodes
         ):
             self.qstate = np.kron(self.qstate, self.pure2density(qubit_plus))
             new_qubit = self.current_simulated_nodes()[-1]
 
             # get neighbours of new qubit
-            neighbours = nx.neighbors(self.mbqcstate.graph, new_qubit)
+            neighbours = nx.neighbors(self.mbqcircuit.graph, new_qubit)
 
             # do cz between new qubit and neighbours
             indx_new = self.current_simulated_nodes().index(new_qubit)
@@ -138,17 +138,17 @@ class NumpySimulator(BaseSimulator):
         if isinstance(planes, str):
             planes = [planes] * len(angles)
 
-        if len(angles) != len(self.mbqcstate.trainable_nodes):
+        if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(
-                f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcstate.trainable_nodes)})."
+                f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcircuit.trainable_nodes)})."
             )
 
         for i in self.schedule_measure:
-            if i in self.mbqcstate.trainable_nodes:
-                angle = angles[self.mbqcstate.trainable_nodes.index(i)]
-                plane = planes[self.mbqcstate.trainable_nodes.index(i)]
+            if i in self.mbqcircuit.trainable_nodes:
+                angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
+                plane = planes[self.mbqcircuit.trainable_nodes.index(i)]
             else:
-                plane = self.mbqcstate.planes[i]
+                plane = self.mbqcircuit.planes[i]
                 if plane == "X":
                     angle = 0
                 elif plane == "Y":
@@ -168,7 +168,7 @@ class NumpySimulator(BaseSimulator):
 
         if input_state is not None:
             self.input_state = input_state
-            for i in range(self.window_size - len(self.mbqcstate.input_nodes)):
+            for i in range(self.window_size - len(self.mbqcircuit.input_nodes)):
                 self.input_state = np.kron(self.input_state, qubit_plus)
 
         self.qstate = self.pure2density(self.input_state)
@@ -254,7 +254,7 @@ class NumpySimulator(BaseSimulator):
         """
         rho = self.qstate
         n = self.window_size
-        n_qubits = min(n, len(self.mbqcstate) - self.current_measurement)
+        n_qubits = min(n, len(self.mbqcircuit) - self.current_measurement)
         cond1 = n == n_qubits
         if angle == 0 and cond1:
             pi0, pi1 = self.proyectors_x

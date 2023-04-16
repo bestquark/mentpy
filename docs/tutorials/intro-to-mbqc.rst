@@ -8,13 +8,13 @@ the standard gate-based model. The main difference is that the gates are not exp
 applied to the qubits, but rather a big resource (entangled) state is prepared and logical 
 information flows through the system by measuring the qubits of the resource state. 
 
-In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCCircuit` class.
+In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` class.
 
 .. ipython:: python
 
     gs = mp.GraphState()
     gs.add_edges_from([(0, 1), (1, 2), (2, 3), (3, 4)])
-    mbcirc = mp.MBQCState(gs, input_nodes=[0], output_nodes=[4])
+    mbcirc = mp.MBQCircuit(gs, input_nodes=[0], output_nodes=[4])
     print(mbcirc)
 
 We can concatenate two MBQC circuits with the :func:`merge`, :func:`hstack`, or :func:`vstack`

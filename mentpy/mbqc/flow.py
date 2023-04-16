@@ -5,14 +5,13 @@ import math
 import numpy as np
 import networkx as nx
 
-from mentpy.states import GraphState
+from mentpy.mbqc import GraphState
 from typing import List
 import warnings
 
 import galois
 
-## Not used in main mbqcstate module
-
+## Not used in main MBQC module
 
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.

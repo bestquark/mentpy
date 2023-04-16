@@ -2,7 +2,7 @@
 The Measurement-Based Quantum computing simulator.
 """
 
-from .states import *
+from .mbqc import *
 from .operators import *
 from .simulators import *
 

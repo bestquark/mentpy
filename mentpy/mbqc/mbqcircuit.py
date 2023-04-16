@@ -11,25 +11,25 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 from mentpy.operators import Ment
-from mentpy.states.resources.graphstate import GraphState
-from mentpy.states.flow import find_gflow, find_cflow, find_flow, check_if_flow
+from mentpy.mbqc.states.graphstate import GraphState
+from mentpy.mbqc.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
-__all__ = ["MBQCState", "draw", "merge", "hstack", "vstack"]
+__all__ = ["MBQCircuit", "draw", "merge", "hstack", "vstack"]
 
 
-class MBQCState:
-    r"""The MBQCGraph class that deals with operations and manipulations of graph states
+class MBQCircuit:
+    r"""The MBQCircuit class that deals with operations and manipulations of graph states
 
     Parameters
     ----------
     graph: mp.GraphState
-        The graph state of the MBQC state.
+        The graph state of the MBQC circuit.
     input_nodes: list
-        The input nodes of the MBQC state.
+        The input nodes of the MBQC circuit.
     output_nodes: list
-        The output nodes of the MBQC state.
+        The output nodes of the MBQC circuit.
     wires: Optional[list]
-        The wires of the MBQC state.
+        The wires of the MBQC circuit.
 
     Examples
     --------
@@ -39,7 +39,7 @@ class MBQCState:
 
         g = mp.GraphState()
         g.add_edges_from([(0,1), (1,2), (2,3), (3, 4)])
-        state = mp.MBQCState(g, input_nodes=[0], output_nodes=[4])
+        state = mp.MBQCircuit(g, input_nodes=[0], output_nodes=[4])
 
 
     See Also
@@ -64,8 +64,7 @@ class MBQCState:
         relabel_indices: bool = True,
     ) -> None:
         """Initializes a graph state"""
-        # TODO: Remove trainable_nodes dependency and only have planes argument.
-        # TODO: Remove relabel_indices argument
+        # TODO: Remove measurement_order and gflow from the constructor
 
         if relabel_indices:
             N = graph.number_of_nodes()
@@ -172,14 +171,14 @@ class MBQCState:
         self._measurement_order = measurement_order
 
     def __repr__(self) -> str:
-        """Return the representation of the current graph state"""
+        """Return the representation of the current MBQC circuit state"""
         return (
-            f"MBQCState with {self.graph.number_of_nodes()} nodes and "
+            f"MBQCircuit with {self.graph.number_of_nodes()} nodes and "
             f"{self.graph.number_of_edges()} edges"
         )
 
     def __len__(self) -> int:
-        """Return the number of nodes in the GraphStateCircuit"""
+        """Return the number of nodes in the MBQCircuit"""
         return len(self.graph)
 
     # if an attribute is not found, look for it in the graph
@@ -350,9 +349,9 @@ def _check_measurement_order(measurement_order: List, partial_order: Callable):
     return True
 
 
-def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
-    """Merge two graph states into a larger graph state. This is, the input and
-    output of the new MBQC state will depend on the concat_indices."""
+def merge(state1: MBQCircuit, state2: MBQCircuit, along=[]) -> MBQCircuit:
+    """Merge two MBQC circuits into a larger MBQC circuit. This is, the input and
+    output of the new MBQC circuit will depend on the concat_indices."""
 
     for (i, j) in along:
         if i not in state1.output_nodes or j not in state2.input_nodes:
@@ -391,12 +390,12 @@ def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
         graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
         del measurements[i]
 
-    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
+    return MBQCircuit(graph, input_nodes, output_nodes, measurements=measurements)
 
 
 def vstack(states):
     """Vertically stack a list of graph states into a larger graph state. This is,
-    the input of the new MBQC state is the input of the first state, and the output
+    the input of the new MBQC circuit is the input of the first state, and the output
     is the output of the last state.
 
     Group
@@ -412,7 +411,7 @@ def vstack(states):
 
 def hstack(states):
     """Horizontally stack a list of graph states into a larger graph state. This is,
-    the input of the new MBQC state is the input of the first state, and the output
+    the input of the new MBQC circuit is the input of the first state, and the output
     is the output of the last state.
 
     Group
@@ -426,9 +425,9 @@ def hstack(states):
     return reduce(_hstack2, states)
 
 
-def _vstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
+def _vstack2(state1: MBQCircuit, state2: MBQCircuit) -> MBQCircuit:
     """Vertically stack two graph states into a larger graph state. This is,
-    the input of the new MBQC state is both the input of the first and second
+    the input of the new MBQC circuits is both the input of the first and second
     state, and the output is the output of the first and second state.
 
     Group
@@ -449,19 +448,19 @@ def _vstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
     )
 
     # TODO: Compute flow and partial order
-    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
+    return MBQCircuit(graph, input_nodes, output_nodes, measurements=measurements)
 
 
-def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
+def _hstack2(state1: MBQCircuit, state2: MBQCircuit) -> MBQCircuit:
     """Horizontally stack two graph states into a larger graph state. This is,
-    the input of the new MBQC state is the input of the first state, and the
+    the input of the new MBQC circuit is the input of the first state, and the
     output is the output of the second state.
 
     Args
     ----
-    state1: MBQCState
+    state1: MBQCircuit
         The first state to stack.
-    state2: MBQCState
+    state2: MBQCircuit
         The second state to stack.
 
     Group
@@ -502,10 +501,10 @@ def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
         del measurements[i]
 
     # TODO: Compute flow and partial order
-    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
+    return MBQCircuit(graph, input_nodes, output_nodes, measurements=measurements)
 
 
-def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
+def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     """Draws mbqc circuit with flow.
 
     TODO: Add support for graphs without flow, but with gflow
@@ -546,7 +545,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         fig.patch.set_alpha(0)
         ax.patch.set_alpha(0)
 
-    if fix_wires is None and isinstance(state, MBQCState):
+    if fix_wires is None and isinstance(state, MBQCircuit):
         if state.flow is not None:
             fix_wires = []
             for inp in state.input_nodes:
@@ -562,7 +561,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
     if isinstance(state, GraphState):
         nx.draw(state, ax=ax, **options)
 
-    elif isinstance(state, MBQCState):
+    elif isinstance(state, MBQCircuit):
         fixed_nodes = state.input_nodes + state.output_nodes
         position_xy = {}
         for indx, p in enumerate(state.input_nodes):

@@ -7,7 +7,7 @@ from scipy.special import kl_div, rel_entr
 
 import pennylane as qml
 
-from mentpy.states import MBQCState
+from mentpy.mbqc import MBQCircuit
 from mentpy.simulators import PatternSimulator
 from mentpy.utils.lc_equivalence import are_lc_equivalent
 from mentpy.utils.generate_data import generate_haar_random_states
@@ -34,7 +34,7 @@ def haar_probability_density_of_fidelities(F: float, n_qubits: int):
 
 
 def expressivity_with_histogram(
-    graph_state_circuit: MBQCState,
+    graph_state_circuit: MBQCircuit,
     n_samples: int = 10000,
     n_bins: int = 1000,
     method: str = "KL",
@@ -85,7 +85,7 @@ def expressivity_with_histogram(
 
 
 def sample_probability_density_of_fidelities(
-    graph_state_circuit: MBQCState, n_samples=1000, backend="pennylane"
+    graph_state_circuit: MBQCircuit, n_samples=1000, backend="pennylane"
 ):
     r"""Calculates samples of the probability of fidelities of the given graph state circuit"""
 

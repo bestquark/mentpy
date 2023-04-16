@@ -1,4 +1,4 @@
 import pytest
-from mentpy.states import flow
+from mentpy.mbqc import flow
 
 # write tests

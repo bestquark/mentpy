@@ -1,20 +1,20 @@
 from typing import Union, List, Tuple, Optional
 import numpy as np
 
-from mentpy.states.mbqcstate import MBQCState
+from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
 
 class QiskitSimulator(BaseSimulator):
-    """Simulator for measuring patterns of MBQC states.
+    """Simulator for measuring patterns of MBQC circuits.
     Note
     ----
     This is a placeholder for the Qiskit simulator. It is not yet implemented.
 
     Args
     ----
-    mbqcstate: mp.MBQCState
-        The MBQC state used for the simulation.
+    mbqcircuit: mp.MBQCircuit
+        The MBQC circuit used for the simulation.
     simulator: str
         The simulator to use.
     input_state: np.ndarray
@@ -29,8 +29,8 @@ class QiskitSimulator(BaseSimulator):
     simulators
     """
 
-    def __init__(self, mbqcstate: MBQCState, input_state: np.ndarray = None) -> None:
-        super().__init__(mbqcstate, input_state)
+    def __init__(self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None) -> None:
+        super().__init__(mbqcircuit, input_state)
 
     def measure(self, angle: float, plane: str = "XY", **kwargs):
         raise NotImplementedError

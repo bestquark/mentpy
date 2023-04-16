@@ -2,7 +2,7 @@ import numpy as np
 import scipy
 import cirq
 
-from mentpy import MBQCState
+from mentpy import MBQCircuit
 
 
 def _generate_haar_random_state(n_qubits: int) -> np.ndarray:

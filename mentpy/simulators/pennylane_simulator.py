@@ -3,7 +3,7 @@ from typing import Union, List, Tuple, Optional
 import numpy as np
 
 from mentpy.simulators.base_simulator import BaseSimulator
-from mentpy.states.mbqcstate import MBQCState
+from mentpy.mbqc.mbqcircuit import MBQCircuit
 
 import pennylane as qml
 import networkx as nx
@@ -12,12 +12,12 @@ __all__ = ["PennylaneSimulator"]
 
 
 class PennylaneSimulator(BaseSimulator):
-    """Simulator for measuring patterns of MBQC states.
+    """Simulator for measuring patterns of MBQC circuits.
 
     Args
     ----
-    mbqcstate: mp.MBQCState
-        The MBQC state used for the simulation.
+    mbqcircuit: mp.MBQCircuit
+        The MBQC circuit used for the simulation.
     input_state: np.ndarray
         The input state of the simulator.
 
@@ -31,15 +31,15 @@ class PennylaneSimulator(BaseSimulator):
     """
 
     def __init__(
-        self, mbqcstate: MBQCState, input_state: np.ndarray, *args, **kwargs
+        self, mbqcircuit: MBQCircuit, input_state: np.ndarray, *args, **kwargs
     ) -> None:
-        self.circuit = graphstate_to_circuit(
-            mbqcstate,
+        self.circuit = mbqcircuit_to_circuit(
+            mbqcircuit,
             kwargs.pop("device", "default.qubit"),
             kwargs.pop("circuit_noise", None),
             p=kwargs.pop("p", 0),
         )
-        super().__init__(mbqcstate, input_state)
+        super().__init__(mbqcircuit, input_state)
 
     def measure(self, angle: float, plane: str = "XY"):
         raise NotImplementedError
@@ -48,9 +48,9 @@ class PennylaneSimulator(BaseSimulator):
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
     ) -> Tuple[List[int], np.ndarray]:
 
-        if len(angles) != len(self.mbqcstate.trainable_nodes):
+        if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(
-                f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcstate.trainable_nodes)})."
+                f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcircuit.trainable_nodes)})."
             )
 
         # TODO: Implement this
@@ -64,13 +64,13 @@ class PennylaneSimulator(BaseSimulator):
 
         extended_angles = []
 
-        if len(self.mbqcstate.trainable_nodes) != len(self.mbqcstate.outputc):
-            for i in self.mbqcstate.outputc:
-                if i in self.mbqcstate.trainable_nodes:
-                    angle = angles[self.mbqcstate.trainable_nodes.index(i)]
-                    plane = planes[self.mbqcstate.trainable_nodes.index(i)]
+        if len(self.mbqcircuit.trainable_nodes) != len(self.mbqcircuit.outputc):
+            for i in self.mbqcircuit.outputc:
+                if i in self.mbqcircuit.trainable_nodes:
+                    angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
+                    plane = planes[self.mbqcircuit.trainable_nodes.index(i)]
                 else:
-                    plane = self.mbqcstate.planes[i]
+                    plane = self.mbqcircuit.planes[i]
                     if plane == "X":
                         angle = 0
                     elif plane == "Y":
@@ -92,10 +92,10 @@ class PennylaneSimulator(BaseSimulator):
         self.input_state = input_state
 
 
-def graphstate_to_circuit(
+def mbqcircuit_to_circuit(
     gsc, device="default.qubit", circuit_noise=None, *args, **kwargs
 ):
-    """Converts a MBQCState to a PennyLane circuit."""
+    """Converts a MBQCircuit to a PennyLane circuit."""
     gr = gsc.graph
     N = gr.number_of_nodes()
     dev = qml.device(device, wires=N)
