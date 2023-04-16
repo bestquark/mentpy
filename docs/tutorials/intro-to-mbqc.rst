@@ -19,16 +19,16 @@ In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` 
     mp.draw(mbcirc)
 
 This circuit is designed to implement a single qubit gate on the input qubit, with qubits 
-measured in a left-to-right sequence. To teleport information without modification, we 
-measure qubits :math:0, :math:1, :math:2, and :math:3 in the :math:X basis, resulting in the 
-information being teleported to the output qubit with a byproduct operator :math:Z that depends 
-on the earlier qubits' measurement outcomes.
+measured in a left-to-right sequence. We can use this same circuit to implement a teleportation by 
+measuring qubits :math:`0`, :math:`1`, :math:`2`, and :math:`3` in the :math:`X` basis. However,
+the output qubit with a byproduct operator :math:`Z` that depends on the earlier qubits measurement 
+outcomes.
 
-To build this circuit, apply the :obj:Measurement (or its alias :obj:Ment) operator to the 
-circuit's qubits. The :obj:Measurement object is characterized by an angle and a measurement 
+To build this circuit, we can use the :obj:`Measurement` (or its alias :obj:`Ment`) operator to the 
+circuit's qubits. The :obj:`Measurement` object is characterized by an angle and a measurement 
 plane, which can be "XY", "XZ", or "YZ" ("X", "Y", and "Z" are also accepted), determining the 
-basis in which the qubit is measured. The "XY" plane is most commonly used. The angle can be 
-specified or set to None. If not provided, it will be treated as a trainable parameter.
+basis in which the qubit is measured. The angle can be specified or set to ``None``. 
+If not provided, it will be treated as a trainable parameter.
 
 .. ipython:: python
 
