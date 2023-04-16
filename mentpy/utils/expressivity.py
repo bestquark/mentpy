@@ -23,7 +23,6 @@ def haar_probability_density_of_fidelities(F: float, n_qubits: int):
     ----
     F (float): Fidelity. Must be between :math:`0` and :math:`1`.
     n_qubits (int): Number of qubits. Must be greater than or equal to 1.
-    n_bins (int): Number of bins used in the histogram
 
     Returns
     -------
@@ -129,8 +128,6 @@ def digraph_expressivity_of_flow_space(flow_space: FlowSpace, method="KL", **kwa
     ----
         flow_space (FlowSpace): Graph for which we will calculate the expressivity
         method (str): 'KL' for Kullback-Leiber entropy, 'RE' for relative entropy.
-        n_samples (int): Number of samples to calculate fidelity histogram. 10000 is default.
-        n_bins (int): Number of bins of fidelity histogram. 1000 is default.
     """
 
     expr_digraph = nx.DiGraph()

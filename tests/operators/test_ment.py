@@ -55,7 +55,8 @@ def test_ment_invalid_angle():
     with pytest.raises(ValueError):
         mp.Ment(np.pi, "X")
 
+
 def test_pauli_ments():
-    assert np.allclose(mp.gates.PauliX, mp.Ment(plane = "X").matrix())
-    assert np.allclose(mp.gates.PauliY, mp.Ment(plane = "Y").matrix())
-    assert np.allclose(mp.gates.PauliZ, mp.Ment(plane = "Z").matrix())
+    assert np.allclose(mp.gates.PauliX, mp.Ment(plane="X").matrix())
+    assert np.allclose(mp.gates.PauliY, mp.Ment(plane="Y").matrix())
+    assert np.allclose(mp.gates.PauliZ, mp.Ment(plane="Z").matrix())

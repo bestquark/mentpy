@@ -31,6 +31,7 @@ class GraphState(nx.Graph):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize a graph state. See networkx.Graph for more information."""
         super().__init__(*args, **kwargs)
 
     def __repr__(self):

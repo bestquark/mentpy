@@ -13,6 +13,7 @@ import galois
 
 ## Not used in main MBQC module
 
+
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
 

@@ -58,6 +58,11 @@ class PatternSimulator:
             input_state = 1
             for i in range(len(mbqcircuit.input_nodes)):
                 input_state = np.kron(input_state, np.array([1, 1]) / np.sqrt(2))
+        else:
+            if not isinstance(input_state, np.ndarray):
+                raise TypeError(
+                    f"Input state must be a numpy array, not {type(input_state)}"
+                )
 
         self.simulator = supported_simulators[simulator](
             mbqcircuit, input_state, *args, **kwargs

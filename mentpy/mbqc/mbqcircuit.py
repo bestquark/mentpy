@@ -28,8 +28,8 @@ class MBQCircuit:
         The input nodes of the MBQC circuit.
     output_nodes: list
         The output nodes of the MBQC circuit.
-    wires: Optional[list]
-        The wires of the MBQC circuit.
+    measurements: dict
+        The measurements of the MBQC circuit. The keys are the nodes and the values are the measurements.
 
     Examples
     --------
@@ -57,6 +57,7 @@ class MBQCircuit:
         input_nodes: List[int] = [],
         output_nodes: List[int] = [],
         measurements: Optional[dict[Ment]] = None,
+        default_measurement: Optional[Ment] = Ment("XY"),
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,
         measurement_order: Optional[List[int]] = None,
@@ -100,8 +101,15 @@ class MBQCircuit:
             raise ValueError(
                 f"Output nodes {output_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
             )
+
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
+
+        if not isinstance(default_measurement, Ment):
+            raise ValueError(
+                f"Default measurement {default_measurement} is not an instance of Ment."
+            )
+        self._default_measurement = default_measurement
 
         if measurements is None:
             measurements = {node: Ment(plane="XY") for node in self.outputc}
@@ -124,24 +132,11 @@ class MBQCircuit:
             for node in self.graph.nodes:
                 if node not in measurements:
                     measurements[node] = (
-                        Ment(plane="X") if node in self.outputc else None
+                        self._default_measurement if node in self.outputc else None
                     )
 
         self._measurements = measurements
-
-        # get trainable nodes and planes from measurements
-        trainable_nodes = []
-        planes = {}
-        for node, ment in measurements.items():
-            if ment is not None:
-                if ment.angle is None:
-                    trainable_nodes.append(node)
-                planes[node] = ment.plane
-            else:
-                planes[node] = ""
-
-        self._trainable_nodes = trainable_nodes
-        self._planes = planes
+        self._update_attributes()
 
         if (flow is None) or (partial_order is None):
             flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
@@ -193,6 +188,7 @@ class MBQCircuit:
             raise ValueError(f"Value {value} is not a Measurement object.")
 
         self._measurements[key] = value
+        self._update_attributes()
 
     def __getitem__(self, key):
         r"""Return the value of the measurement of the node with index key."""
@@ -224,6 +220,7 @@ class MBQCircuit:
                 f"Values {measurements.values()} are not Measurement objects."
             )
         self._measurements = measurements
+        self._update_attributes()
 
     @property
     def graph(self) -> GraphState:
@@ -295,6 +292,19 @@ class MBQCircuit:
     def inputc(self):
         r"""Returns :math:`I^c`, the complement of input nodes."""
         return [v for v in self.graph.nodes() if v not in self.input_nodes]
+
+    def _update_attributes(self):
+        trainable_nodes = []
+        planes = {}
+        for node, ment in self._measurements.items():
+            if ment is not None:
+                if ment.angle is None:
+                    trainable_nodes.append(node)
+                planes[node] = ment.plane
+            else:
+                planes[node] = ""
+        self._trainable_nodes = trainable_nodes
+        self._planes = planes
 
     def calculate_order(self):
         r"""Returns the order of the measurements"""
@@ -598,7 +608,6 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             labels = {node: state.planes[node] for node in state.graph.nodes()}
             options["labels"] = labels
         elif options["label"] == "arrow" or options["label"] == "arrows":
-
             plane2arrow = {
                 "X": r"$\uparrow$",
                 "Y": r"$\rightarrow$",
@@ -612,6 +621,19 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             labels = {
                 node: plane2arrow[state.planes[node]] for node in state.graph.nodes()
             }
+            options["labels"] = labels
+
+        elif options["label"] == "angles" or options["label"] == "angle":
+            labels = {}
+            for node in state.graph.nodes():
+                if state.measurements[node] is not None:
+                    if state.measurements[node].angle is not None:
+                        labels[node] = round(state.measurements[node].angle, 3)
+                    else:
+                        labels[node] = r"$\theta$"
+                else:
+                    labels[node] = ""
+
             options["labels"] = labels
 
         else:

@@ -1,5 +1,4 @@
-# simulator module
-
+"""This module contains the different simulators for the MBQCircuit class"""
 from .base_simulator import BaseSimulator
 from .cirq_simulator import *
 from .np_simulator_dm import *

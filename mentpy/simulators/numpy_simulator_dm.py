@@ -76,7 +76,9 @@ class NumpySimulatorDM(BaseSimulator):
 
         self.qstate = self.pure2density(self.input_state)
         # get subgraph of the first window_size nodes
-        self.subgraph = self.mbqcircuit.graph.subgraph(self.schedule[: self.window_size])
+        self.subgraph = self.mbqcircuit.graph.subgraph(
+            self.schedule[: self.window_size]
+        )
 
         self.initial_czs = np.eye(2**self.window_size)
 
