@@ -18,18 +18,17 @@ In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` 
     @savefig 1d_cluster.png width=1000px
     mp.draw(mbcirc)
 
-This circuit can be used for implementing a single qubit gate on the input qubit. The chain
-if measured from left to right, and the information is teleported throughout the chain. To simply
-teleport the information without modifying it, we measure qubits :math:`0`, :math:`1`, :math:`2`, 
-and :math:`3` in the :math:`X` basis, and the information is teleported to the output qubit 
-modulo a byproduct operator :math:`Z` that depends on the measurement outcomes of previous qubits.
+This circuit is designed to implement a single qubit gate on the input qubit, with qubits 
+measured in a left-to-right sequence. To teleport information without modification, we 
+measure qubits :math:0, :math:1, :math:2, and :math:3 in the :math:X basis, resulting in the 
+information being teleported to the output qubit with a byproduct operator :math:Z that depends 
+on the earlier qubits' measurement outcomes.
 
-To implement this circuit, we can set the :obj:`Measurent` (or its alias :obj:`Ment`) operator
-on the qubits of the circuit. The :obj:`Measurement` object is defined by an angle and a 
-measurement plane. The plane can be "XY", "XZ", or "YZ" ("X", "Y", and "Z" are also accepted), 
-and it defines the basis in which the qubit is measured. Most commonly, we measure in the
-"XY" plane. The angle can be set or left as ``None``. If it not given, it will be considered
-a trainable parameter.
+To build this circuit, apply the :obj:Measurement (or its alias :obj:Ment) operator to the 
+circuit's qubits. The :obj:Measurement object is characterized by an angle and a measurement 
+plane, which can be "XY", "XZ", or "YZ" ("X", "Y", and "Z" are also accepted), determining the 
+basis in which the qubit is measured. The "XY" plane is most commonly used. The angle can be 
+specified or set to None. If not provided, it will be treated as a trainable parameter.
 
 .. ipython:: python
 
@@ -51,7 +50,7 @@ Similarly, we can define the same circuit when creating the :obj:`MBQCircuit` ob
 
 If not every measurement is specified, the unspecified measurements will be set to the
 value of the :obj:`default_measurement` attribute of the :obj:`MBQCircuit` object. By default,
-it is set to :math:`XY`, but we can change it to any other `Ment` object. Let's see an example:
+it is set to :math:`XY`, but we can change it to any other :obj:`Ment` object. Let's see an example:
 
 .. ipython:: python
 
