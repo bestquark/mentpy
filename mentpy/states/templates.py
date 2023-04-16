@@ -6,6 +6,7 @@ It has several common ansatzes that can be used for MBQC algorithms
 """
 
 from typing import List
+from mentpy.operators import Ment
 from mentpy.states.resources.graphstate import GraphState
 from mentpy.states.mbqcstate import MBQCState, hstack, merge
 
@@ -179,7 +180,7 @@ def muta(n_wires, n_layers, **kwargs):
             g.trainable_nodes = list(
                 set(g.trainable_nodes) - set([i - 1 for i in g.output_nodes])
             )
-            print(g.trainable_nodes)
+            # TODO! Make soemthing with this...
 
         for connect in range(n_wires):
             if connect != wire:
@@ -230,17 +231,22 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
     gr.add_edge(2, 6)
     gr.add_edge(9, 6)
     sym_block1 = MBQCState(
-        gr, input_nodes=[0, 7], output_nodes=[4, 11], trainable_nodes=[5]
+        gr, input_nodes=[0, 7], output_nodes=[4, 11], measurements={5: Ment(plane="XZ")}
     )
     sym_block2 = MBQCState(
         gr,
         input_nodes=[0, 7],
         output_nodes=[4, 11],
-        trainable_nodes=[5],
-        planes={1: "Y", 3: "Y", 8: "Y", 10: "Y"},
+        measurements={
+            5: Ment(plane="XZ"),
+            1: Ment(plane="Y"),
+            3: Ment(plane="Y"),
+            8: Ment(plane="Y"),
+            10: Ment(plane="Y"),
+        },
     )
     spt_ansatz = many_wires(
-        [3] * n_qubits, trainable_nodes=[3 * i + 1 for i in range(n_qubits)]
+        [3] * n_qubits, measurements={3 * i + 1: Ment() for i in range(n_qubits)}
     )
 
     n_blocks = n_qubits if periodic else n_qubits - 2
@@ -252,7 +258,7 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
                     spt_ansatz,
                     many_wires(
                         [3] * n_qubits,
-                        trainable_nodes=[3 * i + 1 for i in range(n_qubits)],
+                        measurements={3 * i + 1: Ment() for i in range(n_qubits)},
                     ),
                 )
             )

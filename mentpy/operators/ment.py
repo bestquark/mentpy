@@ -22,8 +22,11 @@ class Ment:
         if plane not in allowd_planes:
             raise ValueError(f"Plane {plane} is not supported.")
 
-        if plane in ["X", "Y", "Z"] and (angle is not None and angle != 0):
-            raise ValueError(f"Plane {plane} does not support angle.")
+        if plane in ["X", "Y", "Z"]:
+            if angle is not None and angle != 0:
+                raise ValueError(f"Plane {plane} does not support angle.")
+            else:
+                angle = 0
 
         self._plane = plane
         self._angle = angle
@@ -49,7 +52,7 @@ class Ment:
         if self.angle is None and angle is None:
             raise ValueError("Measurement is trainable, please provide an angle.")
         elif self.angle is not None and angle is not None:
-            raise ValueError("Measurement is not trainable.")
+            raise ValueError(f"Measurement has a fixed angle of {round(self.angle, 4)}")
         elif self.angle is not None:
             angle = self.angle
 

@@ -3,13 +3,14 @@
 """The graph_state module"""
 
 from functools import cached_property, reduce
-from typing import Optional, List, Tuple, Callable, Union, Any
+from typing import Optional, List, Tuple, Callable, Union, Any, Dict
 
 import numpy as np
 import scipy as scp
 import networkx as nx
 import matplotlib.pyplot as plt
 
+from mentpy.operators import Ment
 from mentpy.states.resources.graphstate import GraphState
 from mentpy.states.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
@@ -55,12 +56,11 @@ class MBQCState:
         graph: GraphState,
         input_nodes: List[int] = [],
         output_nodes: List[int] = [],
+        measurements: Optional[dict[Ment]] = None,
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,
         measurement_order: Optional[List[int]] = None,
         gflow: Optional[Callable] = None,
-        trainable_nodes: Optional[List[int]] = None,
-        planes: Optional[dict] = None,
         relabel_indices: bool = True,
     ) -> None:
         """Initializes a graph state"""
@@ -87,10 +87,8 @@ class MBQCState:
                 raise NotImplementedError
             if measurement_order is not None:
                 measurement_order = [mapping[i] for i in measurement_order]
-            if trainable_nodes is not None:
-                trainable_nodes = [mapping[i] for i in trainable_nodes]
-            if planes is not None:
-                planes = {mapping[k]: v for k, v in planes.items()}
+            if measurements is not None:
+                measurements = {mapping[k]: v for k, v in measurements.items()}
 
         self._graph = graph
 
@@ -106,48 +104,44 @@ class MBQCState:
         self._input_nodes = input_nodes
         self._output_nodes = output_nodes
 
-        if trainable_nodes is None:
-            trainable_nodes = list(set(graph.nodes) - set(output_nodes))
+        if measurements is None:
+            measurements = {node: Ment(plane="XY") for node in self.outputc}
+            for node in self.output_nodes:
+                measurements[node] = None
         else:
-            if not all([v in self.graph.nodes for v in trainable_nodes]):
+            if not all([v in self.graph.nodes for v in measurements.keys()]):
+                nodes_not_in_graph = [
+                    v for v in measurements.keys() if v not in self.graph.nodes
+                ]
+                raise ValueError(f"Nodes {nodes_not_in_graph} are not in the graph.")
+            if not all(
+                [isinstance(v, Ment) or v is None for v in measurements.values()]
+            ):
                 raise ValueError(
-                    f"Trainable nodes {trainable_nodes} are not in the graph. Graph nodes are {self.graph.nodes}"
+                    f"Values {measurements.values()} are not instances of Ment."
                 )
 
-        self._trainable_nodes = trainable_nodes
+            # set X Ment in outputc nodes that are not in measurements
+            for node in self.graph.nodes:
+                if node not in measurements:
+                    measurements[node] = (
+                        Ment(plane="X") if node in self.outputc else None
+                    )
 
-        if planes is None:
-            planes = {
-                node: "X"
-                for node in set(graph.nodes) - set(trainable_nodes) - set(output_nodes)
-            }
-            for node in trainable_nodes:
-                planes[node] = "XY"
-            for node in output_nodes:
+        self._measurements = measurements
+
+        # get trainable nodes and planes from measurements
+        trainable_nodes = []
+        planes = {}
+        for node, ment in measurements.items():
+            if ment is not None:
+                if ment.angle is None:
+                    trainable_nodes.append(node)
+                planes[node] = ment.plane
+            else:
                 planes[node] = ""
-        else:
-            for node, plane in planes.items():
-                if node not in graph.nodes:
-                    raise ValueError(
-                        f"Node {node} is not in the graph. Graph nodes are {self.graph.nodes}"
-                    )
-                if plane not in ["X", "Y", "XY", "Z", "XZ", "YZ", ""]:
-                    raise ValueError(
-                        f"Plane {plane} is not a valid plane. Valid planes are 'X', 'Y', 'XY', 'Z', 'XZ', 'YZ', ''"
-                    )
-                if node in trainable_nodes and plane not in ["XY", "XZ", "YZ"]:
-                    raise ValueError(
-                        f"Node {node} is trainable but its plane is {plane}. Trainable nodes must have plane 'XY', 'XZ', or 'YZ'"
-                    )
 
-            for node in set(graph.nodes) - set(planes.keys()):
-                if node in trainable_nodes:
-                    planes[node] = "XY"
-                elif node in output_nodes:
-                    planes[node] = ""
-                else:
-                    planes[node] = "X"
-
+        self._trainable_nodes = trainable_nodes
         self._planes = planes
 
         if (flow is None) or (partial_order is None):
@@ -191,6 +185,46 @@ class MBQCState:
     # if an attribute is not found, look for it in the graph
     def __getattr__(self, name):
         return getattr(self.graph, name)
+
+    def __setitem__(self, key, value):
+        r"""Set the value of the measurement of the node with index key."""
+        if key not in self.graph.nodes:
+            raise ValueError(f"Node {key} is not in the graph.")
+        if not isinstance(value, Ment):
+            raise ValueError(f"Value {value} is not a Measurement object.")
+
+        self._measurements[key] = value
+
+    def __getitem__(self, key):
+        r"""Return the value of the measurement of the node with index key."""
+        try:
+            return self._measurements[key]
+        except KeyError:
+            raise ValueError(f"Node {key} is not in the graph.")
+
+    def __delitem__(self, key):
+        """Delete the measurement of the node with index key."""
+
+        if key not in self.graph.nodes:
+            raise ValueError(f"Node {key} is not in the graph.")
+
+        self._measurements[key] = None
+
+    @property
+    def measurements(self) -> Dict[int, Ment]:
+        r"""Return the measurements of the MBQC circuit."""
+        return self._measurements
+
+    @measurements.setter
+    def measurements(self, measurements: Dict[int, Ment]) -> None:
+        r"""Set the measurements of the MBQC circuit."""
+        if not all([v in self.graph.nodes for v in measurements.keys()]):
+            raise ValueError(f"Nodes {measurements.keys()} are not in the graph.")
+        if not all([isinstance(v, Ment) for v in measurements.values()]):
+            raise ValueError(
+                f"Values {measurements.values()} are not Measurement objects."
+            )
+        self._measurements = measurements
 
     @property
     def graph(self) -> GraphState:
@@ -347,20 +381,17 @@ def merge(state1: MBQCState, state2: MBQCState, along=[]) -> MBQCState:
         if indx not in added_ind
     ]
 
-    trainable_nodes = state1.trainable_nodes + [
-        i + len(state1.graph) for i in state2.trainable_nodes
-    ]
-    planes = dict(state1.planes)
-    planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
+    measurements = dict(state1.measurements)
+    measurements.update(
+        {i + len(state1.graph): ment for i, ment in state2.measurements.items()}
+    )
 
     for (i, j) in along:
         graph.add_edge(i, j + len(state1.graph))
         graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
-        del planes[i]
+        del measurements[i]
 
-    return MBQCState(
-        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
-    )
+    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
 
 
 def vstack(states):
@@ -412,16 +443,13 @@ def _vstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
         i + len(state1.graph) for i in state2.output_nodes
     ]
 
-    trainable_nodes = state1.trainable_nodes + [
-        i + len(state1.graph) for i in state2.trainable_nodes
-    ]
-    planes = dict(state1.planes)
-    planes.update({i + len(state1.graph): plane for i, plane in state2.planes.items()})
+    measurements = dict(state1.measurements)
+    measurements.update(
+        {i + len(state1.graph): plane for i, plane in state2.measurements.items()}
+    )
 
     # TODO: Compute flow and partial order
-    return MBQCState(
-        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
-    )
+    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
 
 
 def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
@@ -462,23 +490,19 @@ def _hstack2(state1: MBQCState, state2: MBQCState) -> MBQCState:
 
     input_nodes = [nodes1.index(i) for i in state1.input_nodes]
     output_nodes = [nodes2.index(j) + len(nodes1) for j in state2.output_nodes]
-    trainable_nodes = [nodes1.index(i) for i in state1.trainable_nodes] + [
-        nodes2.index(i) + len(nodes1) for i in state2.trainable_nodes
-    ]
-    planes = {nodes1.index(i): plane for i, plane in state1.planes.items()}
-    planes.update(
-        {nodes2.index(i) + len(nodes1): plane for i, plane in state2.planes.items()}
+
+    measurements = {nodes1.index(i): ment for i, ment in state1.measurements.items()}
+    measurements.update(
+        {nodes2.index(i) + len(nodes1): ment for i, ment in state2.measurements.items()}
     )
 
     for (i, j) in zip(state1.output_nodes, state2.input_nodes):
         graph.add_edge(i, j + len(state1.graph))
         graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
-        del planes[i]
+        del measurements[i]
 
     # TODO: Compute flow and partial order
-    return MBQCState(
-        graph, input_nodes, output_nodes, trainable_nodes=trainable_nodes, planes=planes
-    )
+    return MBQCState(graph, input_nodes, output_nodes, measurements=measurements)
 
 
 def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
@@ -574,7 +598,7 @@ def draw(state: Union[MBQCState, GraphState], fix_wires=None, **kwargs):
         elif options["label"] == "plane" or options["label"] == "planes":
             labels = {node: state.planes[node] for node in state.graph.nodes()}
             options["labels"] = labels
-        elif options["label"] == "plane-arrow" or options["label"] == "planes-arrow":
+        elif options["label"] == "arrow" or options["label"] == "arrows":
 
             plane2arrow = {
                 "X": r"$\uparrow$",

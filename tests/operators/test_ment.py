@@ -4,14 +4,14 @@ import mentpy as mp
 
 
 def test_ment_initialization():
-    ment = mp.Ment(None, "X")
+    ment = mp.Ment(0, "X")
     assert ment.plane == "X"
-    assert ment.angle is None
+    assert ment.angle == 0
 
 
 def test_ment_repr():
     ment = mp.Ment(None, "X")
-    assert repr(ment) == "Ment(θ, X)"
+    assert repr(ment) == "Ment(0, X)"
 
     ment = mp.Ment(np.pi / 4, "XY")
     assert repr(ment) == f"Ment({round(np.pi / 4, 4)}, XY)"
@@ -29,9 +29,6 @@ def test_ment_is_trainable():
 
 
 def test_ment_matrix():
-    ment = mp.Ment(None, "X")
-    with pytest.raises(ValueError):
-        ment.matrix()
 
     ment = mp.Ment(np.pi / 4, "XY")
     assert np.allclose(

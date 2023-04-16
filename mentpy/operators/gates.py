@@ -20,6 +20,7 @@ TGate = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
 SGate = np.array([[1, 0], [0, 1j]])
 
 
+# TODO: Remove dependency on cirq here
 def random_su(n_qubits: int):
     """Returns a random special unitary in ``n_qubits`` sampled from the Haar distribution."""
     return cirq.testing.random_special_unitary(dim=int(2**n_qubits))

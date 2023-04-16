@@ -34,7 +34,7 @@ class SGDOptimizer(BaseOptimizer):
     optimizers
     """
 
-    def __init__(self, step_size=0.1, momentum=0.9, nesterov=False) -> None:
+    def __init__(self, step_size=0.1, momentum=0.0, nesterov=False) -> None:
         """Initialize the SGD optimizer."""
         self.step_size = step_size
         self.momentum = momentum
