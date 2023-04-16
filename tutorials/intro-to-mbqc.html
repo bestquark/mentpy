@@ -442,15 +442,15 @@ single qubit measurements to perform universal quantum computation. It is equiva
 the standard gate-based model. The main difference is that the gates are not explicitly
 applied to the qubits, but rather a big resource (entangled) state is prepared and logical
 information flows through the system by measuring the qubits of the resource state.</p>
-<p>In <a class="reference internal" href="../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mentpy</span></code></a> we can simulate an MBQC circuit by using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCCircuit</span></code> class.</p>
+<p>In <a class="reference internal" href="../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mentpy</span></code></a> we can simulate an MBQC circuit by using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">gs</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">GraphState</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="n">gs</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
-<span class="gp">In [3]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCState</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="gp">In [3]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
 <span class="gp">In [4]: </span><span class="nb">print</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">)</span>
-<span class="go">MBQCState with 5 nodes and 4 edges</span>
+<span class="go">MBQCircuit with 5 nodes and 4 edges</span>
 </code></pre></div>
 </div>
 <p>We can concatenate two MBQC circuits with the <code class="xref py py-func docutils literal notranslate"><span class="pre">merge()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">hstack()</span></code>, or <code class="xref py py-func docutils literal notranslate"><span class="pre">vstack()</span></code>
