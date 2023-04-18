@@ -51,9 +51,7 @@ class BaseSimulator(abc.ABC):
         """Sets the input state of the simulator."""
         self._input_state = input_state
 
-    def __call__(
-        self, angles: List[float], **kwargs
-    ):
+    def __call__(self, angles: List[float], **kwargs):
         return self.run(angles, **kwargs)
 
     def __repr__(self) -> str:
@@ -71,9 +69,7 @@ class BaseSimulator(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def run(
-        self, parameters: List[float], **kwargs
-    ) -> Tuple[List[int], np.ndarray]:
+    def run(self, parameters: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
         """Measures the state of the system.
 
         Parameters

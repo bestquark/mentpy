@@ -112,7 +112,7 @@ class MBQCircuit:
         self._default_measurement = default_measurement
 
         if measurements is None:
-            measurements = {node: Ment(plane="XY") for node in self.outputc}
+            measurements = {node: default_measurement for node in self.outputc}
             for node in self.output_nodes:
                 measurements[node] = None
         else:
@@ -167,9 +167,7 @@ class MBQCircuit:
 
     def __repr__(self) -> str:
         """Return the representation of the current MBQC circuit state"""
-        return (
-            f"MBQCircuit with {self.graph.number_of_nodes()} qubits."
-        )
+        return f"MBQCircuit with {self.graph.number_of_nodes()} qubits."
 
     def __len__(self) -> int:
         """Return the number of nodes in the MBQCircuit"""
@@ -536,6 +534,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "node_color": [node_colors[node] for node in state.graph.nodes()],
         "font_family": "Dejavu Sans",
         "font_weight": "medium",
+        "font_size": 10,
         "edgecolors": "k",
         "node_size": 500,
         "edge_color": "grey",
@@ -612,8 +611,9 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
                 "Y": r"$\rightarrow$",
                 "XY": r"$\nearrow$",
                 "Z": r"$\cdot$",
-                "XZ": "r$\nearrow$",
-                "YZ": r"$\nearrow$",
+                "XZ": r"$\nwarrow$",
+                "YZ": r"$\nwarrow$",
+                "XYZ": r"$\nwarrow \nearrow$",
                 "": "",
             }
 

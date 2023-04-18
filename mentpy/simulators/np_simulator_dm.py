@@ -96,15 +96,12 @@ class NumpySimulatorDM(BaseSimulator):
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
 
-        self.proyectors_x = self.get_proyectors(0, 0)
-        self.proyectors_y = self.get_proyectors(np.pi / 2, 0)
-
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""
         return self.schedule[
             self.current_measurement : self.current_measurement + self.window_size
         ]
-    
+
     def current_number_simulated_nodes(self) -> int:
         """Returns the number of nodes that are currently simulated."""
         n = self.window_size
@@ -115,10 +112,12 @@ class NumpySimulatorDM(BaseSimulator):
         if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 
-        # self.qstate, outcome = self.measure_angle(angle, 0, force0=self.force0)
-        self.qstate, outcome = self.measure_ment(self.mbqcircuit[self.schedule_measure[self.current_measurement]].set_angle(angle), 
-                                                 0,
-                                                 force0=self.force0)
+        current_ment = self.mbqcircuit[
+            self.schedule_measure[self.current_measurement]
+        ].copy()
+        self.qstate, outcome = self.measure_ment(
+            current_ment.set_angle(angle), 0, force0=self.force0
+        )
 
         self.current_measurement += 1
         self.qstate = self.partial_trace(self.qstate, [0])
@@ -142,9 +141,7 @@ class NumpySimulatorDM(BaseSimulator):
 
         return self.qstate, outcome
 
-    def run(
-        self, angles: List[float]
-    ) -> Tuple[List[int], np.ndarray]:
+    def run(self, angles: List[float]) -> Tuple[List[int], np.ndarray]:
         """Measures the quantum state in the given pattern."""
 
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
@@ -168,11 +165,13 @@ class NumpySimulatorDM(BaseSimulator):
                     )
 
             self.qstate, outcome = self.measure(angle)
-        
+
         # check if output nodes have a measurement, if so, measure them
         for i in self.mbqcircuit.output_nodes:
             if isinstance(self.mbqcircuit[i], Ment):
-                self.qstate, outcome = self.measure_ment(self.mbqcircuit[i], i, force0=self.force0)
+                self.qstate, outcome = self.measure_ment(
+                    self.mbqcircuit[i], i, force0=self.force0
+                )
 
         return self.qstate
 
@@ -269,83 +268,30 @@ class NumpySimulatorDM(BaseSimulator):
         op = ment.matrix()
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
-        
+
         p0 = (np.eye(2) + op) / 2
         p1 = (np.eye(2) - op) / 2
-        p1_extended = self.arbitrary_qubit_gate(p1, i, self.current_number_simulated_nodes())
-        p0_extended = self.arbitrary_qubit_gate(p0, i, self.current_number_simulated_nodes())
+        p1_extended = self.arbitrary_qubit_gate(
+            p1, i, self.current_number_simulated_nodes()
+        )
+        p0_extended = self.arbitrary_qubit_gate(
+            p0, i, self.current_number_simulated_nodes()
+        )
 
         prob0 = np.real(np.trace(self.qstate @ p0_extended))
         prob1 = np.real(np.trace(self.qstate @ p1_extended))
 
         if not force0:
-            outcome = np.random.choice([0, 1], p=[prob0, prob1]/(prob0 + prob1))
+            outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
         else:
             outcome = 0
-        
+
         if outcome == 0:
-            self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T/prob0
+            self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T / prob0
         else:
-            self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T/prob1
+            self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T / prob1
 
         return self.qstate, outcome
-
-    def measure_angle(self, angle, i, force0=False):  # PF: made rho optional argument
-        """
-        Measures qubit i of state rho with an angle
-        """
-        rho = self.qstate
-        n_qubits = self.current_number_simulated_nodes()
-        cond1 = self.window_size == n_qubits
-        if angle == 0 and cond1:
-            pi0, pi1 = self.proyectors_x
-        elif np.isclose(angle, np.pi / 2, atol=1e-3) and cond1:
-            pi0, pi1 = self.proyectors_y
-        else:
-            pi0, pi1 = self.get_proyectors(angle, i, n_qubits=n_qubits, force0=force0)
-
-        prob0 = np.real(np.trace(rho @ pi0))
-
-        if not force0:
-            prob1 = np.around(
-                np.real(np.trace(rho @ pi1)), 10
-            )  # PF: round to deal with deterministic outcomes (0 and 1 can be numerically outside of [0,1])
-            measurement = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
-        elif force0:
-            measurement = 0
-
-        if measurement == 0:
-            rho = pi0 @ rho @ np.conj(pi0.T) / prob0
-        elif measurement == 1:
-            rho = pi1 @ rho @ np.conj(pi1.T) / prob1
-
-        return rho, measurement
-
-    def get_proyectors(self, angle, i, n_qubits=None, force0=False):
-        """
-        Returns the proyectors for the measurement of qubit i with angle
-        """
-        n = n_qubits or self.window_size
-        pi0 = 1
-        pi1 = 1
-        pi0op = np.array([[1, np.exp(-angle * 1j)], [np.exp(angle * 1j), 1]]) / 2
-
-        for k in range(0, n):
-            if k == i:
-                pi0 = np.kron(pi0, pi0op)
-            else:
-                pi0 = np.kron(pi0, np.eye(2))
-
-        if not force0:
-            pi1 = 1
-            pi1op = np.array([[1, -np.exp(-angle * 1j)], [-np.exp(angle * 1j), 1]]) / 2
-            for k in range(0, n):
-                if k == i:
-                    pi1 = np.kron(pi1, pi1op)
-                else:
-                    pi1 = np.kron(pi1, np.eye(2))
-
-        return pi0, pi1
 
     def controlled_z(self, i, j, n):
         """

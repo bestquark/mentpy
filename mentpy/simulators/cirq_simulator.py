@@ -35,9 +35,7 @@ class CirqSimulator(BaseSimulator):
     def measure(self, angle: float, **kwargs):
         raise NotImplementedError
 
-    def run(
-        self, angles: List[float], **kwargs
-    ) -> Tuple[List[int], np.ndarray]:
+    def run(self, angles: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
         raise NotImplementedError
 
     def reset(self, input_state: np.ndarray = None):

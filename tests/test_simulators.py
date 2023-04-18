@@ -14,7 +14,7 @@ class TestSimulators(object):
             ps = mp.simulators.PatternSimulator(gs, simulator=simulator)
             for st in sts:
                 ps.reset(input_state=st)
-                assert len(ps.mbqcircuit.trainable_nodes) == 2 * i
+                assert len(ps.mbqcircuit.trainable_nodes) == 2 * i, f"{ps.mbqcircuit.trainable_nodes} != {2*i}, {simulator} failed"
                 output_dm = ps([0] * (2 * i))
                 expected_dm = np.outer(st, st.conj().T)
                 assert np.allclose(output_dm, expected_dm, atol=1e-3), f"{simulator} failed, {2*i+1} qubits"
