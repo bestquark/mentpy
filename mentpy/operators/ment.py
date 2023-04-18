@@ -26,8 +26,12 @@ class Ment:
             angle = float(angle) if angle is not None else None
             plane = plane if plane is not None else "XY"
         elif isinstance(angle, str):
-            plane = angle
-            angle = None
+            temp_plane = angle
+            if isinstance(plane, (int, float)):
+                angle = float(plane)
+            else:
+                angle = None
+            plane = temp_plane
         else:
             raise TypeError(
                 f"Invalid argument type. Expected float or str but got {type(angle)}"
@@ -58,6 +62,15 @@ class Ment:
     @property
     def angle(self):
         return self._angle
+    
+    @angle.setter
+    def angle(self, angle):
+        self._angle = angle
+    
+    def set_angle(self, angle):
+        # return self.__class__(angle, self.plane)
+        self.angle = angle
+        return self
 
     def is_trainable(self):
         "Returns True if the measurement is trainable."
@@ -73,7 +86,7 @@ class Ment:
             angle = self.angle
 
         if self.plane == "XY":
-            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY
+            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY 
 
         elif self.plane == "XZ":
             matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliZ

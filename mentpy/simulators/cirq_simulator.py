@@ -32,11 +32,11 @@ class CirqSimulator(BaseSimulator):
     def __init__(self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None) -> None:
         super().__init__(mbqcircuit, input_state)
 
-    def measure(self, angle: float, plane: str = "XY", **kwargs):
+    def measure(self, angle: float, **kwargs):
         raise NotImplementedError
 
-    def measure_pattern(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
+    def run(
+        self, angles: List[float], **kwargs
     ) -> Tuple[List[int], np.ndarray]:
         raise NotImplementedError
 

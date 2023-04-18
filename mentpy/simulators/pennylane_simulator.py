@@ -44,7 +44,7 @@ class PennylaneSimulator(BaseSimulator):
     def measure(self, angle: float, plane: str = "XY"):
         raise NotImplementedError
 
-    def measure_pattern(
+    def run(
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
     ) -> Tuple[List[int], np.ndarray]:
 

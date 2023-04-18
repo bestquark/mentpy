@@ -35,7 +35,7 @@ class QiskitSimulator(BaseSimulator):
     def measure(self, angle: float, plane: str = "XY", **kwargs):
         raise NotImplementedError
 
-    def measure_pattern(
+    def run(
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
     ) -> Tuple[List[int], np.ndarray]:
         raise NotImplementedError

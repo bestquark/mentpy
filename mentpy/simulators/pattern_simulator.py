@@ -72,21 +72,21 @@ class PatternSimulator:
         return getattr(self.simulator, name)
 
     def __call__(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
+        self, angles: List[float], **kwargs
     ):
-        return self.measure_pattern(angles, planes, **kwargs)
+        return self.run(angles, **kwargs)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__} ({self.simulator!r})"
 
-    def measure(self, angle: float, plane: str = "XY", **kwargs):
-        return self.simulator.measure(angle, plane, **kwargs)
+    def measure(self, angle: float, **kwargs):
+        return self.simulator.measure(angle, **kwargs)
 
-    def measure_pattern(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
+    def run(
+        self, angles: List[float], **kwargs
     ) -> Tuple[List[int], np.ndarray]:
 
-        return self.simulator.measure_pattern(angles, planes, **kwargs)
+        return self.simulator.run(angles, **kwargs)
 
     def reset(self, input_state: np.ndarray = None):
         return self.simulator.reset(input_state)

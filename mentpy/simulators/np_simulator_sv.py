@@ -75,7 +75,7 @@ class NumpySimulator(BaseSimulator):
         for i in range(self.window_size - n_qubits_input):
             self.input_state = np.kron(self.input_state, qubit_plus)
 
-        self.qstate = self.pure2density(self.input_state)
+        self.qstate = self.input_state.copy()
         # get subgraph of the first window_size nodes
         self.subgraph = self.mbqcircuit.graph.subgraph(
             self.schedule[: self.window_size]
@@ -94,7 +94,7 @@ class NumpySimulator(BaseSimulator):
                     # self.qstate = cz @ self.qstate @ np.conj(cz).T
                     self.initial_czs = cz @ self.initial_czs
 
-        self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
+        self.qstate = self.initial_czs @ self.qstate
 
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""
@@ -133,7 +133,7 @@ class NumpySimulator(BaseSimulator):
 
         return self.qstate, outcome
 
-    def measure_pattern(
+    def run(
         self, angles: List[float], planes: Union[List[str], str] = "XY"
     ) -> Tuple[List[int], np.ndarray]:
         """Measures the quantum state in the given pattern."""

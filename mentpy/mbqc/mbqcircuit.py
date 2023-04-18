@@ -168,8 +168,7 @@ class MBQCircuit:
     def __repr__(self) -> str:
         """Return the representation of the current MBQC circuit state"""
         return (
-            f"MBQCircuit with {self.graph.number_of_nodes()} nodes and "
-            f"{self.graph.number_of_edges()} edges"
+            f"MBQCircuit with {self.graph.number_of_nodes()} qubits."
         )
 
     def __len__(self) -> int:

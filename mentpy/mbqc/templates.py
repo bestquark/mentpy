@@ -231,7 +231,7 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
     gr.add_edge(2, 6)
     gr.add_edge(9, 6)
     sym_block1 = MBQCircuit(
-        gr, input_nodes=[0, 7], output_nodes=[4, 11], measurements={5: Ment(plane="XZ")}
+        gr, input_nodes=[0, 7], output_nodes=[4, 11], measurements={5: Ment(plane="XZ")}, default_measurement=Ment(plane="X")
     )
     sym_block2 = MBQCircuit(
         gr,
@@ -244,9 +244,10 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
             8: Ment(plane="Y"),
             10: Ment(plane="Y"),
         },
+        default_measurement=Ment(plane="X"),
     )
     spt_ansatz = many_wires(
-        [3] * n_qubits, measurements={3 * i + 1: Ment() for i in range(n_qubits)}
+        [3] * n_qubits, measurements={3 * i + 1: Ment() for i in range(n_qubits)}, default_measurement=Ment(plane="X")
     )
 
     n_blocks = n_qubits if periodic else n_qubits - 2
@@ -259,6 +260,7 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
                     many_wires(
                         [3] * n_qubits,
                         measurements={3 * i + 1: Ment() for i in range(n_qubits)},
+                        default_measurement=Ment(plane="X"),
                     ),
                 )
             )

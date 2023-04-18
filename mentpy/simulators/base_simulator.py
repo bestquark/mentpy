@@ -52,38 +52,34 @@ class BaseSimulator(abc.ABC):
         self._input_state = input_state
 
     def __call__(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
+        self, angles: List[float], **kwargs
     ):
-        return self.measure_pattern(angles, planes, **kwargs)
+        return self.run(angles, **kwargs)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__} for {self.mbqcircuit}"
 
     @abc.abstractmethod
-    def measure(self, angle: float, plane: str = "XY", **kwargs):
+    def measure(self, angle: float, **kwargs):
         """Measures the state of the system.
 
         Parameters
         ----------
         angle: float
             The angle of measurement.
-        plane: str
-            The plane of measurement.
         """
         pass
 
     @abc.abstractmethod
-    def measure_pattern(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
+    def run(
+        self, parameters: List[float], **kwargs
     ) -> Tuple[List[int], np.ndarray]:
         """Measures the state of the system.
 
         Parameters
         ----------
-        angles: List[float]
-            The angles of measurement.
-        planes: List[str]
-            The planes of measurement.
+        parameters: List[float]
+            The parameters of the MBQC circuit (if any).
         """
         pass
 
