@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page::  mentpy.NumpySimulatorDM.measure_angle
+.. python-apigen-entity-page::  mentpy.Measurement.copy
 
