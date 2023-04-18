@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page::  mentpy.NumpySimulatorDM.measure_pattern
+.. python-apigen-entity-page::  mentpy.QiskitSimulator.run
 

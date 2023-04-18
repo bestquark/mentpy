@@ -6,5 +6,5 @@
 
 
 
-.. python-apigen-entity-page::  mentpy.CirqSimulator.measure_pattern
+.. python-apigen-entity-page::  mentpy.PennylaneSimulator.run
 

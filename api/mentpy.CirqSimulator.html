@@ -629,8 +629,8 @@
   
   
     <li class="md-nav__item">
-      <a href="mentpy.CirqSimulator.measure_pattern.html" class="md-nav__link">
-        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.measure_pattern (Python method) — Measures the state of the system." class="md-ellipsis">measure_<wbr>pattern</span>
+      <a href="mentpy.CirqSimulator.reset.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.reset (Python method) — Resets the simulator to the initial state." class="md-ellipsis">reset</span>
       </a>
     </li>
   
@@ -644,8 +644,8 @@
   
   
     <li class="md-nav__item">
-      <a href="mentpy.CirqSimulator.reset.html" class="md-nav__link">
-        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.reset (Python method) — Resets the simulator to the initial state." class="md-ellipsis">reset</span>
+      <a href="mentpy.CirqSimulator.run.html" class="md-nav__link">
+        <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.run (Python method) — Measures the state of the system." class="md-ellipsis">run</span>
       </a>
     </li>
   
@@ -753,15 +753,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="mentpy.CirqSimulator.measure_pattern.html" class="md-nav__link">
-    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.measure_pattern (Python method) — Measures the state of the system." class="md-ellipsis">measure_<wbr>pattern</span>
+  <a href="mentpy.CirqSimulator.reset.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.reset (Python method) — Resets the simulator to the initial state." class="md-ellipsis">reset</span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="mentpy.CirqSimulator.reset.html" class="md-nav__link">
-    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.reset (Python method) — Resets the simulator to the initial state." class="md-ellipsis">reset</span>
+  <a href="mentpy.CirqSimulator.run.html" class="md-nav__link">
+    <span aria-label="Python method" class="objinfo-icon objinfo-icon__procedure" title="Python method">M</span><span title="mentpy.CirqSimulator.run (Python method) — Measures the state of the system." class="md-ellipsis">run</span>
   </a>
   
 </li>
@@ -976,20 +976,14 @@
 <h2 id="special-methods">Special methods<a class="headerlink" href="#special-methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname reference internal" href="mentpy.BaseSimulator.__call__.html" title="mentpy.BaseSimulator.__call__ (Python method) — Call self as a function."><span class="sig-name descname"><span class="pre">__call__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">planes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;XY&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span></em></span><span class="sig-paren">)</span></dt>
+<a class="sig-name descname reference internal" href="mentpy.BaseSimulator.__call__.html" title="mentpy.BaseSimulator.__call__ (Python method) — Call self as a function."><span class="sig-name descname"><span class="pre">__call__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Call self as a function.</p>
 </dd></dl>
 
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.CirqSimulator.measure.html" title="mentpy.CirqSimulator.measure (Python method) — Measures the state of the system."><span class="sig-name descname pseudo-toc-entry"><span class="pre">measure</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.CirqSimulator.measure.html#p-angle" title="mentpy.CirqSimulator.measure.angle (Python parameter) — The angle of measurement."><span class="n"><span class="pre">angle</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.CirqSimulator.measure.html#p-plane" title="mentpy.CirqSimulator.measure.plane (Python parameter) — The plane of measurement."><span class="n"><span class="pre">plane</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="s1">&#39;XY&#39;</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Measures the state of the system.</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.CirqSimulator.measure_pattern.html" title="mentpy.CirqSimulator.measure_pattern (Python method) — Measures the state of the system."><span class="sig-name descname pseudo-toc-entry"><span class="pre">measure_pattern</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.CirqSimulator.measure_pattern.html#p-angles" title="mentpy.CirqSimulator.measure_pattern.angles (Python parameter) — The angles of measurement."><span class="n"><span class="pre">angles</span></span></a></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="p"><span class="pre">...</span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.CirqSimulator.measure.html" title="mentpy.CirqSimulator.measure (Python method) — Measures the state of the system."><span class="sig-name descname pseudo-toc-entry"><span class="pre">measure</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.CirqSimulator.measure.html#p-angle" title="mentpy.CirqSimulator.measure.angle (Python parameter) — The angle of measurement."><span class="n"><span class="pre">angle</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Measures the state of the system.</p>
 </dd></dl>
 
@@ -997,6 +991,12 @@
 <dt class="sig sig-object highlight py">
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.CirqSimulator.reset.html" title="mentpy.CirqSimulator.reset (Python method) — Resets the simulator to the initial state."><span class="sig-name descname pseudo-toc-entry"><span class="pre">reset</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">input_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Resets the simulator to the initial state.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.CirqSimulator.run.html" title="mentpy.CirqSimulator.run (Python method) — Measures the state of the system."><span class="sig-name descname pseudo-toc-entry"><span class="pre">run</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
+<dd><p>Measures the state of the system.</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
