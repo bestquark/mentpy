@@ -46,7 +46,7 @@ class PatternSimulator:
             # "cirq": CirqSimulator,
             # "qiskit": QiskitSimulator,
             "numpy-dm": NumpySimulatorDM,
-            "numpy": NumpySimulator,
+            "numpy-sv": NumpySimulatorSV,
         }
 
         if simulator not in supported_simulators:

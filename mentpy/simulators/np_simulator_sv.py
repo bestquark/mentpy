@@ -20,8 +20,8 @@ q_zero = np.array([1, 0])
 qubit_plus = H @ q_zero
 
 
-class NumpySimulator(BaseSimulator):
-    """A density matrix simulator that uses numpy to simulate the quantum circuit."""
+class NumpySimulatorSV(BaseSimulator):
+    """A vector state simulator that uses numpy to simulate the quantum circuit."""
 
     def __init__(
         self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None, **kwargs
@@ -128,12 +128,12 @@ class NumpySimulator(BaseSimulator):
         )
 
         self.current_measurement += 1
-        self.qstate = self.partial_trace(self.qstate, [0])
+        self.qstate = self.partial_trace_pure_state(self.qstate, [0])
 
         if self.current_measurement + self.window_size <= len(
             self.mbqcircuit.graph.nodes
         ):
-            self.qstate = np.kron(self.qstate, self.pure2density(qubit_plus))
+            self.qstate = np.kron(self.qstate, qubit_plus)
             new_qubit = self.current_simulated_nodes()[-1]
 
             # get neighbours of new qubit
@@ -149,8 +149,15 @@ class NumpySimulator(BaseSimulator):
 
         return self.qstate, outcome
 
-    def run(self, angles: List[float]) -> Tuple[List[int], np.ndarray]:
-        """Measures the quantum state in the given pattern."""
+    def run(
+        self, angles: List[float], output_form="dm"
+    ) -> Tuple[List[int], np.ndarray]:
+        """Measures the quantum state in the given pattern.
+
+        Args:
+            angles (List[float]): List of angles to be used for the measurements.
+            output_form (str): Output form of the quantum state. Can be 'dm' for density matrix or 'sv' for statevector.
+        """
 
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(
@@ -180,8 +187,12 @@ class NumpySimulator(BaseSimulator):
                 self.qstate, outcome = self.measure_ment(
                     self.mbqcircuit[i], i, force0=self.force0
                 )
-
-        return self.qstate
+        if output_form.lower() == "dm" or output_form.lower() == "densitymatrix":
+            return np.outer(self.qstate, np.conj(self.qstate).T)
+        elif output_form.lower() == "sv" or output_form.lower() == "statevector":
+            return self.qstate
+        else:
+            raise ValueError(f"Output form {output_form} is not supported.")
 
     def reset(self, input_state: np.ndarray = None):
         """Resets the simulator to the initial state."""
@@ -192,7 +203,7 @@ class NumpySimulator(BaseSimulator):
             for i in range(self.window_size - len(self.mbqcircuit.input_nodes)):
                 self.input_state = np.kron(self.input_state, qubit_plus)
 
-        self.qstate = self.pure2density(self.input_state)
+        self.qstate = self.input_state
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
 
@@ -246,33 +257,41 @@ class NumpySimulator(BaseSimulator):
                 op3 = np.kron(op3, np.eye(2))
         return op1 + op2 + op3 + op4
 
-    def partial_trace(self, rho, indices):
-        """
-        Partial trace of state rho over some indices
-        """
-        x, y = rho.shape
-        n = int(math.log(x, 2))
-        r = len(indices)
-        sigma = np.zeros((int(x / (2**r)), int(y / (2**r))))
-        for m in range(0, 2**r):
-            qubits = format(m, "0" + f"{r}" + "b")
-            ptrace = 1
-            for k in range(0, n):
-                if k in indices:
-                    idx = indices.index(k)
-                    if qubits[idx] == "0":
-                        ptrace = np.kron(ptrace, np.array([[1], [0]]))
-                    elif qubits[idx] == "1":
-                        ptrace = np.kron(ptrace, np.array([[0], [1]]))
-                else:
-                    ptrace = np.kron(ptrace, np.eye(2))
-            sigma = sigma + np.conjugate(ptrace.T) @ rho @ (ptrace)
-        return sigma
+    def partial_trace_pure_state(self, psi, indices):
+        """Partial trace of a pure state over some indices. It is asumed that the indices
+        over which the trace is taken are unentangled with the rest of the rest of the system."""
+        n = int(np.log2(len(psi)))
+        indices_to_keep = [x for x in range(n) if x not in indices]
+        preserved_dim = 2 ** len(indices_to_keep)
 
-    def measure_ment(self, ment: Ment, i, force0=False):
+        # Reshape the state vector into a tensor with shape (2, 2, ..., 2)
+        reshaped_psi = psi.reshape([2] * n)
+
+        # Move the preserved dimensions to the front and traced dimensions to the back
+        reshaped_psi = np.moveaxis(
+            reshaped_psi, indices_to_keep, range(len(indices_to_keep))
+        )
+
+        # Select the appropriate elements from the reshaped tensor
+        index_slice = [0] * len(
+            indices
+        )  # assuming that the traced qubits are in state |0>
+        reshaped_psi = reshaped_psi[tuple(index_slice)]
+
+        # Reshape back into a vector with shape (preserved_dim,)
+        output_state = reshaped_psi.reshape((preserved_dim,))
+
+        return output_state
+
+    def measure_ment(self, ment: Ment, i, force0=True):
         """
         Measures a ment
         """
+        if ment.plane not in ["X", "Y", "XY"]:
+            raise ValueError(
+                f"Plane {ment.plane} is not supported for state vector numpy simulator."
+            )
+
         op = ment.matrix()
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
@@ -286,8 +305,8 @@ class NumpySimulator(BaseSimulator):
             p0, i, self.current_number_simulated_nodes()
         )
 
-        prob0 = np.real(np.trace(self.qstate @ p0_extended))
-        prob1 = np.real(np.trace(self.qstate @ p1_extended))
+        prob0 = np.abs(np.vdot(self.qstate, p0_extended @ self.qstate)) ** 2
+        prob1 = np.abs(np.vdot(self.qstate, p1_extended @ self.qstate)) ** 2
 
         if not force0:
             outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
@@ -295,9 +314,11 @@ class NumpySimulator(BaseSimulator):
             outcome = 0
 
         if outcome == 0:
-            self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T / prob0
+            self.qstate = p0_extended @ self.qstate
+            self.qstate /= np.linalg.norm(self.qstate)
         else:
-            self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T / prob1
+            self.qstate = p1_extended @ self.qstate
+            self.qstate /= np.linalg.norm(self.qstate)
 
         return self.qstate, outcome
 
@@ -359,10 +380,3 @@ class NumpySimulator(BaseSimulator):
                 op4 = np.kron(op4, np.eye(2))
 
         return op1 + op2 + op3 + op4
-
-    def pure2density(self, psi):
-        """
-        Input: quantum state
-        Output: corresponding density matrix
-        """
-        return np.outer(psi, np.conj(psi).T)
