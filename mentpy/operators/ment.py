@@ -8,51 +8,94 @@ from .gates import PauliX, PauliY, PauliZ
 class MentOutcome:
     """Measurement outcome class."""
 
-    def __init__(self, outcome: Callable[..., bool]):
+    def __init__(self, outcome: Callable[..., bool], node_id = None, cond_nodes = None):
         self._outcome = outcome
+        self._node_id = node_id
+        self._cond_nodes = cond_nodes if cond_nodes is not None else (set([node_id]) if node_id is not None else set())
+    
+    @property
+    def node_id(self):
+        return self._node_id
+    
+    @node_id.setter
+    def node_id(self, node_id):
+        self._node_id = node_id
+    
+    @property
+    def cond_nodes(self):
+        return self._cond_nodes
 
     def __repr__(self) -> str:
         return f"Measurement Outcome"
     
     def __call__(self, *args, **kwargs):
-        return self._outcome(*args, **kwargs)
+        try:
+            return self._outcome(*args, **kwargs)
+        except:
+            raise UserWarning("Could not evaluate callable at given")
 
-    def __mul__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
-        if isinstance(other, bool):
-            return MentOutcome(lambda x: bool(self._outcome(x) * other))
-        elif isinstance(other, int):
-            return MentOutcome(lambda x: bool(self._outcome(x) * other))
-        elif isinstance(other, Callable):
-            return MentOutcome(lambda x: bool(self._outcome(x) * other(x)))
+    def _binary_operation(self, operation, other):
+        if isinstance(other, (bool, int)):
+            return MentOutcome(lambda x: bool(operation(self._outcome(x), other)), cond_nodes=self._cond_nodes)
         elif isinstance(other, MentOutcome):
-            return MentOutcome(lambda x: bool(self._outcome(x) * other._outcome(x)))
-        else:
-            raise TypeError(f"Invalid type {type(other)}")
-    
-    def __add__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
-        if isinstance(other, bool):
-            return MentOutcome(lambda x: bool(self._outcome(x) + other))
-        elif isinstance(other, int):
-            return MentOutcome(lambda x: bool(self._outcome(x) + other))
+            return MentOutcome(lambda x: bool(operation(self._outcome(x), other._outcome(x))), cond_nodes=self._cond_nodes | other._cond_nodes)
         elif isinstance(other, Callable):
-            return MentOutcome(lambda x: bool(self._outcome(x) + other(x)))
-        elif isinstance(other, MentOutcome):
-            return MentOutcome(lambda x: bool(self._outcome(x) + other._outcome(x)))
-        else:
-            raise TypeError(f"Invalid type {type(other)}")
-    
-    def __sub__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
-        if isinstance(other, bool):
-            return MentOutcome(lambda x: bool(self._outcome(x) - other))
-        elif isinstance(other, int):
-            return MentOutcome(lambda x: bool(self._outcome(x) - other))
-        elif isinstance(other, Callable):
-            return MentOutcome(lambda x: bool(self._outcome(x) - other(x)))
-        elif isinstance(other, MentOutcome):
-            return MentOutcome(lambda x: bool(self._outcome(x) - other._outcome(x)))
+            return MentOutcome(lambda x: bool(operation(self._outcome(x), other(x))), cond_nodes=self._cond_nodes)
         else:
             raise TypeError(f"Invalid type {type(other)}")
 
+    def __mul__(self, other):
+        return self._binary_operation(lambda x, y: x * y, other)
+
+    def __add__(self, other):
+        return self._binary_operation(lambda x, y: x + y, other)
+
+    def __sub__(self, other):
+        return self._binary_operation(lambda x, y: x - y, other)
+
+    def __truediv__(self, other):
+        return self._binary_operation(lambda x, y: x / y, other)
+
+    def __floordiv__(self, other):
+        return self._binary_operation(lambda x, y: x // y, other)
+
+    def __mod__(self, other):
+        return self._binary_operation(lambda x, y: x % y, other)
+
+    def __pow__(self, other):
+        return self._binary_operation(lambda x, y: x ** y, other)
+
+    def __eq__(self, other):
+        return self._binary_operation(lambda x, y: x == y, other)
+
+    def __ne__(self, other):
+        return self._binary_operation(lambda x, y: x != y, other)
+    
+    def __lt__(self, other):
+        return self._binary_operation(lambda x, y: x < y, other)
+    
+    def __le__(self, other):
+        return self._binary_operation(lambda x, y: x <= y, other)
+    
+    def __gt__(self, other):
+        return self._binary_operation(lambda x, y: x > y, other)
+    
+    def __ge__(self, other):
+        return self._binary_operation(lambda x, y: x >= y, other)
+    
+    def __and__(self, other):
+        return self._binary_operation(lambda x, y: x and y, other)
+    
+    def __or__(self, other):
+        return self._binary_operation(lambda x, y: x or y, other)
+    
+    def __xor__(self, other):
+        return self._binary_operation(lambda x, y: x ^ y, other)
+    
+    def __invert__(self):
+        return MentOutcome(lambda x: not self._outcome(x))
+
+    
 
 class Ment:
     """Measurement operator.
@@ -134,7 +177,7 @@ class Ment:
     @node_id.setter
     def node_id(self, node_id: Any):
         self._node_id = node_id
-        self._outcome = MentOutcome(lambda x: x[self._node_id])
+        self._outcome = MentOutcome(lambda x: x[self._node_id], self._node_id)
 
     def set_angle(self, angle):
         "Sets the angle of the measurement."
@@ -149,7 +192,7 @@ class Ment:
         "Returns True if the measurement is trainable."
         return self.angle is None and self.plane in ["XY", "XZ", "YZ", "XYZ"]
 
-    def matrix(self, angle: Optional[float] = None):
+    def matrix(self, angle: Optional[float] = None, *args, **kwargs):
         "Returns the matrix representation of the measurement."
         if self.angle is None and angle is None:
             raise ValueError("Measurement is trainable, please provide an angle.")

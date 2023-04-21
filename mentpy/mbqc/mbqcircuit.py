@@ -10,7 +10,7 @@ import scipy as scp
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from mentpy.operators import Ment
+from mentpy.operators import Ment, ControlMent
 from mentpy.mbqc.states.graphstate import GraphState
 from mentpy.mbqc.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
@@ -185,8 +185,9 @@ class MBQCircuit:
             raise ValueError(f"Value {value} is not a Measurement object.")
 
         self._measurements[key] = value
-        self._update_attributes_key(key)
-        
+        # self._update_attributes_key(key)
+        self._update_attributes()
+
     def __getitem__(self, key):
         r"""Return the value of the measurement of the node with index key."""
         try:
@@ -249,6 +250,11 @@ class MBQCircuit:
         self._trainable_nodes = trainable_nodes
 
     @property
+    def controlled_nodes(self) -> List[int]:
+        r"""Return the controlled nodes of the MBQC circuit."""
+        return self._controlled_nodes
+
+    @property
     def planes(self) -> dict:
         r"""Return the planes of the MBQC circuit."""
         return self._planes
@@ -292,17 +298,24 @@ class MBQCircuit:
 
     def _update_attributes(self) -> None:
         trainable_nodes = []
+        controlled_nodes = []
         planes = {}
         for nodei, menti in self._measurements.items():
             if menti is not None:
+
+                if isinstance(menti, ControlMent):
+                    controlled_nodes.append(nodei)
+                    
                 if menti.angle is None:
                     trainable_nodes.append(nodei)
+
                 planes[nodei] = menti.plane
                 self._measurements[nodei] = copy.deepcopy(menti)
                 self._measurements[nodei].node_id = nodei
             else:
                 planes[nodei] = ""
         self._trainable_nodes = trainable_nodes
+        self._controlled_nodes = controlled_nodes
         self._planes = planes
     
     def _update_attributes_key(self, key) -> None:
@@ -533,6 +546,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     """Draws mbqc circuit with flow.
 
     TODO: Add support for graphs without flow, but with gflow
+    TODO: Improve fix when there are control nodes
 
     Group
     -----
@@ -542,6 +556,8 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     for i in state.graph.nodes():
         if i in state.output_nodes:
             node_colors[i] = "#ADD8E6"
+        elif i in state.controlled_nodes:
+            node_colors[i] = "#9370DB"
         elif i in set(state.nodes()) - set(state.trainable_nodes):
             node_colors[i] = "#CCCCCC"
         else:
@@ -560,9 +576,12 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "label": "indices",
         "transparent": True,
         "figsize": (8, 3),
+        "show_controls": True,
     }
 
     options.update(kwargs)
+
+    show_controls = options.pop("show_controls")
 
     transp = options.pop("transparent")
     fig, ax = plt.subplots(figsize=options.pop("figsize"))
@@ -622,6 +641,8 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             pass
         elif options["label"] == "plane" or options["label"] == "planes":
             labels = {node: state.planes[node] for node in state.graph.nodes()}
+            for node in state.controlled_nodes:
+                labels[node] = "Ctrl"
             options["labels"] = labels
         elif options["label"] == "arrow" or options["label"] == "arrows":
             plane2arrow = {
@@ -638,6 +659,8 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             labels = {
                 node: plane2arrow[state.planes[node]] for node in state.graph.nodes()
             }
+            for node in state.controlled_nodes:
+                labels[node] = "Ctrl"
             options["labels"] = labels
 
         elif options["label"] == "angles" or options["label"] == "angle":
@@ -665,6 +688,13 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         nx.draw(state.graph, ax=ax, pos=node_pos, **options)
         if state.flow is not None:
             nx.draw(_graph_with_flow(state), pos=node_pos, ax=ax, **options)
+        if show_controls:
+            dashed_edges = []
+            for node in state.controlled_nodes:
+                for k in state.measurements[node].condition.cond_nodes:
+                    dashed_edges.append((node, k))
+            nx.draw_networkx_edges(state.graph, pos=node_pos, edge_color='#CCCCCC',width=1.5, edgelist=dashed_edges, style="dashed")
+
 
 
 def _graph_with_flow(state):

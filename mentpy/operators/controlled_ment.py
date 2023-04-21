@@ -3,13 +3,13 @@ import numpy as np
 import warnings
 
 from .gates import PauliX, PauliY, PauliZ
-from .ment import Ment
+from .ment import Ment, MentOutcome
 
 class ControlMent(Ment):
 
     def __init__(
         self,
-        condition: Optional[Union[bool, Callable[..., bool]]] =  None,
+        condition: Optional[Union[bool, MentOutcome]] =  None,
         true_angle: Optional[Union[int, float, tuple, str]] = None,
         true_plane: Optional[str] = "XY",
         false_angle: Optional[Union[int, float, tuple, str]] = 0,
@@ -18,43 +18,53 @@ class ControlMent(Ment):
         """Controlled measurement operator."""
         super().__init__(angle=false_angle, plane=false_plane)
         true_ment = Ment(angle=true_angle, plane=true_plane)
-        self._condition = condition
         self._true_ment = true_ment
+        self._condition = condition
     
     def __repr__(self) -> str:
-        if self.condition:
-            return self._true_ment.__repr__()
-        else:
-            return super().__repr__()
+        return f"ControlMent(False: {super().__repr__()}, True: {repr(self._true_ment)})"
         
     @property
     def condition(self) -> bool:
         if isinstance(self._condition, bool):
+            return lambda x: self._condition
+        elif isinstance(self._condition, MentOutcome):
             return self._condition
-        elif isinstance(self._condition, Callable):
-            return self._condition()
     
     @condition.setter
     def condition(self, condition):
-        if not isinstance(condition, (bool, Callable[..., bool])):
+        if not isinstance(condition, (bool, MentOutcome)):
             raise TypeError(
-                f"Invalid argument type. Expected bool or Callable[..., bool] but got {type(condition)}"
+                f"Invalid argument type. Expected bool or MentOutcome but got {type(condition)}"
             )
         self._condition = condition
     
     @property
-    def angle(self):
-        if self.condition:
-            return self._true_ment.angle
+    def angle(self, *args, **kwargs):
+        if args == () and kwargs == {}:
+            if self._true_ment.angle is None or super().angle is None:
+                return None
+            else:
+                return super().angle
         else:
-            return super().angle
+            if self.condition(*args, **kwargs):
+                return self._true_ment.angle
+            else:
+                return super().angle
     
+
     @property
-    def plane(self):
-        if self.condition:
-            return self._true_ment.plane
+    def plane(self, *args, **kwargs):
+        if args == () and kwargs == {}:
+            if self._true_ment.plane is None or super().plane is None:
+                return None
+            else:
+                return super().plane
         else:
-            return super().plane
+            if self.condition(*args, **kwargs):
+                return self._true_ment.plane
+            else:
+                return super().plane
     
     @property
     def is_trainable(self):
@@ -64,9 +74,9 @@ class ControlMent(Ment):
         return ControlMent(self.condition, self._true_ment.angle, self._true_ment.plane,
                            self.angle, self.plane)
 
-    def matrix(self, angle):
+    def matrix(self, angle, *args, **kwargs):
         """Return the matrix of the controlled measurement operator."""
-        if self.condition:
+        if self.condition(*args, **kwargs):
             return self._true_ment.matrix(angle)
         else:
             return super().matrix(angle)

@@ -30,7 +30,10 @@ class QiskitSimulator(BaseSimulator):
     """
 
     def __init__(self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None) -> None:
+        
         super().__init__(mbqcircuit, input_state)
+
+        raise NotImplementedError
 
     def measure(self, angle: float, plane: str = "XY", **kwargs):
         raise NotImplementedError

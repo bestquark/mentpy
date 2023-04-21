@@ -95,6 +95,7 @@ class NumpySimulatorDM(BaseSimulator):
                     self.initial_czs = cz @ self.initial_czs
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
+        self.outcomes = {}
 
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""
@@ -116,8 +117,10 @@ class NumpySimulatorDM(BaseSimulator):
             self.schedule_measure[self.current_measurement]
         ].copy()
         self.qstate, outcome = self.measure_ment(
-            current_ment.set_angle(angle), 0, force0=self.force0
+            current_ment, angle, 0, force0=self.force0
         )
+
+        self.outcomes[self.schedule_measure[self.current_measurement]] = outcome
 
         self.current_measurement += 1
         self.qstate = self.partial_trace(self.qstate, [0])
@@ -170,8 +173,9 @@ class NumpySimulatorDM(BaseSimulator):
         for i in self.mbqcircuit.output_nodes:
             if isinstance(self.mbqcircuit[i], Ment):
                 self.qstate, outcome = self.measure_ment(
-                    self.mbqcircuit[i], i, force0=self.force0
+                    self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
                 )
+                self.outcomes[i] = outcome
 
         return self.qstate
 
@@ -187,6 +191,7 @@ class NumpySimulatorDM(BaseSimulator):
         self.qstate = self.pure2density(self.input_state)
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
+        self.outcomes = {}
 
     def arbitrary_qubit_gate(self, u, i, n):
         """
@@ -261,11 +266,11 @@ class NumpySimulatorDM(BaseSimulator):
             sigma = sigma + np.conjugate(ptrace.T) @ rho @ (ptrace)
         return sigma
 
-    def measure_ment(self, ment: Ment, i, force0=False):
+    def measure_ment(self, ment: Ment, angle, i, force0=False):
         """
         Measures a ment
         """
-        op = ment.matrix()
+        op = ment.matrix(angle, self.outcomes)
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
