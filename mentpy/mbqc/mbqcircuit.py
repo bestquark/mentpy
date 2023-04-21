@@ -557,7 +557,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         if i in state.output_nodes:
             node_colors[i] = "#ADD8E6"
         elif i in state.controlled_nodes:
-            node_colors[i] = "#9370DB"
+            node_colors[i] = "#A88FE8"
         elif i in set(state.nodes()) - set(state.trainable_nodes):
             node_colors[i] = "#CCCCCC"
         else:
