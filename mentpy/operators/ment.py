@@ -1,8 +1,57 @@
-from typing import Optional, Union
+from typing import Optional, Union, Callable, Any
 import numpy as np
 import warnings
 
 from .gates import PauliX, PauliY, PauliZ
+
+
+class MentOutcome:
+    """Measurement outcome class."""
+
+    def __init__(self, outcome: Callable[..., bool]):
+        self._outcome = outcome
+
+    def __repr__(self) -> str:
+        return f"Measurement Outcome"
+    
+    def __call__(self, *args, **kwargs):
+        return self._outcome(*args, **kwargs)
+
+    def __mul__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
+        if isinstance(other, bool):
+            return MentOutcome(lambda x: bool(self._outcome(x) * other))
+        elif isinstance(other, int):
+            return MentOutcome(lambda x: bool(self._outcome(x) * other))
+        elif isinstance(other, Callable):
+            return MentOutcome(lambda x: bool(self._outcome(x) * other(x)))
+        elif isinstance(other, MentOutcome):
+            return MentOutcome(lambda x: bool(self._outcome(x) * other._outcome(x)))
+        else:
+            raise TypeError(f"Invalid type {type(other)}")
+    
+    def __add__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
+        if isinstance(other, bool):
+            return MentOutcome(lambda x: bool(self._outcome(x) + other))
+        elif isinstance(other, int):
+            return MentOutcome(lambda x: bool(self._outcome(x) + other))
+        elif isinstance(other, Callable):
+            return MentOutcome(lambda x: bool(self._outcome(x) + other(x)))
+        elif isinstance(other, MentOutcome):
+            return MentOutcome(lambda x: bool(self._outcome(x) + other._outcome(x)))
+        else:
+            raise TypeError(f"Invalid type {type(other)}")
+    
+    def __sub__(self, other: Union[bool, int, Callable[..., bool], "MentOutcome"]):
+        if isinstance(other, bool):
+            return MentOutcome(lambda x: bool(self._outcome(x) - other))
+        elif isinstance(other, int):
+            return MentOutcome(lambda x: bool(self._outcome(x) - other))
+        elif isinstance(other, Callable):
+            return MentOutcome(lambda x: bool(self._outcome(x) - other(x)))
+        elif isinstance(other, MentOutcome):
+            return MentOutcome(lambda x: bool(self._outcome(x) - other._outcome(x)))
+        else:
+            raise TypeError(f"Invalid type {type(other)}")
 
 
 class Ment:
@@ -54,6 +103,8 @@ class Ment:
 
         self._plane = plane
         self._angle = angle
+        self._node_id = -1
+        self._outcome = MentOutcome(lambda x: x[self._node_id])
 
     def __repr__(self):
         theta = round(self.angle, 4) if isinstance(self.angle, (int, float)) else "θ"
@@ -71,6 +122,19 @@ class Ment:
     @property
     def angle(self):
         return self._angle
+    
+    @property
+    def outcome(self) -> MentOutcome:
+        return self._outcome
+
+    @property
+    def node_id(self) -> Any:
+        return self._node_id
+    
+    @node_id.setter
+    def node_id(self, node_id: Any):
+        self._node_id = node_id
+        self._outcome = MentOutcome(lambda x: x[self._node_id])
 
     def set_angle(self, angle):
         "Sets the angle of the measurement."
@@ -122,5 +186,8 @@ class Ment:
 
         return matrix
 
-
 Measurement = Ment
+    
+
+
+    

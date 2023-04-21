@@ -1,7 +1,7 @@
 # Author: Luis Mantilla
 # Github: BestQuark
 """The graph_state module"""
-
+import copy
 from functools import cached_property, reduce
 from typing import Optional, List, Tuple, Callable, Union, Any, Dict
 
@@ -185,8 +185,8 @@ class MBQCircuit:
             raise ValueError(f"Value {value} is not a Measurement object.")
 
         self._measurements[key] = value
-        self._update_attributes()
-
+        self._update_attributes_key(key)
+        
     def __getitem__(self, key):
         r"""Return the value of the measurement of the node with index key."""
         try:
@@ -281,28 +281,46 @@ class MBQCircuit:
         self._measurement_order = measurement_order
 
     @cached_property
-    def outputc(self):
+    def outputc(self) -> List:
         r"""Returns :math:`O^c`, the complement of output nodes."""
         return [v for v in self.graph.nodes() if v not in self.output_nodes]
 
     @cached_property
-    def inputc(self):
+    def inputc(self) -> List:
         r"""Returns :math:`I^c`, the complement of input nodes."""
         return [v for v in self.graph.nodes() if v not in self.input_nodes]
 
-    def _update_attributes(self):
+    def _update_attributes(self) -> None:
         trainable_nodes = []
         planes = {}
-        for node, ment in self._measurements.items():
-            if ment is not None:
-                if ment.angle is None:
-                    trainable_nodes.append(node)
-                planes[node] = ment.plane
+        for nodei, menti in self._measurements.items():
+            if menti is not None:
+                if menti.angle is None:
+                    trainable_nodes.append(nodei)
+                planes[nodei] = menti.plane
+                self._measurements[nodei] = copy.deepcopy(menti)
+                self._measurements[nodei].node_id = nodei
             else:
-                planes[node] = ""
+                planes[nodei] = ""
         self._trainable_nodes = trainable_nodes
         self._planes = planes
+    
+    def _update_attributes_key(self, key) -> None:
 
+        menti = self._measurements[key]
+        if menti is not None:
+            if menti.angle is None and key not in self._trainable_nodes:
+                self._trainable_nodes.append(key)
+            elif menti.angle is not None and key in self._trainable_nodes:
+                self._trainable_nodes.remove(key)
+            self._planes[key] = menti.plane
+            self._measurements[key] = copy.deepcopy(menti)
+            self._measurements[key].node_id = key
+        else:
+            self._planes[key] = ""
+            if key in self._trainable_nodes:
+                self._trainable_nodes.remove(key)
+    
     def calculate_order(self):
         r"""Returns the order of the measurements"""
         n = len(self.graph)

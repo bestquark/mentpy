@@ -152,7 +152,7 @@ class NumpySimulatorDM(BaseSimulator):
         for i in self.schedule_measure:
             if i in self.mbqcircuit.trainable_nodes:
                 angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
-                plane = self.mbqcircuit[self.mbqcircuit.trainable_nodes.index(i)].plane
+                plane = self.mbqcircuit[i].plane
             else:
                 plane = self.mbqcircuit[i].plane
                 if plane == "X":
