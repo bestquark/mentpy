@@ -5,11 +5,11 @@ import warnings
 from .gates import PauliX, PauliY, PauliZ
 from .ment import Ment, MentOutcome
 
-class ControlMent(Ment):
 
+class ControlMent(Ment):
     def __init__(
         self,
-        condition: Optional[Union[bool, MentOutcome]] =  None,
+        condition: Optional[Union[bool, MentOutcome]] = None,
         true_angle: Optional[Union[int, float, tuple, str]] = None,
         true_plane: Optional[str] = "XY",
         false_angle: Optional[Union[int, float, tuple, str]] = 0,
@@ -20,17 +20,19 @@ class ControlMent(Ment):
         true_ment = Ment(angle=true_angle, plane=true_plane)
         self._true_ment = true_ment
         self._condition = condition
-    
+
     def __repr__(self) -> str:
-        return f"ControlMent(False: {super().__repr__()}, True: {repr(self._true_ment)})"
-        
+        return (
+            f"ControlMent(False: {super().__repr__()}, True: {repr(self._true_ment)})"
+        )
+
     @property
     def condition(self) -> bool:
         if isinstance(self._condition, bool):
             return lambda x: self._condition
         elif isinstance(self._condition, MentOutcome):
             return self._condition
-    
+
     @condition.setter
     def condition(self, condition):
         if not isinstance(condition, (bool, MentOutcome)):
@@ -38,7 +40,7 @@ class ControlMent(Ment):
                 f"Invalid argument type. Expected bool or MentOutcome but got {type(condition)}"
             )
         self._condition = condition
-    
+
     @property
     def angle(self, *args, **kwargs):
         if args == () and kwargs == {}:
@@ -51,7 +53,6 @@ class ControlMent(Ment):
                 return self._true_ment.angle
             else:
                 return super().angle
-    
 
     @property
     def plane(self, *args, **kwargs):
@@ -65,14 +66,19 @@ class ControlMent(Ment):
                 return self._true_ment.plane
             else:
                 return super().plane
-    
+
     @property
     def is_trainable(self):
         return super().is_trainable() or self._true_ment.is_trainable()
-    
+
     def copy(self):
-        return ControlMent(self.condition, self._true_ment.angle, self._true_ment.plane,
-                           self.angle, self.plane)
+        return ControlMent(
+            self.condition,
+            self._true_ment.angle,
+            self._true_ment.plane,
+            self.angle,
+            self.plane,
+        )
 
     def matrix(self, angle, *args, **kwargs):
         """Return the matrix of the controlled measurement operator."""

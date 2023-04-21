@@ -305,7 +305,7 @@ class MBQCircuit:
 
                 if isinstance(menti, ControlMent):
                     controlled_nodes.append(nodei)
-                    
+
                 if menti.angle is None:
                     trainable_nodes.append(nodei)
 
@@ -317,7 +317,7 @@ class MBQCircuit:
         self._trainable_nodes = trainable_nodes
         self._controlled_nodes = controlled_nodes
         self._planes = planes
-    
+
     def _update_attributes_key(self, key) -> None:
 
         menti = self._measurements[key]
@@ -333,7 +333,7 @@ class MBQCircuit:
             self._planes[key] = ""
             if key in self._trainable_nodes:
                 self._trainable_nodes.remove(key)
-    
+
     def calculate_order(self):
         r"""Returns the order of the measurements"""
         n = len(self.graph)
@@ -693,8 +693,14 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             for node in state.controlled_nodes:
                 for k in state.measurements[node].condition.cond_nodes:
                     dashed_edges.append((node, k))
-            nx.draw_networkx_edges(state.graph, pos=node_pos, edge_color='#CCCCCC',width=1.5, edgelist=dashed_edges, style="dashed")
-
+            nx.draw_networkx_edges(
+                state.graph,
+                pos=node_pos,
+                edge_color="#CCCCCC",
+                width=1.5,
+                edgelist=dashed_edges,
+                style="dashed",
+            )
 
 
 def _graph_with_flow(state):

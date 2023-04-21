@@ -40,9 +40,11 @@ class PennylaneSimulator(BaseSimulator):
             p=kwargs.pop("p", 0),
         )
         super().__init__(mbqcircuit, input_state)
-        
+
         if len(mbqcircuit.controlled_nodes) > 0:
-            raise NotImplementedError("Controlled nodes are not supported with the PennyLane simulator.")
+            raise NotImplementedError(
+                "Controlled nodes are not supported with the PennyLane simulator."
+            )
 
     def measure(self, angle: float, plane: str = "XY"):
         raise NotImplementedError

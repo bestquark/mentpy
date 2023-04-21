@@ -8,26 +8,30 @@ from .gates import PauliX, PauliY, PauliZ
 class MentOutcome:
     """Measurement outcome class."""
 
-    def __init__(self, outcome: Callable[..., bool], node_id = None, cond_nodes = None):
+    def __init__(self, outcome: Callable[..., bool], node_id=None, cond_nodes=None):
         self._outcome = outcome
         self._node_id = node_id
-        self._cond_nodes = cond_nodes if cond_nodes is not None else (set([node_id]) if node_id is not None else set())
-    
+        self._cond_nodes = (
+            cond_nodes
+            if cond_nodes is not None
+            else (set([node_id]) if node_id is not None else set())
+        )
+
     @property
     def node_id(self):
         return self._node_id
-    
+
     @node_id.setter
     def node_id(self, node_id):
         self._node_id = node_id
-    
+
     @property
     def cond_nodes(self):
         return self._cond_nodes
 
     def __repr__(self) -> str:
         return f"Measurement Outcome"
-    
+
     def __call__(self, *args, **kwargs):
         try:
             return self._outcome(*args, **kwargs)
@@ -36,11 +40,20 @@ class MentOutcome:
 
     def _binary_operation(self, operation, other):
         if isinstance(other, (bool, int)):
-            return MentOutcome(lambda x: bool(operation(self._outcome(x), other)), cond_nodes=self._cond_nodes)
+            return MentOutcome(
+                lambda x: bool(operation(self._outcome(x), other)),
+                cond_nodes=self._cond_nodes,
+            )
         elif isinstance(other, MentOutcome):
-            return MentOutcome(lambda x: bool(operation(self._outcome(x), other._outcome(x))), cond_nodes=self._cond_nodes | other._cond_nodes)
+            return MentOutcome(
+                lambda x: bool(operation(self._outcome(x), other._outcome(x))),
+                cond_nodes=self._cond_nodes | other._cond_nodes,
+            )
         elif isinstance(other, Callable):
-            return MentOutcome(lambda x: bool(operation(self._outcome(x), other(x))), cond_nodes=self._cond_nodes)
+            return MentOutcome(
+                lambda x: bool(operation(self._outcome(x), other(x))),
+                cond_nodes=self._cond_nodes,
+            )
         else:
             raise TypeError(f"Invalid type {type(other)}")
 
@@ -63,39 +76,38 @@ class MentOutcome:
         return self._binary_operation(lambda x, y: x % y, other)
 
     def __pow__(self, other):
-        return self._binary_operation(lambda x, y: x ** y, other)
+        return self._binary_operation(lambda x, y: x**y, other)
 
     def __eq__(self, other):
         return self._binary_operation(lambda x, y: x == y, other)
 
     def __ne__(self, other):
         return self._binary_operation(lambda x, y: x != y, other)
-    
+
     def __lt__(self, other):
         return self._binary_operation(lambda x, y: x < y, other)
-    
+
     def __le__(self, other):
         return self._binary_operation(lambda x, y: x <= y, other)
-    
+
     def __gt__(self, other):
         return self._binary_operation(lambda x, y: x > y, other)
-    
+
     def __ge__(self, other):
         return self._binary_operation(lambda x, y: x >= y, other)
-    
+
     def __and__(self, other):
         return self._binary_operation(lambda x, y: x and y, other)
-    
+
     def __or__(self, other):
         return self._binary_operation(lambda x, y: x or y, other)
-    
+
     def __xor__(self, other):
         return self._binary_operation(lambda x, y: x ^ y, other)
-    
+
     def __invert__(self):
         return MentOutcome(lambda x: not self._outcome(x))
 
-    
 
 class Ment:
     """Measurement operator.
@@ -165,7 +177,7 @@ class Ment:
     @property
     def angle(self):
         return self._angle
-    
+
     @property
     def outcome(self) -> MentOutcome:
         return self._outcome
@@ -173,7 +185,7 @@ class Ment:
     @property
     def node_id(self) -> Any:
         return self._node_id
-    
+
     @node_id.setter
     def node_id(self, node_id: Any):
         self._node_id = node_id
@@ -229,8 +241,5 @@ class Ment:
 
         return matrix
 
+
 Measurement = Ment
-    
-
-
-    
