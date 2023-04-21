@@ -209,7 +209,10 @@ class Ment:
         if self.angle is None and angle is None:
             raise ValueError("Measurement is trainable, please provide an angle.")
         elif self.angle is not None and angle is not None:
-            raise ValueError(f"Measurement has a fixed angle of {round(self.angle, 4)}")
+            if self.angle != angle:
+                raise ValueError(
+                    f"Measurement has a fixed angle of {round(self.angle, 4)}"
+                )
         elif self.angle is not None:
             angle = self.angle
 

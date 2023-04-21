@@ -38,7 +38,7 @@ class NumpySimulatorDM(BaseSimulator):
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
             self.schedule_measure = [
-                i for i in self.schedule if i not in mbqcircuit.output_nodes
+                i for i in self.schedule if i not in mbqcircuit.measurements.values()
             ]
         elif mbqcircuit.measurement_order is not None:
             # remove output nodes from the measurement order
@@ -120,8 +120,6 @@ class NumpySimulatorDM(BaseSimulator):
             current_ment, angle, 0, force0=self.force0
         )
 
-        self.outcomes[self.schedule_measure[self.current_measurement]] = outcome
-
         self.current_measurement += 1
         self.qstate = self.partial_trace(self.qstate, [0])
 
@@ -155,19 +153,13 @@ class NumpySimulatorDM(BaseSimulator):
         for i in self.schedule_measure:
             if i in self.mbqcircuit.trainable_nodes:
                 angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
-                plane = self.mbqcircuit[i].plane
             else:
-                plane = self.mbqcircuit[i].plane
-                if plane == "X":
-                    angle = 0
-                elif plane == "Y":
-                    angle = np.pi / 2
-                else:
-                    raise ValueError(
-                        f"Plane {plane} is not supported for numpy simulator."
-                    )
+                angle = self.mbqcircuit[i].angle
+
+            plane = self.mbqcircuit[i].plane
 
             self.qstate, outcome = self.measure(angle)
+            self.outcomes[i] = outcome
 
         # check if output nodes have a measurement, if so, measure them
         for i in self.mbqcircuit.output_nodes:

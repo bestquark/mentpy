@@ -1,7 +1,8 @@
+black
+cirq
 networkx
 numpy
 PennyLane
-cirq
 scipy
 galois
 sphinx==5
