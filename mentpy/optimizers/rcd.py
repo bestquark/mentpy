@@ -4,6 +4,7 @@ from mentpy.gradients import estimate_gradient
 import numpy as np
 import random
 
+
 class RCDOptimizer(BaseOptimizer):
     """Class for the random coordinate descent optimizer.
 
