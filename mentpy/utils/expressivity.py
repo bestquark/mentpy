@@ -159,7 +159,6 @@ def lc_cluster_flowspace(deg_graph, sanity_check=True):
         else:
             added = False
             for k, g in independent_groups.items():
-
                 if are_lc_equivalent(g[0], curr_g)[0]:
                     added = True
                     independent_groups[k].append(curr_g)

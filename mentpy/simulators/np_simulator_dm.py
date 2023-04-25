@@ -109,7 +109,6 @@ class NumpySimulatorDM(BaseSimulator):
         return min(n, len(self.mbqcircuit) - self.current_measurement)
 
     def measure(self, angle: float) -> Tuple:
-
         if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 

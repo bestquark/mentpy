@@ -302,7 +302,6 @@ class MBQCircuit:
         planes = {}
         for nodei, menti in self._measurements.items():
             if menti is not None:
-
                 if isinstance(menti, ControlMent):
                     controlled_nodes.append(nodei)
 
@@ -319,7 +318,6 @@ class MBQCircuit:
         self._planes = planes
 
     def _update_attributes_key(self, key) -> None:
-
         menti = self._measurements[key]
         if menti is not None:
             if menti.angle is None and key not in self._trainable_nodes:
@@ -391,7 +389,7 @@ def merge(state1: MBQCircuit, state2: MBQCircuit, along=[]) -> MBQCircuit:
     """Merge two MBQC circuits into a larger MBQC circuit. This is, the input and
     output of the new MBQC circuit will depend on the concat_indices."""
 
-    for (i, j) in along:
+    for i, j in along:
         if i not in state1.output_nodes or j not in state2.input_nodes:
             raise ValueError(f"Cannot merge states at indices {i} and {j}")
 
@@ -423,7 +421,7 @@ def merge(state1: MBQCircuit, state2: MBQCircuit, along=[]) -> MBQCircuit:
         {i + len(state1.graph): ment for i, ment in state2.measurements.items()}
     )
 
-    for (i, j) in along:
+    for i, j in along:
         graph.add_edge(i, j + len(state1.graph))
         graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
         del measurements[i]
@@ -533,7 +531,7 @@ def _hstack2(state1: MBQCircuit, state2: MBQCircuit) -> MBQCircuit:
         {nodes2.index(i) + len(nodes1): ment for i, ment in state2.measurements.items()}
     )
 
-    for (i, j) in zip(state1.output_nodes, state2.input_nodes):
+    for i, j in zip(state1.output_nodes, state2.input_nodes):
         graph.add_edge(i, j + len(state1.graph))
         graph = nx.contracted_edge(graph, (j + len(state1.graph), i), self_loops=False)
         del measurements[i]

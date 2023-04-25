@@ -29,7 +29,6 @@ def test_ment_is_trainable():
 
 
 def test_ment_matrix():
-
     ment = mp.Ment(np.pi / 4, "XY")
     assert np.allclose(
         ment.matrix(),

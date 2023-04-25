@@ -40,7 +40,6 @@ class PatternSimulator:
         *args,
         **kwargs,
     ) -> None:
-
         supported_simulators = {
             "pennylane": PennylaneSimulator,
             # "cirq": CirqSimulator,
@@ -81,7 +80,6 @@ class PatternSimulator:
         return self.simulator.measure(angle, **kwargs)
 
     def run(self, angles: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
-
         return self.simulator.run(angles, **kwargs)
 
     def reset(self, input_state: np.ndarray = None):

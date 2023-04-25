@@ -174,7 +174,6 @@ def muta(n_wires, n_layers, **kwargs):
 
     big_graph = None
     for wire in range(n_wires):
-
         g = many_wires([SIZE_TRIANGLE] * n_wires)
         if options["restrict-trainable"]:
             g.trainable_nodes = list(

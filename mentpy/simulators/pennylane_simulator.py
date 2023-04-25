@@ -52,7 +52,6 @@ class PennylaneSimulator(BaseSimulator):
     def run(
         self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
     ) -> Tuple[List[int], np.ndarray]:
-
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(
                 f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcircuit.trainable_nodes)})."

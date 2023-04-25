@@ -116,7 +116,6 @@ class NumpySimulatorSV(BaseSimulator):
         return min(n, len(self.mbqcircuit) - self.current_measurement)
 
     def measure(self, angle: float) -> Tuple:
-
         if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 
@@ -259,7 +258,8 @@ class NumpySimulatorSV(BaseSimulator):
 
     def partial_trace_pure_state(self, psi, indices):
         """Partial trace of a pure state over some indices. It is asumed that the indices
-        over which the trace is taken are unentangled with the rest of the rest of the system."""
+        over which the trace is taken are unentangled with the rest of the rest of the system.
+        """
         n = int(np.log2(len(psi)))
         indices_to_keep = [x for x in range(n) if x not in indices]
         preserved_dim = 2 ** len(indices_to_keep)
