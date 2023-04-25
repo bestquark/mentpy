@@ -2,6 +2,7 @@
 
 from .adam import AdamOptimizer
 from .sgd import SGDOptimizer
+from .rcd import RCDOptimizer
 from .bp_tools import *
 
-__all__ = ["AdamOptimizer", "SGDOptimizer"]
+__all__ = ["AdamOptimizer", "SGDOptimizer", "RCDOptimizer"]
