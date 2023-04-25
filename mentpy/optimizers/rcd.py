@@ -21,7 +21,7 @@ class RCDOptimizer(BaseOptimizer):
 
     .. ipython:: python
 
-        opt = mp.optimizers.RandomCoordinateDescentOptimizer()
+        opt = mp.optimizers.RCDOptimizer()
         print(opt)
 
     Group
