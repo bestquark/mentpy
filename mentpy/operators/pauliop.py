@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Union, List
 import galois
+import copy
 
 __all__ = ["PauliOp"]
 
@@ -82,7 +83,7 @@ class PauliOp:
         if self.mat.shape[0] == 1:
             self._array = [self]
         else:
-            self._array = [PauliOp(op) for op in self.txt.split("\n")]
+            self._array = [PauliOp(op) for op in self.txt.split("\n") if op != ""]
 
     def __repr__(self):
         return self.txt
@@ -97,8 +98,11 @@ class PauliOp:
         return paulis
 
     def __contains__(self, item: "PauliOp"):
-        # check item.mat rows are in self.mat rows
-        return np.prod((self.mat[:, None] == item.mat).all(axis=2).any(axis=0))
+        
+        for row in item.mat:
+            if not np.any((self.mat == row).all(axis=1)):
+                return False
+        return True
 
     def _mat_to_txt(self, op):
         n_qubits = op.shape[1] // 2

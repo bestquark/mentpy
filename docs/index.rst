@@ -35,8 +35,9 @@ Roadmap
 * Improve current simulators for MBQC circuits.
 * Fix many bugs in the library 🐛.
 * Improve tests on current functions.
-* Add a :obj:`tensornetwork` simulator for MBQC circuits.
+* Add a tensor network simulator for MBQC circuits.
 * Add support for more general MBQC states.
+* Integrate with `pyzx` to optimize resources in MBQC circuits.
 
 
 Contributing
@@ -102,6 +103,7 @@ If you find MentPy useful in your research, please consider citing us 🙂
 
    tutorials/intro-to-graphstates.rst
    tutorials/intro-to-mbqc.rst
+   tutorials/simulating-mbqc-circuits.rst
    tutorials/intro-to-mbqml.rst
 
 .. toctree::

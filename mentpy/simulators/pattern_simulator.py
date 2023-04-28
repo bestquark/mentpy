@@ -36,21 +36,22 @@ class PatternSimulator:
         self,
         mbqcircuit: MBQCircuit,
         input_state: np.ndarray = None,
-        simulator="pennylane",
+        backend="pennylane",
         *args,
         **kwargs,
     ) -> None:
-        supported_simulators = {
+        supported_backends = {
             "pennylane": PennylaneSimulator,
             # "cirq": CirqSimulator,
             # "qiskit": QiskitSimulator,
             "numpy-dm": NumpySimulatorDM,
             "numpy-sv": NumpySimulatorSV,
         }
-
-        if simulator not in supported_simulators:
+        
+        backend = backend.lower()
+        if backend not in supported_backends:
             raise ValueError(
-                f"Simulator {simulator} not supported. Supported simulators are {supported_simulators.keys()}"
+                f"Backend {backend} not supported. Supported backends are {supported_backends.keys()}"
             )
 
         if input_state is None:
@@ -63,7 +64,7 @@ class PatternSimulator:
                     f"Input state must be a numpy array, not {type(input_state)}"
                 )
 
-        self.simulator = supported_simulators[simulator](
+        self.simulator = supported_backends[backend](
             mbqcircuit, input_state, *args, **kwargs
         )
 

@@ -11,7 +11,7 @@ class TestSimulators(object):
         for i in range(1, 5):
             gs = mp.templates.linear_cluster(2 * i + 1)
             sts = mp.utils.generate_haar_random_states(1, 5)
-            ps = mp.simulators.PatternSimulator(gs, simulator=simulator)
+            ps = mp.simulators.PatternSimulator(gs, backend=simulator)
             for st in sts:
                 ps.reset(input_state=st)
                 assert (

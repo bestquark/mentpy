@@ -10,7 +10,7 @@ import scipy as scp
 import networkx as nx
 import matplotlib.pyplot as plt
 
-from mentpy.operators import Ment, ControlMent
+from mentpy.operators import Ment, ControlMent, PauliOp
 from mentpy.mbqc.states.graphstate import GraphState
 from mentpy.mbqc.flow import find_gflow, find_cflow, find_flow, check_if_flow
 
@@ -575,11 +575,17 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "transparent": True,
         "figsize": (8, 3),
         "show_controls": True,
+        "pauliop": None
     }
 
     options.update(kwargs)
 
     show_controls = options.pop("show_controls")
+
+    pauliop = options.pop("pauliop")
+
+    if pauliop is not None:
+        options["label"] = "pauliop"
 
     transp = options.pop("transparent")
     fig, ax = plt.subplots(figsize=options.pop("figsize"))
@@ -673,7 +679,15 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
                     labels[node] = ""
 
             options["labels"] = labels
-
+        
+        elif options["label"] == "pauliop":
+            if len(pauliop) != 1:
+                raise ValueError("pauliop must be a single Pauli operator")
+            labels = {}
+            for ind, node in enumerate(state.graph.nodes()):
+                labels[node] = pauliop.txt[ind]
+            options["labels"] = labels
+            
         else:
             raise ValueError(
                 "label must be either 'index' or 'plane', not {}".format(
@@ -709,3 +723,5 @@ def _graph_with_flow(state):
     for node in state.outputc:
         gflow.add_edge(node, state.flow(node))
     return gflow
+
+
