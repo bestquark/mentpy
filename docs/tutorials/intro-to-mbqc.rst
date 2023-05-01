@@ -8,6 +8,9 @@ the standard gate-based model. The main difference is that the gates are not exp
 applied to the qubits, but rather a big resource (entangled) state is prepared and logical 
 information flows through the system by measuring the qubits of the resource state. 
 
+MBQC Circuits
+-------------
+
 In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` class.
 
 .. ipython:: python
@@ -23,6 +26,9 @@ measured in a left-to-right sequence. We can use this same circuit to implement 
 measuring qubits :math:`0`, :math:`1`, :math:`2`, and :math:`3` in the :math:`X` basis. However,
 the output qubit with a byproduct operator :math:`Z` that depends on the earlier qubits measurement 
 outcomes.
+
+Ment Operators
+--------------
 
 To build this circuit, we can use the :obj:`Measurement` (or its alias :obj:`Ment`) operator to the 
 circuit's qubits. The :obj:`Measurement` object is characterized by an angle and a measurement 
@@ -88,6 +94,9 @@ functions.
             new_circ = mp.vstack((mbcirc, mbcirc))
             @savefig vstack_mbqc.png width=1000px
             mp.draw(new_circ, label='arrows')
+
+Templates
+---------
 
 To use pre-defined MBQC circuits, we can use the :obj:`templates` module, which contains
 some common MBQC circuits. For example, we can create a grid cluster state with the 
