@@ -15,7 +15,7 @@ The :obj:`mentpy` library requires Python 3.9 and above. It can be installed fro
 Install from Source
 -------------------
 
-To insall from Source, you can ``git clone`` the repository with
+To install from Source, you can ``git clone`` the repository with
 
 .. code-block:: console
 
