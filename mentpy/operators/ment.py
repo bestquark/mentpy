@@ -243,6 +243,13 @@ class Ment:
             matrix = matrices[self.plane]
 
         return matrix
+    
+    def get_povm(self, angle: Optional[float] = None, *args, **kwargs):
+        """Returns the POVM representation of the measurement."""
+        mat = self.matrix(angle, *args, **kwargs)
+        m0 = (np.eye(2) + mat) / 2
+        m1 = (np.eye(2) - mat) / 2
+        return m0, m1
 
 
 Measurement = Ment

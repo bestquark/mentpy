@@ -1,6 +1,12 @@
 Simulating MBQC Circuits
 ========================
 
+.. meta::
+   :description: Learn how to simulate MBQC circuits in MentPy
+   :keywords: mbqc, measurement-based quantum computation, quantum computing
+
+**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_ 
+
 In the previous tutorial, you have learned how to create an MBQC circuit using the 
 :obj:`MBQCircuit` class. Now, we will use this circuit to run an actual experiment. 
 We will use the :obj:`PatternSimulator` class to create a simulator. Let's try it out

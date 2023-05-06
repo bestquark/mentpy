@@ -1,6 +1,11 @@
 An introduction to MBQC
 ========================
 
+.. meta::
+   :description: What is measurement-based quantum computation?
+   :keywords: mbqc, measurement-based quantum computation, quantum computing
+
+**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
 
 Measurement-based quantum computation is a paradigm of quantum computation that uses 
 single qubit measurements to perform universal quantum computation. It is equivalent to 
@@ -39,8 +44,8 @@ If not provided, it will be treated as a trainable parameter.
 .. ipython:: python
 
     mbcirc[0] = mp.Ment('X')
-    mbcirc[1] = mp.Ment('X')
-    mbcirc[2] = mp.Ment('X')
+    mbcirc[1] = mp.Ment('XY')
+    mbcirc[2] = mp.Ment(0.5, 'XY')
     mbcirc[3] = mp.Ment('X')
     @savefig 1d_cluster_measure.png width=1000px
     mp.draw(mbcirc, label='planes')
@@ -49,8 +54,8 @@ Similarly, we can define the same circuit when creating the :obj:`MBQCircuit` ob
 
 .. ipython:: python
 
-    mbcirc = mp.MBQCircuit(gs, input_nodes=[0], output_nodes=[4], 
-                           measurements={i: mp.Ment('X') for i in range(4)})
+    measurements = {0: mp.Ment('X'), 1: mp.Ment('XY'), 2: mp.Ment(0.5, 'XY'), 3: mp.Ment('X')}
+    mbcirc = mp.MBQCircuit(gs, input_nodes=[0], output_nodes=[4], measurements=measurements)
     @savefig 1d_cluster_measure2.png width=1000px
     mp.draw(mbcirc, label='arrows')
 

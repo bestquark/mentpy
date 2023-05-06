@@ -101,6 +101,7 @@ If you find MentPy useful in your research, please consider citing us 🙂
    :hidden:
    :maxdepth: 2
 
+   tutorials/measurements-in-qm.rst
    tutorials/intro-to-graphstates.rst
    tutorials/intro-to-mbqc.rst
    tutorials/simulating-mbqc-circuits.rst

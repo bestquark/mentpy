@@ -13,7 +13,7 @@ import mentpy
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "mentpy"
-copyright = "2022, Luis Mantilla"
+copyright = "2022-2023, Luis Mantilla"
 author = "Luis Mantilla"
 
 # The short X.Y version.
