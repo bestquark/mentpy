@@ -3,7 +3,7 @@
 MentPy
 ======
 
-``MentPy`` is a library is composed of the follwoing modules:
+``MentPy`` is a library is composed of the following modules:
 
 Operators
 ---------
