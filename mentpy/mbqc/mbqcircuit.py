@@ -155,7 +155,8 @@ class MBQCircuit:
             else:
                 gflow, gpartial_order = flow, partial_order
 
-        # TODO: check if given gflow it is definitely gflow
+        # TODO: check if given gflow it is definitely gflow and add support for PauliFlow -- could add
+        # all these in one function.
 
         self.gflow = gflow
 
@@ -550,20 +551,10 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     -----
     states
     """
-    node_colors = {}
-    for i in state.graph.nodes():
-        if i in state.output_nodes:
-            node_colors[i] = "#ADD8E6"
-        elif i in state.controlled_nodes:
-            node_colors[i] = "#A88FE8"
-        elif i in set(state.nodes()) - set(state.trainable_nodes):
-            node_colors[i] = "#CCCCCC"
-        else:
-            node_colors[i] = "#FFBD59"
 
     # options = {'node_color': '#FFBD59'}
     options = {
-        "node_color": [node_colors[node] for node in state.graph.nodes()],
+        "node_color": "white",
         "font_family": "Dejavu Sans",
         "font_weight": "medium",
         "font_size": 10,
@@ -575,7 +566,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "transparent": True,
         "figsize": (8, 3),
         "show_controls": True,
-        "pauliop": None
+        "pauliop": None,
     }
 
     options.update(kwargs)
@@ -611,6 +602,19 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         nx.draw(state, ax=ax, **options)
 
     elif isinstance(state, MBQCircuit):
+        node_colors = {}
+        for i in state.graph.nodes():
+            if i in state.output_nodes:
+                node_colors[i] = "#ADD8E6"
+            elif i in state.controlled_nodes:
+                node_colors[i] = "#A88FE8"
+            elif i in set(state.nodes()) - set(state.trainable_nodes):
+                node_colors[i] = "#CCCCCC"
+            else:
+                node_colors[i] = "#FFBD59"
+
+        options["node_color"] = [node_colors[node] for node in state.graph.nodes()]
+
         fixed_nodes = state.input_nodes + state.output_nodes
         position_xy = {}
         for indx, p in enumerate(state.input_nodes):
@@ -679,7 +683,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
                     labels[node] = ""
 
             options["labels"] = labels
-        
+
         elif options["label"] == "pauliop":
             if len(pauliop) != 1:
                 raise ValueError("pauliop must be a single Pauli operator")
@@ -687,7 +691,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             for ind, node in enumerate(state.graph.nodes()):
                 labels[node] = pauliop.txt[ind]
             options["labels"] = labels
-            
+
         else:
             raise ValueError(
                 "label must be either 'index' or 'plane', not {}".format(
@@ -723,5 +727,3 @@ def _graph_with_flow(state):
     for node in state.outputc:
         gflow.add_edge(node, state.flow(node))
     return gflow
-
-

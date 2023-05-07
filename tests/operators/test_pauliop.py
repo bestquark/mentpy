@@ -10,9 +10,9 @@ def test_pauli_op_init_from_matrix():
 
 def test_pauli_op_init_from_string():
     op = PauliOp("XIZ;ZII;IIZ;YYY")
-    print(op.mat)
+    print(op.matrix)
     assert np.array_equal(
-        op.mat,
+        op.matrix,
         np.array(
             [
                 [1, 0, 0, 0, 0, 1],
@@ -27,7 +27,7 @@ def test_pauli_op_init_from_string():
 def test_pauli_op_init_from_list():
     op = PauliOp(["XIZ", "ZII", "IIZ", "YYY"])
     assert np.array_equal(
-        op.mat,
+        op.matrix,
         np.array(
             [
                 [1, 0, 0, 0, 0, 1],

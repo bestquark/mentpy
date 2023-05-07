@@ -86,7 +86,7 @@ class ControlMent(Ment):
             return self._true_ment.matrix(angle)
         else:
             return super().matrix(angle)
-    
+
     def get_povm(self, angle: float | None = None, *args, **kwargs):
         if self.condition(*args, **kwargs):
             return self._true_ment.get_povm(angle)

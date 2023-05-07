@@ -40,9 +40,12 @@ def binary_gaussian_elimination(A, b):
     x = np.zeros(cols, dtype=int)
     for row in range(min(rows, cols) - 1, -1, -1):
         col = np.argmax(augmented_matrix[row, :cols])
-        x[col] = augmented_matrix[row, -1] ^ np.sum(augmented_matrix[row, col + 1:cols] * x[col + 1:cols])
+        x[col] = augmented_matrix[row, -1] ^ np.sum(
+            augmented_matrix[row, col + 1 : cols] * x[col + 1 : cols]
+        )
 
     return x
+
 
 def _constrains(j: int, state: MBQCircuit, stabilizers: PauliOp):
     """Creates the A matrix for the constraints on the stabilizers"""
@@ -61,11 +64,11 @@ def _constrains(j: int, state: MBQCircuit, stabilizers: PauliOp):
         indk = mo.index(k)
         indj = mo.index(j)
         if indk <= indj:
-            A.append(stabilizers[k].mat[0, :len(mo)])
+            A.append(stabilizers[k].matrix[0, : len(mo)])
             b.append(np.zeros(1, dtype=int))
 
     for k in [mapping[i] for i in state.outputc]:
-        A.append(stabilizers[k].mat[0, len(mo) :])
+        A.append(stabilizers[k].matrix[0, len(mo) :])
         p = 0 if k != j else 1
         b.append(np.array([p]))
 
@@ -91,6 +94,7 @@ def _find_solution(j: int, state: MBQCircuit, stabilizers: PauliOp):
             op = op.commutator(stabilizers[i])
     return op
 
+
 def calculate_complete_gens_lie_algebra(state: MBQCircuit):
     """Calculates the Pauli operators for the Lie algebra of a given state"""
     graph_stabs = state.stabilizers()
@@ -102,8 +106,9 @@ def calculate_complete_gens_lie_algebra(state: MBQCircuit):
             lieAlgebra = op
         else:
             lieAlgebra.append(op)
-    
+
     return lieAlgebra
+
 
 def calculate_gens_lie_algebra(state: MBQCircuit):
     """Calculates the generators of the Lie algebra of a given state"""
@@ -151,9 +156,9 @@ def lie_algebra_completion(generators: PauliOp, max_iter: int = 100):
                 break
 
         lieAlg = new_lieAlg
-        
 
     return lieAlg
+
 
 def calculate_lie_algebra(state: MBQCircuit, max_iter: int = 100):
     """Calculates the Lie algebra of a given state"""
@@ -170,9 +175,11 @@ def remove_repeated_ops(ops: PauliOp):
             unrep_ops.append(op)
     return unrep_ops
 
+
 # dimension of su(n)
 def dim_su(n):
     return int(n**2 - 1)
 
+
 def dim_so(n):
-    return int(n*(n-1)//2)
+    return int(n * (n - 1) // 2)

@@ -1,5 +1,5 @@
 import numpy as np
-import cirq
+import cirq  # TODO: remove this dependency
 
 CNOT = np.array([[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])
 

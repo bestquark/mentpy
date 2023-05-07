@@ -243,7 +243,7 @@ class Ment:
             matrix = matrices[self.plane]
 
         return matrix
-    
+
     def get_povm(self, angle: Optional[float] = None, *args, **kwargs):
         """Returns the POVM representation of the measurement."""
         mat = self.matrix(angle, *args, **kwargs)

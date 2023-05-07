@@ -155,8 +155,6 @@ class NumpySimulatorDM(BaseSimulator):
             else:
                 angle = self.mbqcircuit[i].angle
 
-            plane = self.mbqcircuit[i].plane
-
             self.qstate, outcome = self.measure(angle)
             self.outcomes[i] = outcome
 

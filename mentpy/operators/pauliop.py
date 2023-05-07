@@ -52,7 +52,7 @@ class PauliOp:
                 raise ValueError(
                     "Tableau representation must have an even number of columns"
                 )
-            self.mat = GF(op)
+            self.matrix = GF(op)
             self.txt = self._mat_to_txt(op)
 
         elif isinstance(op, str):
@@ -66,21 +66,21 @@ class PauliOp:
                 raise ValueError("All Pauli operators must be the same length")
 
             self.txt = op.replace(";", "\n")
-            self.mat = self._txt_to_mat(op_list)
+            self.matrix = self._txt_to_mat(op_list)
 
         elif isinstance(op, list):
             if not all([len(pauliop) == len(op[0]) for pauliop in op]):
                 raise ValueError("All Pauli operators must be the same length")
 
             self.txt = "\n".join(op)
-            self.mat = self._txt_to_mat(op)
+            self.matrix = self._txt_to_mat(op)
 
         else:
             raise ValueError(
                 "PauliOp must be initialized with a string or a numpy array"
             )
 
-        if self.mat.shape[0] == 1:
+        if self.matrix.shape[0] == 1:
             self._array = [self]
         else:
             self._array = [PauliOp(op) for op in self.txt.split("\n") if op != ""]
@@ -89,7 +89,7 @@ class PauliOp:
         return self.txt
 
     def __len__(self):
-        return self.mat.shape[0]
+        return self.matrix.shape[0]
 
     def __getitem__(self, key):
         paulis = self._array[key]
@@ -98,9 +98,8 @@ class PauliOp:
         return paulis
 
     def __contains__(self, item: "PauliOp"):
-        
-        for row in item.mat:
-            if not np.any((self.mat == row).all(axis=1)):
+        for row in item.matrix:
+            if not np.any((self.matrix == row).all(axis=1)):
                 return False
         return True
 
@@ -140,14 +139,14 @@ class PauliOp:
 
     def commutator(self, other):
         """Returns the commutator of two Pauli operators."""
-        return PauliOp(self.mat + other.mat)
+        return PauliOp(self.matrix + other.matrix)
 
     def symplectic_prod(self, other):
         """Returns the symplectic product of two Pauli operators."""
-        x1 = self.mat[:, : self.mat.shape[1] // 2]
-        x2 = other.mat[:, : other.mat.shape[1] // 2]
-        z1 = self.mat[:, self.mat.shape[1] // 2 :]
-        z2 = other.mat[:, other.mat.shape[1] // 2 :]
+        x1 = self.matrix[:, : self.matrix.shape[1] // 2]
+        x2 = other.matrix[:, : other.matrix.shape[1] // 2]
+        z1 = self.matrix[:, self.matrix.shape[1] // 2 :]
+        z2 = other.matrix[:, other.matrix.shape[1] // 2 :]
         return x1 @ z2.T + z1 @ x2.T
 
     def append(self, other):
@@ -162,7 +161,7 @@ class PauliOp:
             op1.append(op2)
             print(op1)
         """
-        new_mat = np.vstack((self.mat, other.mat))
+        new_mat = np.vstack((self.matrix, other.matrix))
         self.__init__(new_mat)
 
     def get_subset(self, indices):
@@ -180,8 +179,8 @@ class PauliOp:
             op = mp.PauliOp('XIZ;ZII;IIZ;IZI')
             print(op.get_subset([0, 2]))
         """
-        if max(indices) >= self.mat.shape[1] // 2:
+        if max(indices) >= self.matrix.shape[1] // 2:
             raise ValueError("Index out of range")
 
-        indices += [i + self.mat.shape[1] // 2 for i in indices]
-        return PauliOp(self.mat[:, indices])
+        indices += [i + self.matrix.shape[1] // 2 for i in indices]
+        return PauliOp(self.matrix[:, indices])

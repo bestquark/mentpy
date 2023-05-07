@@ -122,6 +122,7 @@ class NumpySimulatorSV(BaseSimulator):
         current_ment = self.mbqcircuit[
             self.schedule_measure[self.current_measurement]
         ].copy()
+
         self.qstate, outcome = self.measure_ment(
             current_ment.set_angle(angle), 0, force0=self.force0
         )
@@ -144,7 +145,7 @@ class NumpySimulatorSV(BaseSimulator):
                 if neighbour in self.current_simulated_nodes():
                     indxn = self.current_simulated_nodes().index(neighbour)
                     cz = self.controlled_z(indxn, indx_new, self.window_size)
-                    self.qstate = cz @ self.qstate @ np.conj(cz.T)
+                    self.qstate = cz @ self.qstate
 
         return self.qstate, outcome
 
@@ -166,26 +167,20 @@ class NumpySimulatorSV(BaseSimulator):
         for i in self.schedule_measure:
             if i in self.mbqcircuit.trainable_nodes:
                 angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
-                plane = self.mbqcircuit[self.mbqcircuit.trainable_nodes.index(i)].plane
             else:
-                plane = self.mbqcircuit[i].plane
-                if plane == "X":
-                    angle = 0
-                elif plane == "Y":
-                    angle = np.pi / 2
-                else:
-                    raise ValueError(
-                        f"Plane {plane} is not supported for numpy simulator."
-                    )
+                angle = self.mbqcircuit[i].angle
 
             self.qstate, outcome = self.measure(angle)
+            self.outcomes[i] = outcome
 
         # check if output nodes have a measurement, if so, measure them
         for i in self.mbqcircuit.output_nodes:
             if isinstance(self.mbqcircuit[i], Ment):
                 self.qstate, outcome = self.measure_ment(
-                    self.mbqcircuit[i], i, force0=self.force0
+                    self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
                 )
+                self.outcomes[i] = outcome
+
         if output_form.lower() == "dm" or output_form.lower() == "densitymatrix":
             return np.outer(self.qstate, np.conj(self.qstate).T)
         elif output_form.lower() == "sv" or output_form.lower() == "statevector":
@@ -204,7 +199,9 @@ class NumpySimulatorSV(BaseSimulator):
 
         self.qstate = self.input_state
 
-        self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
+        self.qstate = self.initial_czs @ self.qstate
+
+        self.outcomes = {}
 
     def arbitrary_qubit_gate(self, u, i, n):
         """
@@ -256,34 +253,38 @@ class NumpySimulatorSV(BaseSimulator):
                 op3 = np.kron(op3, np.eye(2))
         return op1 + op2 + op3 + op4
 
-    def partial_trace_pure_state(self, psi, indices):
-        """Partial trace of a pure state over some indices. It is asumed that the indices
-        over which the trace is taken are unentangled with the rest of the rest of the system.
-        """
-        n = int(np.log2(len(psi)))
-        indices_to_keep = [x for x in range(n) if x not in indices]
-        preserved_dim = 2 ** len(indices_to_keep)
+    def partial_trace_pure_state(self, psi, indices_to_trace):
+        num_qubits = int(np.log2(psi.shape[0]))
 
-        # Reshape the state vector into a tensor with shape (2, 2, ..., 2)
-        reshaped_psi = psi.reshape([2] * n)
+        remaining_qubits = sorted(set(range(num_qubits)) - set(indices_to_trace))
+        num_remaining_qubits = len(remaining_qubits)
 
-        # Move the preserved dimensions to the front and traced dimensions to the back
-        reshaped_psi = np.moveaxis(
-            reshaped_psi, indices_to_keep, range(len(indices_to_keep))
+        # Calculate the initial shape of the tensor product
+        initial_shape = [2] * num_qubits
+
+        # Reshape the state vector into a tensor
+        tensor = psi.reshape(initial_shape)
+
+        # Transpose the tensor to move the qubits to trace to the end
+        tensor = tensor.transpose(remaining_qubits + indices_to_trace)
+
+        # Calculate the final shape after tracing
+        final_shape = [2] * num_remaining_qubits
+
+        # Perform the partial trace by summing over the traced qubits
+        traced_tensor = tensor.reshape(final_shape + [-1]).sum(
+            axis=tuple(range(-len(indices_to_trace), 0))
         )
 
-        # Select the appropriate elements from the reshaped tensor
-        index_slice = [0] * len(
-            indices
-        )  # assuming that the traced qubits are in state |0>
-        reshaped_psi = reshaped_psi[tuple(index_slice)]
+        # Reshape to a vector
+        traced_tensor = traced_tensor.reshape(-1)
 
-        # Reshape back into a vector with shape (preserved_dim,)
-        output_state = reshaped_psi.reshape((preserved_dim,))
+        # Normalize the result
+        traced_tensor /= np.linalg.norm(traced_tensor)
 
-        return output_state
+        return traced_tensor
 
-    def measure_ment(self, ment: Ment, i, force0=True):
+    def measure_ment(self, ment: Ment, i, force0=False):
         """
         Measures a ment
         """
@@ -296,8 +297,7 @@ class NumpySimulatorSV(BaseSimulator):
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
-        p0 = (np.eye(2) + op) / 2
-        p1 = (np.eye(2) - op) / 2
+        p0, p1 = ment.get_povm()
         p1_extended = self.arbitrary_qubit_gate(
             p1, i, self.current_number_simulated_nodes()
         )
@@ -305,8 +305,8 @@ class NumpySimulatorSV(BaseSimulator):
             p0, i, self.current_number_simulated_nodes()
         )
 
-        prob0 = np.abs(np.vdot(self.qstate, p0_extended @ self.qstate)) ** 2
-        prob1 = np.abs(np.vdot(self.qstate, p1_extended @ self.qstate)) ** 2
+        prob0 = np.dot(np.conj(self.qstate), p0_extended @ self.qstate)
+        prob1 = np.dot(np.conj(self.qstate), p1_extended @ self.qstate)
 
         if not force0:
             outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))

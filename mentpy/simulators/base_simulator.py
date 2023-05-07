@@ -35,6 +35,7 @@ class BaseSimulator(abc.ABC):
     ) -> None:
         self._mbqcirc = mbqcircuit
         self._input_state = input_state
+        self._outcomes = {}
 
     @property
     def mbqcircuit(self) -> MBQCircuit:
@@ -50,6 +51,16 @@ class BaseSimulator(abc.ABC):
     def input_state(self, input_state: np.ndarray):
         """Sets the input state of the simulator."""
         self._input_state = input_state
+
+    @property
+    def outcomes(self) -> dict:
+        """The outcomes of the simulation."""
+        return self._outcomes
+
+    @outcomes.setter
+    def outcomes(self, outcomes: dict):
+        """Sets the outcomes of the simulation."""
+        self._outcomes = outcomes
 
     def __call__(self, angles: List[float], **kwargs):
         return self.run(angles, **kwargs)

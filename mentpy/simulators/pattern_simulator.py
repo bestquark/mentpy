@@ -47,7 +47,7 @@ class PatternSimulator:
             "numpy-dm": NumpySimulatorDM,
             "numpy-sv": NumpySimulatorSV,
         }
-        
+
         backend = backend.lower()
         if backend not in supported_backends:
             raise ValueError(
