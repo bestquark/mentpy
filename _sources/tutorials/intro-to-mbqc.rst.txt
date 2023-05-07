@@ -1,12 +1,20 @@
 An introduction to MBQC
 ========================
 
+.. meta::
+   :description: What is measurement-based quantum computation?
+   :keywords: mbqc, measurement-based quantum computation, quantum computing
+
+**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
 
 Measurement-based quantum computation is a paradigm of quantum computation that uses 
 single qubit measurements to perform universal quantum computation. It is equivalent to 
 the standard gate-based model. The main difference is that the gates are not explicitly
 applied to the qubits, but rather a big resource (entangled) state is prepared and logical 
 information flows through the system by measuring the qubits of the resource state. 
+
+MBQC Circuits
+-------------
 
 In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` class.
 
@@ -24,6 +32,9 @@ measuring qubits :math:`0`, :math:`1`, :math:`2`, and :math:`3` in the :math:`X`
 the output qubit with a byproduct operator :math:`Z` that depends on the earlier qubits measurement 
 outcomes.
 
+Ment Operators
+--------------
+
 To build this circuit, we can use the :obj:`Measurement` (or its alias :obj:`Ment`) operator to the 
 circuit's qubits. The :obj:`Measurement` object is characterized by an angle and a measurement 
 plane, which can be "XY", "XZ", or "YZ" ("X", "Y", and "Z" are also accepted), determining the 
@@ -33,8 +44,8 @@ If not provided, it will be treated as a trainable parameter.
 .. ipython:: python
 
     mbcirc[0] = mp.Ment('X')
-    mbcirc[1] = mp.Ment('X')
-    mbcirc[2] = mp.Ment('X')
+    mbcirc[1] = mp.Ment('XY')
+    mbcirc[2] = mp.Ment(0.5, 'XY')
     mbcirc[3] = mp.Ment('X')
     @savefig 1d_cluster_measure.png width=1000px
     mp.draw(mbcirc, label='planes')
@@ -43,8 +54,8 @@ Similarly, we can define the same circuit when creating the :obj:`MBQCircuit` ob
 
 .. ipython:: python
 
-    mbcirc = mp.MBQCircuit(gs, input_nodes=[0], output_nodes=[4], 
-                           measurements={i: mp.Ment('X') for i in range(4)})
+    measurements = {0: mp.Ment('X'), 1: mp.Ment('XY'), 2: mp.Ment(0.5, 'XY'), 3: mp.Ment('X')}
+    mbcirc = mp.MBQCircuit(gs, input_nodes=[0], output_nodes=[4], measurements=measurements)
     @savefig 1d_cluster_measure2.png width=1000px
     mp.draw(mbcirc, label='arrows')
 
@@ -89,6 +100,9 @@ functions.
             @savefig vstack_mbqc.png width=1000px
             mp.draw(new_circ, label='arrows')
 
+Templates
+---------
+
 To use pre-defined MBQC circuits, we can use the :obj:`templates` module, which contains
 some common MBQC circuits. For example, we can create a grid cluster state with the 
 :func:`grid_cluster` function.
@@ -101,3 +115,14 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
     @savefig template_merge.png width=1000px
     mp.draw(grid_and_linear)
 
+Finally, if you want to know the set of gates that the MBQC circuit you have created
+implements, you can use the :func:`utils.calculate_lie_algebra`. This function returns
+the lie algebra :math:`\fraktur{g}` that the circuit implements, which can be used to calculate the set of 
+gates using the exponential map :math:`e^{\fraktur{g}}`.
+
+.. ipython:: python
+    :okwarning:
+
+    ops = mp.utils.calculate_lie_algebra(grid_cluster)
+    print(len(ops))
+    ops[:3]

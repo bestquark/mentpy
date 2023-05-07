@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.8118e13f191069ea1.min.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.b223ac77c5eb52f42.min.css" />
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -301,6 +301,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../tutorials/measurements-in-qm.html" class="md-nav__link">
+        <span class="md-ellipsis">Measurements in quantum mechanics</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../tutorials/intro-to-graphstates.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to Graph States</span>
       </a>
@@ -318,6 +333,21 @@
     <li class="md-nav__item">
       <a href="../tutorials/intro-to-mbqc.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MBQC</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/simulating-mbqc-circuits.html" class="md-nav__link">
+        <span class="md-ellipsis">Simulating MBQC Circuits</span>
       </a>
     </li>
   
@@ -456,7 +486,13 @@
 
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.ControlMent.matrix.html" title="mentpy.ControlMent.matrix (Python method) — Return the matrix of the controlled measurement operator."><span class="sig-name descname pseudo-toc-entry"><span class="pre">matrix</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angle</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.ControlMent.get_povm.html" title="mentpy.ControlMent.get_povm (Python method) — Returns the POVM representation of the measurement."><span class="sig-name descname pseudo-toc-entry"><span class="pre">get_povm</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Returns the POVM representation of the measurement.</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.ControlMent.matrix.html" title="mentpy.ControlMent.matrix (Python method) — Return the matrix of the controlled measurement operator."><span class="sig-name descname pseudo-toc-entry"><span class="pre">matrix</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Return the matrix of the controlled measurement operator.</p>
 </dd></dl>
 
@@ -534,7 +570,7 @@
       <div class="md-copyright">
   
     <div class="md-footer-copyright__highlight">
-        &#169; Copyright 2022, Luis Mantilla.
+        &#169; Copyright 2022-2023, Luis Mantilla.
         
     </div>
   

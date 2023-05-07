@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.8118e13f191069ea1.min.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.b223ac77c5eb52f42.min.css" />
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -301,6 +301,21 @@
   
   
     <li class="md-nav__item">
+      <a href="../tutorials/measurements-in-qm.html" class="md-nav__link">
+        <span class="md-ellipsis">Measurements in quantum mechanics</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../tutorials/intro-to-graphstates.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to Graph States</span>
       </a>
@@ -318,6 +333,21 @@
     <li class="md-nav__item">
       <a href="../tutorials/intro-to-mbqc.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MBQC</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/simulating-mbqc-circuits.html" class="md-nav__link">
+        <span class="md-ellipsis">Simulating MBQC Circuits</span>
       </a>
     </li>
   
@@ -490,6 +520,11 @@ n is the total number of qubits</p>
 
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.find_swaps.html" title="mentpy.NumpySimulatorDM.find_swaps (Python method)"><span class="sig-name descname pseudo-toc-entry"><span class="pre">find_swaps</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">target</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd></dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.measure.html" title="mentpy.NumpySimulatorDM.measure (Python method) — Measures the state of the system."><span class="sig-name descname pseudo-toc-entry"><span class="pre">measure</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><a class="n reference internal" href="mentpy.NumpySimulatorDM.measure.html#p-angle" title="mentpy.NumpySimulatorDM.measure.angle (Python parameter) — The angle of measurement."><span class="n"><span class="pre">angle</span></span></a><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a></span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a></span></span></span></dt>
 <dd><p>Measures the state of the system.</p>
 </dd></dl>
@@ -511,6 +546,12 @@ n is the total number of qubits</p>
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.pure2density.html" title="mentpy.NumpySimulatorDM.pure2density (Python method) — Input: quantum state Output: corresponding density matrix"><span class="sig-name descname pseudo-toc-entry"><span class="pre">pure2density</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">psi</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Input: quantum state
 Output: corresponding density matrix</p>
+</dd></dl>
+
+<dl class="py method summary objdesc">
+<dt class="sig sig-object highlight py">
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.reorder_qubits.html" title="mentpy.NumpySimulatorDM.reorder_qubits (Python method) — Reorders the qubits in the given order."><span class="sig-name descname pseudo-toc-entry"><span class="pre">reorder_qubits</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">current_order</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">target_order</span></span></em></span><span class="sig-paren">)</span></dt>
+<dd><p>Reorders the qubits in the given order.</p>
 </dd></dl>
 
 <dl class="py method summary objdesc">
@@ -546,6 +587,12 @@ Output: corresponding density matrix</p>
 <dd><p>The MBQC circuit used for the simulation.</p>
 </dd></dl>
 
+<dl class="py property summary objdesc">
+<dt class="sig sig-object highlight py">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname reference internal" href="mentpy.BaseSimulator.outcomes.html" title="mentpy.BaseSimulator.outcomes (Python property) — The outcomes of the simulation."><span class="sig-name descname"><span class="pre">outcomes</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a></span></dt>
+<dd><p>The outcomes of the simulation.</p>
+</dd></dl>
+
 </dd></dl>
 
 
@@ -578,7 +625,7 @@ Output: corresponding density matrix</p>
       <div class="md-copyright">
   
     <div class="md-footer-copyright__highlight">
-        &#169; Copyright 2022, Luis Mantilla.
+        &#169; Copyright 2022-2023, Luis Mantilla.
         
     </div>
   
