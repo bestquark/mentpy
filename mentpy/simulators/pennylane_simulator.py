@@ -140,8 +140,12 @@ def mbqcircuit_to_circuit(
         topord_no_output = [
             x for x in gsc.measurement_order if (x not in gsc.output_nodes)
         ]
-        for indx, p in zip(topord_no_output, param[: len(gsc.outputc)]):
-            qml.RZ(p, wires=indx)
+        for indx in topord_no_output:
+            if indx in gsc.trainable_nodes:
+                p = param[gsc.trainable_nodes.index(indx)]
+            else:
+                p = gsc.mbqcircuit[indx].angle
+            qml.RZ(-p, wires=indx)
             qml.Hadamard(wires=indx)
             m_0 = qml.measure(indx)
             qml.cond(m_0, qml.PauliX)(wires=gsc.flow(indx))
@@ -152,15 +156,15 @@ def mbqcircuit_to_circuit(
                 ):
                     qml.cond(m_0, qml.PauliZ)(wires=neigh)
 
-        if output == "expval":
-            for indx, p in zip(gsc.output_nodes, param[len(gsc.outputc) :]):
-                qml.RZ(p, wires=indx)
-            return [qml.expval(qml.PauliX(j)) for j in gsc.output_nodes]
-        elif output == "sample":
-            for indx, p in zip(gsc.output_nodes, param[len(gsc.outputc) :]):
-                qml.RZ(p, wires=indx)
-            return [qml.sample(qml.PauliX(j)) for j in gsc.output_nodes]
-        elif output == "density":
+        # if output == "expval":
+        #     for indx, p in zip(gsc.output_nodes, param[len(gsc.outputc) :]):
+        #         qml.RZ(-p, wires=indx)
+        #     return [qml.expval(qml.PauliX(j)) for j in gsc.output_nodes]
+        # elif output == "sample":
+        #     for indx, p in zip(gsc.output_nodes, param[len(gsc.outputc) :]):
+        #         qml.RZ(-p, wires=indx)
+        #     return [qml.sample(qml.PauliX(j)) for j in gsc.output_nodes]
+        if output == "density":
             return qml.density_matrix(gsc.output_nodes)
 
     return circuit

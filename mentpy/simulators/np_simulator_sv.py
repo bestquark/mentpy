@@ -63,6 +63,11 @@ class NumpySimulatorSV(BaseSimulator):
                 "Schedule must be provided for numpy simulator as the MBQCircuit does not have a flow."
             )
 
+        input_state = self.reorder_qubits(
+            input_state,
+            self.mbqcircuit.input_nodes,
+            self.schedule[: len(self.mbqcircuit.input_nodes)],
+        )
         self.input_state = input_state
 
         n_qubits_input = len(mbqcircuit.input_nodes)
@@ -181,6 +186,12 @@ class NumpySimulatorSV(BaseSimulator):
                 )
                 self.outcomes[i] = outcome
 
+        current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
+        if self.mbqcircuit.output_nodes != current_output_order:
+            self.qstate = self.reorder_qubits(
+                self.qstate, current_output_order, self.mbqcircuit.output_nodes
+            )
+
         if output_form.lower() == "dm" or output_form.lower() == "densitymatrix":
             return np.outer(self.qstate, np.conj(self.qstate).T)
         elif output_form.lower() == "sv" or output_form.lower() == "statevector":
@@ -193,6 +204,11 @@ class NumpySimulatorSV(BaseSimulator):
         self.current_measurement = 0
 
         if input_state is not None:
+            input_state = self.reorder_qubits(
+                input_state,
+                self.mbqcircuit.input_nodes,
+                self.schedule[: len(self.mbqcircuit.input_nodes)],
+            )
             self.input_state = input_state
             for i in range(self.window_size - len(self.mbqcircuit.input_nodes)):
                 self.input_state = np.kron(self.input_state, qubit_plus)
@@ -380,3 +396,29 @@ class NumpySimulatorSV(BaseSimulator):
                 op4 = np.kron(op4, np.eye(2))
 
         return op1 + op2 + op3 + op4
+
+    def find_swaps(self, source, target):
+        assert set(source) == set(
+            target
+        ), f"Both lists must have the same elements, but source={source} and target={target}"
+
+        swaps = []
+        source = list(source)  # Make a copy to avoid modifying the original list
+
+        for i, target_element in enumerate(target):
+            if source[i] != target_element:
+                j = source.index(target_element, i + 1)
+                source[i], source[j] = source[j], source[i]  # Swap elements
+                swaps.append((i, j))
+
+        return swaps
+
+    def reorder_qubits(self, state, current_order, target_order):
+        """
+        Reorders the qubits in the given order.
+        """
+        new_state = state.copy()
+        swaps = self.find_swaps(current_order, target_order)
+        for i, j in swaps:
+            new_state = self.swap_ij(i, j, len(current_order)) @ new_state
+        return new_state
