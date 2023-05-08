@@ -1,5 +1,3 @@
-:warning: **This library is under development.**
-
 <p align="center">
   <img src="./docs/_static/logo.png" alt="MentPy: A Measurement-Based Quantum computing simulator." width="70%">
 </p>
@@ -22,8 +20,7 @@
 </div>
 
 The `MentPy` library is an open-source software for simulations of 
-measurement-based quantum computing circuits. Currently, this package is under 
-development and is not ready for public use.
+measurement-based quantum computing circuits. Currently, this package is in its alpha version and many features are still in development.
 
 ## Installation
 

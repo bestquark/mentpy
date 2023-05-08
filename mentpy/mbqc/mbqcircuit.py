@@ -336,7 +336,7 @@ class MBQCircuit:
     def calculate_order(self):
         r"""Returns the order of the measurements"""
         n = len(self.graph)
-        mat = np.zeros((n, n))
+        mat = np.zeros((n, n), dtype=int)
 
         for indi, i in enumerate(list(self.graph.nodes())):
             for indj, j in enumerate(list(self.graph.nodes())):
@@ -345,9 +345,29 @@ class MBQCircuit:
 
         sum_mat = np.sum(mat, axis=1)
         order = np.argsort(sum_mat)[::-1]
+        print("sum_mat", sum_mat)
+        print("order", order)
+        
+        sum_dict = {}
+        for i, s in enumerate(sum_mat):
+            if s not in sum_dict:
+                sum_dict[s] = []
+            sum_dict[s].append(i)
+        sorted_indices = [sum_dict[key] for key in sorted(sum_dict.keys(), reverse=True)]
+        sorted_labels = [[list(self.graph.nodes())[i] for i in group] for group in sorted_indices]
+
+        # order = []
+        # print("sorted_labels", sorted_labels)
+
+        # for group in sorted_labels:
+        #     if len(group) == 1:
+        #         order.append(group[0])
+        #     else:
+        #         # do stuff here that sorts the group in a way that we can use the smallest window
+                
 
         # turn order into labels of graph
-        order = [list(self.graph.nodes())[i] for i in order]
+        order = [list(self.graph.nodes())[i] for i in order] # remove once above is done
 
         return order
 
