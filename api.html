@@ -8278,6 +8278,8 @@ is the output of the last state.</p>
 <span class="gp">In [2]: </span><span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
 <span class="gp">In [3]: </span><span class="n">state</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">sum_mat [4 3 2 1 0]</span>
+<span class="go">order [0 1 2 3 4]</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -8637,6 +8639,8 @@ is the output of the last state.</p>
 <span class="gp">In [5]: </span><span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
 <span class="gp">In [6]: </span><span class="n">state</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">sum_mat [4 3 2 1 0]</span>
+<span class="go">order [0 1 2 3 4]</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -9101,7 +9105,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.adam.AdamOptimizer object at 0x7f9ff0c2aa40&gt;</span>
+<span class="go">&lt;mentpy.optimizers.adam.AdamOptimizer object at 0x7f46e0b03af0&gt;</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -9158,7 +9162,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">RCDOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.rcd.RCDOptimizer object at 0x7f9ff0c2a320&gt;</span>
+<span class="go">&lt;mentpy.optimizers.rcd.RCDOptimizer object at 0x7f46e0b00160&gt;</span>
 </code></pre></div>
 </div>
 <dl class="field-list simple">
@@ -9212,7 +9216,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGDOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.sgd.SGDOptimizer object at 0x7f9ff0aaab30&gt;</span>
+<span class="go">&lt;mentpy.optimizers.sgd.SGDOptimizer object at 0x7f46e0b90f70&gt;</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -9328,6 +9332,8 @@ It has several common ansatzes that can be used for MBQC algorithms</p>
 <span class="gp">In [10]: </span><span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
 <span class="gp">In [11]: </span><span class="n">state</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">sum_mat [4 3 2 1 0]</span>
+<span class="go">order [0 1 2 3 4]</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -9524,6 +9530,8 @@ If plane is “XYZ”, the input should be a tuple of two angles.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Create a 2D cluster state <span class="math notranslate nohighlight">\(|G&gt;\)</span> of five qubits</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">grid_cluster</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="go">sum_mat [4 2 0 4 2 0]</span>
+<span class="go">order [3 0 4 1 5 2]</span>
 
 <span class="gp">In [2]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 </code></pre></div>
@@ -9567,6 +9575,8 @@ is the output of the last state.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Create a 1D cluster state <span class="math notranslate nohighlight">\(|G&gt;\)</span> of five qubits</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">linear_cluster</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">sum_mat [4 3 2 1 0]</span>
+<span class="go">order [0 1 2 3 4]</span>
 
 <span class="gp">In [2]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 </code></pre></div>
@@ -9597,6 +9607,8 @@ is the output of the last state.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Create a graph state with three wires of 2, 3, and 4 qubits respectively</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">many_wires</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="go">sum_mat [3 0 6 3 0 8 6 3 0]</span>
+<span class="go">order [5 6 2 7 3 0 8 4 1]</span>
 
 <span class="gp">In [2]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 </code></pre></div>
@@ -9636,6 +9648,52 @@ output of the new MBQC circuit will depend on the concat_indices.</p>
 <p class="example rubric" id="examples">Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></p>
 <p>Create a MuTA ansatz with 3 wires and 2 layers</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">g</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">muta</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">sum_mat [12  9  6  3  0 12  9  6  3  0 12  9  6  3  0]</span>
+<span class="go">order [10  5  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [14  9  6  3  0 12  9  6  3  0 12  9  6  3  0]</span>
+<span class="go">order [ 0 10  5 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [14  9  6  3  0 13 11  6  3  0 11  9  6  3  0]</span>
+<span class="go">order [ 0  5 10  6 11  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [14  9  6  3  0 13 11  6  3  0 11  9  6  3  0]</span>
+<span class="go">order [ 0  5 10  6 11  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [14  9  6  3  0 12 10  6  3  0 12 10  6  3  0]</span>
+<span class="go">order [ 0 10  5 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [12  9  6  3  0 12  9  6  3  0 12  9  6  3  0]</span>
+<span class="go">order [10  5  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [12  9  6  3  0 14  9  6  3  0 12  9  6  3  0]</span>
+<span class="go">order [ 5 10  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [13 11  6  3  0 14  9  6  3  0 11  9  6  3  0]</span>
+<span class="go">order [ 5  0 10  1 11  6 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [13 11  6  3  0 14  9  6  3  0 11  9  6  3  0]</span>
+<span class="go">order [ 5  0 10  1 11  6 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [12 10  6  3  0 14  9  6  3  0 12 10  6  3  0]</span>
+<span class="go">order [ 5 10  0 11  1  6 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [26 20 17 14 24 22 20 17 24 22 17 14 12 10  6  3  0 14  9  6  3  0 12 10</span>
+<span class="go">  6  3  0]</span>
+<span class="go">order [ 0  4  8  5  9  1  6  2  7 10 11  3 17 22 12 13 23 18 14 19 24 25 15 20</span>
+<span class="go"> 16 21 26]</span>
+<span class="go">sum_mat [12  9  6  3  0 12  9  6  3  0 12  9  6  3  0]</span>
+<span class="go">order [10  5  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [12  9  6  3  0 12  9  6  3  0 14  9  6  3  0]</span>
+<span class="go">order [10  5  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [13 11  6  3  0 11  9  6  3  0 14  9  6  3  0]</span>
+<span class="go">order [10  0  5  1 11  6 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [13 11  6  3  0 11  9  6  3  0 14  9  6  3  0]</span>
+<span class="go">order [10  0  5  1 11  6 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [12 10  6  3  0 12 10  6  3  0 14  9  6  3  0]</span>
+<span class="go">order [10  5  0  6  1 11 12  7  2 13  8  3 14  9  4]</span>
+<span class="go">sum_mat [38 32 29 26 36 34 32 29 36 34 29 26 24 22 17 14 26 20 17 14 24 22 20 17</span>
+<span class="go"> 12 10  6  3  0 12 10  6  3  0 14  9  6  3  0]</span>
+<span class="go">order [ 0  8  4  9  5  1  6  7 10  2  3 11 16 12 20 13 21 22 17 23 14 18 15 19</span>
+<span class="go"> 34 24 29 25 30 35 26 31 36 37 27 32 28 33 38]</span>
+<span class="go">sum_mat [74 68 65 62 72 70 68 65 72 70 65 62 60 58 53 50 62 56 53 50 60 58 56 53</span>
+<span class="go"> 48 46 44 41 48 46 41 38 50 44 41 38 38 32 29 26 36 34 32 29 36 34 29 26</span>
+<span class="go"> 24 22 17 14 26 20 17 14 24 22 20 17 12 10  6  3  0 12 10  6  3  0 14  9</span>
+<span class="go">  6  3  0]</span>
+<span class="go">order [ 0  8  4  9  5  1  6  7 10  2  3 11 16 12 20 13 21 22 17 14 18 23 32 19</span>
+<span class="go"> 15 28 24 29 25 33 26 27 30 34 31 36 35 44 40 45 41 37 42 43 46 38 39 47</span>
+<span class="go"> 52 56 48 57 49 58 53 59 54 50 55 70 51 60 65 61 66 71 62 72 67 73 68 63</span>
+<span class="go"> 69 64 74]</span>
 
 <span class="gp">In [2]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 </code></pre></div>
@@ -9732,6 +9790,8 @@ subgraph of all graphs without flow.</p>
 <span class="gp">In [4]: </span><span class="n">g</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
 <span class="gp">In [5]: </span><span class="n">state</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="go">sum_mat [4 3 2 1 0]</span>
+<span class="go">order [0 1 2 3 4]</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
