@@ -546,6 +546,7 @@
 <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class. Now, we will use this circuit to run an actual experiment.
 We will use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">PatternSimulator</span></code> class to create a simulator. Let’s try it out</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">grid_cluster</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">grid_cluster</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="go">[[0, 5, 10], [1, 6, 11], [2, 7, 12], [3, 8, 13], [4, 9, 14]]</span>
 
 <span class="gp">In [2]: </span><span class="n">simulator</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">PatternSimulator</span><span class="p">(</span><span class="n">grid_cluster</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="s1">&#39;pennylane&#39;</span><span class="p">)</span>
 
