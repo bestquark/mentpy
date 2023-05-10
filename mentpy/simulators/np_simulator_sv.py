@@ -187,7 +187,7 @@ class NumpySimulatorSV(BaseSimulator):
                 self.outcomes[i] = outcome
 
         current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
-        if self.mbqcircuit.output_nodes != current_output_order:
+        if self.mbqcircuit.quantum_output_nodes != current_output_order:
             self.qstate = self.reorder_qubits(
                 self.qstate, current_output_order, self.mbqcircuit.output_nodes
             )

@@ -136,6 +136,7 @@ class MBQCircuit:
                     )
 
         self._measurements = measurements
+        self._flow, self._partial_order = None, None
         self._update_attributes()
 
         if (flow is None) or (partial_order is None):
@@ -162,6 +163,12 @@ class MBQCircuit:
 
         if measurement_order is None and flow is not None:
             measurement_order = self.calculate_order()
+
+        # in case we measure an output node
+        quantum_output_nodes = [
+            node for node, i in self.measurements.items() if i is None
+        ]
+        self._quantum_output_nodes = quantum_output_nodes
 
         self._depth = depth
         self._measurement_order = measurement_order
@@ -242,6 +249,16 @@ class MBQCircuit:
         return self._output_nodes
 
     @property
+    def quantum_output_nodes(self) -> List[int]:
+        r"""Return the output nodes of the MBQC circuit."""
+        return self._quantum_output_nodes
+
+    @property
+    def classical_output_nodes(self) -> List[int]:
+        r"""Return the output nodes of the MBQC circuit."""
+        return self._classical_output_nodes
+
+    @property
     def trainable_nodes(self) -> List[int]:
         r"""Return the trainable nodes of the MBQC circuit."""
         return self._trainable_nodes
@@ -306,6 +323,8 @@ class MBQCircuit:
         trainable_nodes = []
         controlled_nodes = []
         planes = {}
+        quantum_outputs = []
+        classical_outputs = []
         for nodei, menti in self._measurements.items():
             if menti is not None:
                 if isinstance(menti, ControlMent):
@@ -317,11 +336,38 @@ class MBQCircuit:
                 planes[nodei] = menti.plane
                 self._measurements[nodei] = copy.deepcopy(menti)
                 self._measurements[nodei].node_id = nodei
+                if nodei in self._output_nodes:
+                    classical_outputs.append(nodei)
             else:
                 planes[nodei] = ""
+                if nodei in self._output_nodes:
+                    quantum_outputs.append(nodei)
+
         self._trainable_nodes = trainable_nodes
         self._controlled_nodes = controlled_nodes
         self._planes = planes
+        self._quantum_output_nodes = quantum_outputs
+        self._classical_output_nodes = classical_outputs
+
+        # update measurement order
+
+        # make artificial graph for new flow with controls
+        # if len(self.controlled_nodes) > 0:
+        #     artificial_graph = self.graph
+        #     for nodei in self.controlled_nodes:
+        #         new_edges = [(nodei, v) for v in self.measurements[nodei].condition.cond_nodes]
+        #         artificial_graph.add_edges_from(new_edges)
+
+        #     flow, partial_order, depth = find_cflow(artificial_graph, self.input_nodes, self.output_nodes)
+        #     self._flow = flow
+        #     self._partial_order = partial_order
+        #     self._depth = depth
+
+        if self._partial_order is not None:
+            old_partial_order = self._partial_order
+            self._partial_order = _create_new_partial_order(
+                self.controlled_nodes, self.measurements, old_partial_order
+            )
 
     def _update_attributes_key(self, key) -> None:
         menti = self._measurements[key]
@@ -342,6 +388,10 @@ class MBQCircuit:
         r"""Returns the order of the measurements"""
         n = len(self.graph)
         mat = np.zeros((n, n), dtype=int)
+
+        # for c in self.controlled_nodes:
+        #     nodes_before = self.measurements[c].condition.cond_nodes
+        #     for node in nodes_before:
 
         for indi, i in enumerate(list(self.graph.nodes())):
             for indj, j in enumerate(list(self.graph.nodes())):
@@ -364,8 +414,8 @@ class MBQCircuit:
         sorted_labels = [
             [list(self.graph.nodes())[i] for i in group] for group in sorted_indices
         ]
-
-        # sort within groups
+        print(sorted_labels)
+        # sort within groups can be optimized
 
         # for group in sorted_labels:
         #     if len(group) > 1:
@@ -376,26 +426,44 @@ class MBQCircuit:
 
         # order = []
         # print("sorted_labels", sorted_labels)
-
+        # print(sorted_labels, "antes")
         # for group in sorted_labels:
-        #     if len(group) == 1:
-        #         order.append(group[0])
-        #     else:
-        #         # do stuff here that sorts the group in a way that we can use the smallest window
+        #     if len(group) > 1:
+        #         # arange controlled nodes
+        #         for c in self.controlled_nodes:
+        #             # check if c is in group
+        #             if c in group:
+        #                 nodes_before = self.measurements[c].condition.cond_nodes
+        #                 for node in nodes_before:
+        #                     # search if node is in group else, swap groups
+        #                     if node in group:
+        #                         indx_node = group.index(node)
+        #                         indx_c = group.index(c)
+        #                         if indx_node > indx_c:
+        #                             group.remove(c)
+        #                             group.insert(indx_node, c)
 
+        # print(sorted_labels, "despues")
+        order = [item for sublist in sorted_labels for item in sublist]
         # turn order into labels of graph
-        order = [
-            list(self.graph.nodes())[i] for i in order
-        ]  # remove once above is done
+        # order = [
+        #     list(self.graph.nodes())[i] for i in order
+        # ]  # remove once above is done
 
-        for c in self.controlled_nodes:
-            nodes_before = self.measurements[c].condition.cond_nodes
-            for node in nodes_before:
-                indx_node = order.index(node)
-                indx_c = order.index(c)
-                if indx_node > indx_c:
-                    order.remove(c)
-                    order.insert(indx_node, c)
+        # for c in self.controlled_nodes:
+        #     nodes_before = self.measurements[c].condition.cond_nodes
+        #     for node in nodes_before:
+        #         indx_node = order.index(node)
+        #         indx_c = order.index(c)
+        #         if indx_node > indx_c:
+        #             print("swapping", node, c)
+        #             order.remove(c)
+        #             order.insert(indx_node, c)
+
+        # remove all input nodes and put them at the start
+        for i in self.input_nodes[::-1]:
+            order.remove(i)
+            order.insert(0, i)
 
         return order
 
@@ -775,3 +843,21 @@ def _graph_with_flow(state):
     for node in state.outputc:
         gflow.add_edge(node, state.flow(node))
     return gflow
+
+
+def _create_new_partial_order(controlled_nodes, measurements, old_partial_order):
+    def new_partial_order(i, j):
+        for c in controlled_nodes:
+            cns = measurements[c].condition.cond_nodes
+            ibeforecns = any([old_partial_order(i, cn) for cn in cns]) or i in cns
+            jafterc = old_partial_order(c, j) or j == c
+
+            if ibeforecns and jafterc and i != j:
+                return True
+
+            if j in cns and i == c:
+                return False
+
+        return old_partial_order(i, j)
+
+    return new_partial_order

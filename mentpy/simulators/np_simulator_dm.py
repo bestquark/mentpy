@@ -23,6 +23,7 @@ qubit_plus = H @ q_zero
 class NumpySimulatorDM(BaseSimulator):
     """A density matrix simulator that uses numpy to simulate the quantum circuit."""
 
+    # TODO: CALCULATE OPTIMAL WINDOW SIZE AUTOMATICALLY
     def __init__(
         self, mbqcircuit: MBQCircuit, input_state: np.ndarray = None, **kwargs
     ) -> None:
@@ -45,7 +46,7 @@ class NumpySimulatorDM(BaseSimulator):
             self.schedule_measure = [
                 i
                 for i in mbqcircuit.measurement_order
-                if i not in mbqcircuit.output_nodes
+                if i not in mbqcircuit.quantum_output_nodes
             ]
             self.schedule = mbqcircuit.measurement_order
             if self.window_size == 1 and mbqcircuit.flow is not None:
@@ -125,6 +126,7 @@ class NumpySimulatorDM(BaseSimulator):
         )
 
         self.current_measurement += 1
+
         self.qstate = self.partial_trace(self.qstate, [0])
 
         if self.current_measurement + self.window_size <= len(
@@ -163,19 +165,21 @@ class NumpySimulatorDM(BaseSimulator):
             self.qstate, outcome = self.measure(angle)
             self.outcomes[i] = outcome
 
-        current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
-        if self.mbqcircuit.output_nodes != current_output_order:
+        current_output_order = [
+            i for i in self.schedule if i not in self.schedule_measure
+        ]
+        if self.mbqcircuit.quantum_output_nodes != current_output_order:
             self.qstate = self.reorder_qubits(
-                self.qstate, current_output_order, self.mbqcircuit.output_nodes
+                self.qstate, current_output_order, self.mbqcircuit.quantum_output_nodes
             )
 
-        # check if output nodes have a measurement, if so, measure them
-        for i in self.mbqcircuit.output_nodes:
-            if isinstance(self.mbqcircuit[i], Ment):
-                self.qstate, outcome = self.measure_ment(
-                    self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
-                )
-                self.outcomes[i] = outcome
+        # # check if output nodes have a measurement, if so, measure them
+        # for i in self.mbqcircuit.output_nodes:
+        #     if isinstance(self.mbqcircuit[i], Ment):
+        #         self.qstate, outcome = self.measure_ment(
+        #             self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
+        #         )
+        #         self.outcomes[i] = outcome
 
         return self.qstate
 
@@ -275,7 +279,6 @@ class NumpySimulatorDM(BaseSimulator):
         """
         Measures a ment
         """
-
         op = ment.matrix(angle, self.outcomes)
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
