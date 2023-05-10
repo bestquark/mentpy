@@ -140,7 +140,11 @@ class MBQCircuit:
         self._update_attributes()
 
         if (flow is None) or (partial_order is None):
-            flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
+            # flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
+            flow, partial_order = find_flow(
+                graph, input_nodes, output_nodes
+            )  # TODO: FIX find_cflow!!!!
+            depth = None
 
         elif (flow is not None) and (partial_order is not None):
             check_if_flow(graph, input_nodes, output_nodes, flow, partial_order)
@@ -397,7 +401,7 @@ class MBQCircuit:
             for indj, j in enumerate(list(self.graph.nodes())):
                 if self.partial_order(i, j):
                     mat[indi, indj] = 1
-
+        # print(mat)
         sum_mat = np.sum(mat, axis=1)
         order = np.argsort(sum_mat)[::-1]
         # print("sum_mat", sum_mat)
@@ -414,7 +418,7 @@ class MBQCircuit:
         sorted_labels = [
             [list(self.graph.nodes())[i] for i in group] for group in sorted_indices
         ]
-        print(sorted_labels)
+        # print(sorted_labels)
         # sort within groups can be optimized
 
         # for group in sorted_labels:
@@ -443,7 +447,7 @@ class MBQCircuit:
         #                             group.remove(c)
         #                             group.insert(indx_node, c)
 
-        # print(sorted_labels, "despues")
+        print(sorted_labels)
         order = [item for sublist in sorted_labels for item in sublist]
         # turn order into labels of graph
         # order = [
@@ -720,7 +724,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     elif isinstance(state, MBQCircuit):
         node_colors = {}
         for i in state.graph.nodes():
-            if i in state.output_nodes:
+            if i in state.quantum_output_nodes:
                 node_colors[i] = "#ADD8E6"
             elif i in state.controlled_nodes:
                 node_colors[i] = "#A88FE8"
@@ -849,9 +853,12 @@ def _create_new_partial_order(controlled_nodes, measurements, old_partial_order)
     def new_partial_order(i, j):
         for c in controlled_nodes:
             cns = measurements[c].condition.cond_nodes
+
             ibeforecns = any([old_partial_order(i, cn) for cn in cns]) or i in cns
             jafterc = old_partial_order(c, j) or j == c
-
+            # print(f"Comparing {i} and {j}")
+            # print(any([old_partial_order(i, cn) for cn in cns]), i in cns)
+            # print(old_partial_order(c, j), j == c)
             if ibeforecns and jafterc and i != j:
                 return True
 

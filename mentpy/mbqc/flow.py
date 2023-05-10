@@ -260,7 +260,13 @@ def _augmented_search(
                     return (fam, visited, 1)
             elif visited[next(fam.predecessors(w))] < iter:
                 (fam, visited, status) = _augmented_search(
-                    graph, fam, iter, visited, next(fam.predecessors(w))
+                    graph,
+                    input_nodes,
+                    output_nodes,
+                    fam,
+                    iter,
+                    visited,
+                    next(fam.predecessors(w)),
                 )
                 if status:
                     fam.remove_edge(next(fam.predecessors(w)), w)

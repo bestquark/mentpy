@@ -124,7 +124,11 @@ class NumpySimulatorDM(BaseSimulator):
         self.qstate, outcome = self.measure_ment(
             current_ment, angle, 0, force0=self.force0
         )
-
+        # check if qstate has nan
+        if np.isnan(self.qstate).any():
+            raise ValueError(
+                "qstate has nan, you might want to increase the window size"
+            )
         self.current_measurement += 1
 
         self.qstate = self.partial_trace(self.qstate, [0])
@@ -297,7 +301,10 @@ class NumpySimulatorDM(BaseSimulator):
         if not force0:
             outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
         else:
-            outcome = 0
+            if prob0 < 1e-4:
+                outcome = 1  # important when measuring Z's -- should make pretty
+            else:
+                outcome = 0
 
         if outcome == 0:
             self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T / prob0
