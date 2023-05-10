@@ -568,8 +568,6 @@ information flows through the system by measuring the qubits of the resource sta
 <span class="gp">In [2]: </span><span class="n">gs</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
 
 <span class="gp">In [3]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-<span class="go">sum_mat [4 3 2 1 0]</span>
-<span class="go">order [0 1 2 3 4]</span>
 
 <span class="gp">In [4]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">)</span>
 </code></pre></div>
@@ -602,8 +600,6 @@ If not provided, it will be treated as a trainable parameter.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">measurements</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">2</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)}</span>
 
 <span class="gp">In [11]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">)</span>
-<span class="go">sum_mat [4 3 2 1 0]</span>
-<span class="go">order [0 1 2 3 4]</span>
 
 <span class="gp">In [12]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;arrows&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -616,8 +612,6 @@ it is set to <span class="math notranslate nohighlight">\(XY\)</span>, but we ca
 <span class="gp">   ....: </span>                       <span class="n">measurements</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">)},</span>
 <span class="gp">   ....: </span>                       <span class="n">default_measurement</span><span class="o">=</span><span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">))</span>
 <span class="gp">   ....: </span>
-<span class="go">sum_mat [4 3 2 1 0]</span>
-<span class="go">order [0 1 2 3 4]</span>
 
 <span class="gp">In [14]: </span><span class="nb">print</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># Not specified in the constructor</span>
 <span class="go">Ment(0, X)</span>
@@ -641,8 +635,6 @@ vstack</label></div>
 <div class="tabbed-content docutils container">
 <div class="tabbed-block docutils container">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">,</span> <span class="n">along</span><span class="o">=</span><span class="p">[(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>  <span class="c1"># specify nodes to merge</span>
-<span class="go">sum_mat [8 7 6 5 4 3 2 1 0]</span>
-<span class="go">order [0 1 2 3 4 5 6 7 8]</span>
 
 <span class="gp">In [18]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;angles&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -651,8 +643,6 @@ vstack</label></div>
 </div>
 <div class="tabbed-block docutils container">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
-<span class="go">sum_mat [8 7 6 5 4 3 2 1 0]</span>
-<span class="go">order [0 1 2 3 4 5 6 7 8]</span>
 
 <span class="gp">In [20]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;planes&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -661,8 +651,6 @@ vstack</label></div>
 </div>
 <div class="tabbed-block docutils container">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
-<span class="go">sum_mat [8 6 4 2 0 8 6 4 2 0]</span>
-<span class="go">order [5 0 6 1 7 2 8 3 9 4]</span>
 
 <span class="gp">In [22]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;arrows&#39;</span><span class="p">)</span>
 </code></pre></div>
@@ -675,16 +663,10 @@ vstack</label></div>
 some common MBQC circuits. For example, we can create a grid cluster state with the
 <code class="xref py py-func docutils literal notranslate"><span class="pre">grid_cluster()</span></code> function.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [23]: </span><span class="n">grid_cluster</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">grid_cluster</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-<span class="go">sum_mat [12  9  6  3  0 12  9  6  3  0 12  9  6  3  0]</span>
-<span class="go">order [10  5  0 11  6  1 12  7  2 13  8  3 14  9  4]</span>
 
 <span class="gp">In [24]: </span><span class="n">linear_cluster</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">templates</span><span class="o">.</span><span class="n">linear_cluster</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="go">sum_mat [3 2 1 0]</span>
-<span class="go">order [0 1 2 3]</span>
 
 <span class="gp">In [25]: </span><span class="n">grid_and_linear</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">grid_cluster</span><span class="p">,</span> <span class="n">linear_cluster</span><span class="p">,</span> <span class="n">along</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>
-<span class="go">sum_mat [15 12  9  6  0 15 12  9  6 15 12  9  6  0  5  4  3  0]</span>
-<span class="go">order [ 0  5  9  1 10  6  7  2 11  3  8 12 14 15 16  4 13 17]</span>
 
 <span class="gp">In [26]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">grid_and_linear</span><span class="p">)</span>
 </code></pre></div>
