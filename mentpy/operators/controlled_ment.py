@@ -93,4 +93,5 @@ class ControlMent(Ment):
         else:
             return super().get_povm(angle, *args, **kwargs)
 
+
 ControlledMent = ControlMent

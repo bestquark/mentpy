@@ -185,7 +185,7 @@ class NumpySimulatorSV(BaseSimulator):
                     self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
                 )
                 self.outcomes[i] = outcome
-            
+
         current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
         if self.mbqcircuit.output_nodes != current_output_order:
             self.qstate = self.reorder_qubits(
@@ -300,7 +300,7 @@ class NumpySimulatorSV(BaseSimulator):
 
         return traced_tensor
 
-    def measure_ment(self, ment: Ment, angle,  i, force0=False):
+    def measure_ment(self, ment: Ment, angle, i, force0=False):
         """
         Measures a ment
         """
