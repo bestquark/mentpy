@@ -275,17 +275,17 @@ class NumpySimulatorDM(BaseSimulator):
         """
         Measures a ment
         """
+
         op = ment.matrix(angle, self.outcomes)
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
-        p0 = (np.eye(2) + op) / 2
-        p1 = (np.eye(2) - op) / 2
-        p1_extended = self.arbitrary_qubit_gate(
-            p1, i, self.current_number_simulated_nodes()
-        )
+        p0, p1 = ment.get_povm(angle, self.outcomes)
         p0_extended = self.arbitrary_qubit_gate(
             p0, i, self.current_number_simulated_nodes()
+        )
+        p1_extended = self.arbitrary_qubit_gate(
+            p1, i, self.current_number_simulated_nodes()
         )
 
         prob0 = np.real(np.trace(self.qstate @ p0_extended))

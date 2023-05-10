@@ -186,9 +186,14 @@ class MBQCircuit:
             raise ValueError(f"Value {value} is not a Measurement object.")
 
         self._measurements[key] = value
+            
         # self._update_attributes_key(key)
         self._update_attributes()
 
+        if isinstance(value, ControlMent):
+            # recalculate measurement order
+            self._measurement_order = self.calculate_order()
+            
     def __getitem__(self, key):
         r"""Return the value of the measurement of the node with index key."""
         try:
@@ -345,8 +350,8 @@ class MBQCircuit:
 
         sum_mat = np.sum(mat, axis=1)
         order = np.argsort(sum_mat)[::-1]
-        print("sum_mat", sum_mat)
-        print("order", order)
+        # print("sum_mat", sum_mat)
+        # print("order", order)
 
         sum_dict = {}
         for i, s in enumerate(sum_mat):
@@ -359,6 +364,17 @@ class MBQCircuit:
         sorted_labels = [
             [list(self.graph.nodes())[i] for i in group] for group in sorted_indices
         ]
+
+        # sort within groups 
+
+        # for group in sorted_labels:
+        #     if len(group) > 1:
+        #         for i in range(len(group)):
+        #             for j in range(i+1, len(group)):
+        #                 if not self.partial_order(group[i], group[j]):
+        #                     group[i], group[j] = group[j], group[i]
+        
+        
 
         # order = []
         # print("sorted_labels", sorted_labels)
@@ -373,6 +389,15 @@ class MBQCircuit:
         order = [
             list(self.graph.nodes())[i] for i in order
         ]  # remove once above is done
+
+        for c in self.controlled_nodes:
+            nodes_before = self.measurements[c].condition.cond_nodes
+            for node in nodes_before:
+                indx_node = order.index(node)
+                indx_c = order.index(c)
+                if indx_node > indx_c:
+                    order.remove(c)
+                    order.insert(indx_node, c)
 
         return order
 

@@ -129,7 +129,7 @@ class NumpySimulatorSV(BaseSimulator):
         ].copy()
 
         self.qstate, outcome = self.measure_ment(
-            current_ment.set_angle(angle), 0, force0=self.force0
+            current_ment, angle, 0, force0=self.force0
         )
 
         self.current_measurement += 1
@@ -185,7 +185,7 @@ class NumpySimulatorSV(BaseSimulator):
                     self.mbqcircuit[i], self.mbqcircuit[i].angle, i, force0=self.force0
                 )
                 self.outcomes[i] = outcome
-
+            
         current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
         if self.mbqcircuit.output_nodes != current_output_order:
             self.qstate = self.reorder_qubits(
@@ -300,7 +300,7 @@ class NumpySimulatorSV(BaseSimulator):
 
         return traced_tensor
 
-    def measure_ment(self, ment: Ment, i, force0=False):
+    def measure_ment(self, ment: Ment, angle,  i, force0=False):
         """
         Measures a ment
         """
@@ -309,11 +309,11 @@ class NumpySimulatorSV(BaseSimulator):
                 f"Plane {ment.plane} is not supported for state vector numpy simulator."
             )
 
-        op = ment.matrix()
+        op = ment.matrix(angle, self.outcomes)
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
-        p0, p1 = ment.get_povm()
+        p0, p1 = ment.get_povm(angle, self.outcomes)
         p1_extended = self.arbitrary_qubit_gate(
             p1, i, self.current_number_simulated_nodes()
         )

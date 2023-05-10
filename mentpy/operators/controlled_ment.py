@@ -83,12 +83,14 @@ class ControlMent(Ment):
     def matrix(self, angle: float | None = None, *args, **kwargs):
         """Return the matrix of the controlled measurement operator."""
         if self.condition(*args, **kwargs):
-            return self._true_ment.matrix(angle)
+            return self._true_ment.matrix(angle, *args, **kwargs)
         else:
-            return super().matrix(angle)
+            return super().matrix(angle, *args, **kwargs)
 
     def get_povm(self, angle: float | None = None, *args, **kwargs):
         if self.condition(*args, **kwargs):
-            return self._true_ment.get_povm(angle)
+            return self._true_ment.get_povm(angle, *args, **kwargs)
         else:
-            return super().get_povm(angle)
+            return super().get_povm(angle, *args, **kwargs)
+
+ControlledMent = ControlMent
