@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from mentpy.operators import Ment, ControlMent, PauliOp
 from mentpy.mbqc.states.graphstate import GraphState
-from mentpy.mbqc.flow import find_gflow, find_cflow, find_flow, check_if_flow
+from mentpy.mbqc.flow import find_cflow, find_flow, check_if_flow
 
 __all__ = ["MBQCircuit", "draw", "merge", "hstack", "vstack"]
 
@@ -61,7 +61,6 @@ class MBQCircuit:
         flow: Optional[Callable] = None,
         partial_order: Optional[callable] = None,
         measurement_order: Optional[List[int]] = None,
-        gflow: Optional[Callable] = None,
         relabel_indices: bool = True,
     ) -> None:
         """Initializes a graph state"""
@@ -80,11 +79,6 @@ class MBQCircuit:
                 partial_order = lambda x, y: partial_order(
                     inv_mapping[x], inv_mapping[y]
                 )
-            if gflow is not None:
-                gflow = lambda x: mapping[
-                    gflow(inv_mapping[x])
-                ]  # FIX THIS... gflow output is not a number
-                raise NotImplementedError
             if measurement_order is not None:
                 measurement_order = [mapping[i] for i in measurement_order]
             if measurements is not None:
@@ -151,19 +145,6 @@ class MBQCircuit:
 
         self._flow = flow
         self._partial_order = partial_order
-
-        if gflow is None:
-            if flow is None:
-                gflow, gpartial_order, depth = find_gflow(
-                    graph, input_nodes, output_nodes
-                )
-            else:
-                gflow, gpartial_order = flow, partial_order
-
-        # TODO: check if given gflow it is definitely gflow and add support for PauliFlow -- could add
-        # all these in one function.
-
-        self.gflow = gflow
 
         if measurement_order is None and flow is not None:
             measurement_order = self.calculate_order()
@@ -447,7 +428,7 @@ class MBQCircuit:
         #                             group.remove(c)
         #                             group.insert(indx_node, c)
 
-        print(sorted_labels)
+        # print(sorted_labels)
         order = [item for sublist in sorted_labels for item in sublist]
         # turn order into labels of graph
         # order = [
@@ -681,6 +662,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "edgecolors": "k",
         "node_size": 500,
         "edge_color": "grey",
+        "edge_color_control": "#CCCCCC",
         "with_labels": True,
         "label": "indices",
         "transparent": True,
@@ -692,8 +674,8 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     options.update(kwargs)
 
     show_controls = options.pop("show_controls")
-
     pauliop = options.pop("pauliop")
+    edge_color_control = options.pop("edge_color_control")
 
     if pauliop is not None:
         options["label"] = "pauliop"
@@ -832,7 +814,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
             nx.draw_networkx_edges(
                 state.graph,
                 pos=node_pos,
-                edge_color="#CCCCCC",
+                edge_color=edge_color_control,
                 width=1.5,
                 edgelist=dashed_edges,
                 style="dashed",

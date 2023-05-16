@@ -49,20 +49,11 @@ class PennylaneSimulator(BaseSimulator):
     def measure(self, angle: float, plane: str = "XY"):
         raise NotImplementedError
 
-    def run(
-        self, angles: List[float], planes: Union[List[str], str] = "XY", **kwargs
-    ) -> Tuple[List[int], np.ndarray]:
+    def run(self, angles: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(
                 f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcircuit.trainable_nodes)})."
             )
-
-        # TODO: Implement this
-        if planes != "XY":
-            raise NotImplementedError
-
-        if isinstance(planes, str):
-            planes = [planes] * len(angles)
 
         # extend angles to all nodes
 
@@ -72,7 +63,6 @@ class PennylaneSimulator(BaseSimulator):
             for i in self.mbqcircuit.outputc:
                 if i in self.mbqcircuit.trainable_nodes:
                     angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
-                    plane = planes[self.mbqcircuit.trainable_nodes.index(i)]
                 else:
                     plane = self.mbqcircuit.planes[i]
                     if plane == "X":
@@ -141,10 +131,8 @@ def mbqcircuit_to_circuit(
             x for x in gsc.measurement_order if (x not in gsc.output_nodes)
         ]
         for indx in topord_no_output:
-            if indx in gsc.trainable_nodes:
-                p = param[gsc.trainable_nodes.index(indx)]
-            else:
-                p = gsc.mbqcircuit[indx].angle
+            p = param[gsc.outputc.index(indx)]
+
             qml.RZ(-p, wires=indx)
             qml.Hadamard(wires=indx)
             m_0 = qml.measure(indx)

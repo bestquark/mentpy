@@ -13,6 +13,26 @@ import galois
 
 ## Not used in main MBQC module
 
+# This module should only export the flow class
+
+
+class Flow:
+    def __init__(self, graph: GraphState, input_nodes, output_nodes):
+        self.graph = graph
+        self.input_nodes = input_nodes
+        self.output_nodes = output_nodes
+        flow_function, partial_order = self.find_flow()
+        self.func = flow_function
+        self.partial_order = partial_order
+        self.depth = -1  # calculate depth
+
+    def find_flow(self):
+        # include gflow and pflow
+        return find_flow(self.graph, self.input_nodes, self.output_nodes)
+
+    def adapt_angles(self, angles, outcomes):
+        raise NotImplementedError
+
 
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
@@ -28,11 +48,11 @@ def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     states
     """
     # raise deprecated warning
-    warnings.warn(
-        "The function find_flow is deprecated. Use find_cflow instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
+    # warnings.warn(
+    #     "The function find_flow is deprecated. Use find_cflow instead.",
+    #     DeprecationWarning,
+    #     stacklevel=2,
+    # )
 
     n_input, n_output = len(input_nodes), len(output_nodes)
     inp = input_nodes
@@ -246,32 +266,42 @@ def _augmented_search(
             next(fam.predecessors(v)),
         )
         if status:
-            fam = fam.remove_edge(next(fam.predecessors(v)), v)
-            return (fam, visited, 1)
+            try:
+                fam = fam.remove_edge(next(fam.predecessors(v)), v)
+                return (fam, visited, 1)
+            except:
+                return (fam, visited, 0)
 
     for w in graph.neighbors(v):
-        if (visited[w] < iter) and (w not in input_nodes) and (not fam.has_edge(v, w)):
-            if w not in fam.nodes():
-                (fam, visited, status) = _augmented_search(
-                    graph, input_nodes, output_nodes, fam, iter, visited, w
-                )
-                if status:
-                    fam.add_edge(v, w)
-                    return (fam, visited, 1)
-            elif visited[next(fam.predecessors(w))] < iter:
-                (fam, visited, status) = _augmented_search(
-                    graph,
-                    input_nodes,
-                    output_nodes,
-                    fam,
-                    iter,
-                    visited,
-                    next(fam.predecessors(w)),
-                )
-                if status:
-                    fam.remove_edge(next(fam.predecessors(w)), w)
-                    fam.add_edge(v, w)
-                    return (fam, visited, 1)
+        try:
+            if (
+                (visited[w] < iter)
+                and (w not in input_nodes)
+                and (not fam.has_edge(v, w))
+            ):
+                if w not in fam.nodes():
+                    (fam, visited, status) = _augmented_search(
+                        graph, input_nodes, output_nodes, fam, iter, visited, w
+                    )
+                    if status:
+                        fam.add_edge(v, w)
+                        return (fam, visited, 1)
+                elif visited[next(fam.predecessors(w))] < iter:
+                    (fam, visited, status) = _augmented_search(
+                        graph,
+                        input_nodes,
+                        output_nodes,
+                        fam,
+                        iter,
+                        visited,
+                        next(fam.predecessors(w)),
+                    )
+                    if status:
+                        fam.remove_edge(next(fam.predecessors(w)), w)
+                        fam.add_edge(v, w)
+                        return (fam, visited, 1)
+        except:
+            return (fam, visited, 0)
 
     return (fam, visited, 0)
 
