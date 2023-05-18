@@ -191,7 +191,7 @@ def lie_algebra_completion(generators: PauliOp, max_iter: int = 1000):
     return lieAlg
 
 
-def calculate_lie_algebra(state: MBQCircuit, max_iter: int = 1000):
+def calculate_lie_algebra(state: MBQCircuit, max_iter: int = 10000):
     """Calculates the Lie algebra of a given state"""
     generators = calculate_gens_lie_algebra(state)
     return lie_algebra_completion(generators, max_iter=max_iter)
