@@ -69,9 +69,11 @@ class PennylaneSimulator(BaseSimulator):
                         angle = 0
                     elif plane == "Y":
                         angle = np.pi / 2
+                    elif plane == "XY":
+                        angle = self.mbqcircuit[i].angle
                     else:
                         raise ValueError(
-                            f"Plane {plane} is not supported for numpy simulator."
+                            f"Plane {plane} is not supported for pennylane simulator."
                         )
 
                 extended_angles.append(angle)

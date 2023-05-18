@@ -13,5 +13,7 @@ from . import gradients
 from . import optimizers
 from . import utils
 
+from .utils import math
+
 __version__ = "0.0.0"
 __version_info__ = (0, 0, 0)
