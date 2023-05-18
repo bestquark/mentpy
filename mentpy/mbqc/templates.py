@@ -89,7 +89,7 @@ def many_wires(n_wires: List, **kwargs) -> MBQCircuit:
     return gs
 
 
-def grid_cluster(n, m, **kwargs) -> MBQCircuit:
+def grid_cluster(n, m, periodic=False, **kwargs) -> MBQCircuit:
     r"""Returns a grid cluster state of n x m qubits.
 
     Args
@@ -98,6 +98,8 @@ def grid_cluster(n, m, **kwargs) -> MBQCircuit:
         The number of rows in the cluster state.
     m: int
         The number of columns in the cluster state.
+    periodic: bool
+        If True, the returned state will be a cylinder.
 
     Returns
     -------
@@ -128,6 +130,11 @@ def grid_cluster(n, m, **kwargs) -> MBQCircuit:
     # add edges between columns
     for i in range(n - 1):
         g.add_edges_from([(i * m + j, (i + 1) * m + j) for j in range(m)])
+
+    if periodic and n > 1:
+        # add edges between first and last row
+        for j in range(m):
+            g.add_edge(j, (n - 1) * m + j)
 
     gs = MBQCircuit(
         g,

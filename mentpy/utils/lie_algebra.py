@@ -130,37 +130,68 @@ def calculate_gens_lie_algebra(state: MBQCircuit):
     return remove_repeated_ops(output_ops)
 
 
-def lie_algebra_completion(generators: PauliOp, max_iter: int = 100):
+# def lie_algebra_completion_old(generators: PauliOp, max_iter: int = 1000):
+#     """Completes a given set of Pauli operators to a basis of the Lie algebra"""
+#     lieAlg = copy.deepcopy(generators)
+#     already_commutated = []
+#     iter = 0
+#     while iter < max_iter:
+#         iter += 1
+#         new_lieAlg = None
+#         for i, j in combinations(range(len(lieAlg)), 2):
+#             if (i, j) not in already_commutated:
+#                 already_commutated.append((i, j))
+#                 if lieAlg[i].symplectic_prod(lieAlg[j])[0][0] != 0:
+#                     if new_lieAlg is None:
+#                         new_lieAlg = lieAlg[i].commutator(lieAlg[j])
+#                     else:
+#                         new_lieAlg.append(lieAlg[i].commutator(lieAlg[j]))
+
+#         if new_lieAlg is None:
+#             break
+#         else:
+#             lieAlg.append(new_lieAlg)
+#             new_lieAlg = remove_repeated_ops(lieAlg)
+#             if len(new_lieAlg) == len(lieAlg):
+#                 break
+
+#         lieAlg = new_lieAlg
+
+#     if iter >= max_iter - 1:
+#         raise ValueError("Max iterations reached")
+
+#     return lieAlg
+
+
+def lie_algebra_completion(generators: PauliOp, max_iter: int = 1000):
     """Completes a given set of Pauli operators to a basis of the Lie algebra"""
     lieAlg = copy.deepcopy(generators)
-    already_commutated = []
+    already_commutated = set()
+    n = len(lieAlg)
+    queue = [(i, j) for i, j in combinations(range(n), 2)]
     iter = 0
-    while iter < max_iter:
+    while iter < max_iter and queue:
         iter += 1
-        new_lieAlg = None
-        for i, j in combinations(range(len(lieAlg)), 2):
-            if (i, j) not in already_commutated:
-                already_commutated.append((i, j))
-                if lieAlg[i].symplectic_prod(lieAlg[j])[0][0] != 0:
-                    if new_lieAlg is None:
-                        new_lieAlg = lieAlg[i].commutator(lieAlg[j])
-                    else:
-                        new_lieAlg.append(lieAlg[i].commutator(lieAlg[j]))
+        i, j = queue.pop(0)
+        if (i, j) not in already_commutated:
+            already_commutated.add((i, j))
+            newOp = lieAlg[i].commutator(lieAlg[j])
+            if newOp not in lieAlg:
+                lieAlg.append(newOp)
+                queue.extend((len(lieAlg) - 1, k) for k in range(len(lieAlg) - 1))
 
-        if new_lieAlg is None:
-            break
-        else:
-            lieAlg.append(new_lieAlg)
-            new_lieAlg = remove_repeated_ops(lieAlg)
-            if len(new_lieAlg) == len(lieAlg):
-                break
+    if iter >= max_iter - 1 and queue:
+        raise ValueError("Max iterations reached")
 
-        lieAlg = new_lieAlg
+    # check IIII is in lieAlg
+    n_qubits = int(lieAlg.matrix.shape[1] // 2)
+    if PauliOp("I" * n_qubits) not in lieAlg:
+        lieAlg.append(PauliOp("I" * n_qubits))
 
     return lieAlg
 
 
-def calculate_lie_algebra(state: MBQCircuit, max_iter: int = 100):
+def calculate_lie_algebra(state: MBQCircuit, max_iter: int = 1000):
     """Calculates the Lie algebra of a given state"""
     generators = calculate_gens_lie_algebra(state)
     return lie_algebra_completion(generators, max_iter=max_iter)
@@ -178,8 +209,17 @@ def remove_repeated_ops(ops: PauliOp):
 
 # dimension of su(n)
 def dim_su(n):
+    """Calculates the dimension of :math:`Su(n)`"""
     return int(n**2 - 1)
 
 
 def dim_so(n):
+    """Calculates the dimension of :math:`So(n)`"""
     return int(n * (n - 1) // 2)
+
+
+def dim_sp(n):
+    """Calculates the dimension of :math:`Sp(n)`"""
+    assert n % 2 == 0, "n must be even"
+    n = n // 2
+    return int(n * (2 * n + 1))

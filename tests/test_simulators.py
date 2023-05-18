@@ -37,7 +37,7 @@ def test_random_measurements_equal(templ):
     """Test random measurements."""
     for i in range(1, 3):
         gs = templ(i)
-        if np.random.rand() < 0.2:
+        if np.random.rand() < 0.5:
             indx = np.random.choice(gs.outputc, 2, replace=False)
             gs[indx[0]] = mp.Ment("X")
             gs[indx[1]] = mp.Ment("X")

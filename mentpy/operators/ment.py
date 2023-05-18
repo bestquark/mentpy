@@ -216,31 +216,28 @@ class Ment:
         elif self.angle is not None:
             angle = self.angle
 
-        if self.plane == "XY":
-            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY
-
-        elif self.plane == "XZ":
-            matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliZ
-
-        elif self.plane == "YZ":
-            matrix = np.cos(angle) * PauliY + np.sin(angle) * PauliZ
-
-        elif self.plane == "XYZ":
-            if isinstance(angle, tuple):
-                angle1, angle2 = angle
-            else:
-                raise TypeError(
-                    f"Invalid argument type. Expected tuple but got {type(angle)}"
+        match self.plane:
+            case "XY":
+                matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY
+            case "X" | "Y" | "Z":
+                matrices = {"X": PauliX, "Y": PauliY, "Z": PauliZ}
+                matrix = matrices[self.plane]
+            case "XZ":
+                matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliZ
+            case "YZ":
+                matrix = np.cos(angle) * PauliY + np.sin(angle) * PauliZ
+            case "XYZ":
+                if isinstance(angle, tuple):
+                    angle1, angle2 = angle
+                else:
+                    raise TypeError(
+                        f"Invalid argument type. Expected tuple but got {type(angle)}"
+                    )
+                matrix = (
+                    np.cos(angle1) * np.cos(angle2) * PauliX
+                    + np.sin(angle1) * np.cos(angle2) * PauliY
+                    + np.sin(angle2) * PauliZ
                 )
-            matrix = (
-                np.cos(angle1) * np.cos(angle2) * PauliX
-                + np.sin(angle1) * np.cos(angle2) * PauliY
-                + np.sin(angle2) * PauliZ
-            )
-
-        elif self.plane in ["X", "Y", "Z"]:
-            matrices = {"X": PauliX, "Y": PauliY, "Z": PauliZ}
-            matrix = matrices[self.plane]
 
         return matrix
 

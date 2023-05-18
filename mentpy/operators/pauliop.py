@@ -137,9 +137,10 @@ class PauliOp:
                     mat[i, j + n_qubits] = 1
         return GF(mat)
 
-    def commutator(self, other):
+    def commutator(self, other) -> "PauliOp":
         """Returns the commutator of two Pauli operators."""
-        return PauliOp(self.matrix + other.matrix)
+        new_matrix = GF(self.matrix) + GF(other.matrix)
+        return PauliOp(new_matrix)
 
     def symplectic_prod(self, other):
         """Returns the symplectic product of two Pauli operators."""

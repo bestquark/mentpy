@@ -134,11 +134,16 @@ class MBQCircuit:
         self._update_attributes()
 
         if (flow is None) or (partial_order is None):
-            # flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
-            flow, partial_order = find_flow(
-                graph, input_nodes, output_nodes
-            )  # TODO: FIX find_cflow!!!!
-            depth = None
+            flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
+            # try:
+            #     flow, partial_order = find_flow(
+            #         graph, input_nodes, output_nodes
+            #     )  # TODO: FIX find_cflow!!!!
+            # except:
+            #     pass
+            # if flow is None:
+            #     flow, partial_order = find_cflow(graph, input_nodes, output_nodes)
+            # depth = None
 
         elif (flow is not None) and (partial_order is not None):
             check_if_flow(graph, input_nodes, output_nodes, flow, partial_order)
