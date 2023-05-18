@@ -298,7 +298,7 @@ class NumpySimulatorDM(BaseSimulator):
         prob0 = np.real(np.trace(self.qstate @ p0_extended))
         prob1 = np.real(np.trace(self.qstate @ p1_extended))
 
-        if not force0:
+        if not force0 or ment.plane == "Z":
             outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
         else:
             if prob0 < 1e-4:
