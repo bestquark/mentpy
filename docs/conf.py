@@ -37,6 +37,19 @@ extensions = [
     "IPython.sphinxext.ipython_directive",
 ]
 
+
+# -- Latex configuration -----------------------------------------------------
+latex_elements = {
+    # The paper size ('letterpaper' or 'a4paper').
+    #'papersize': 'letterpaper',
+    # The font size ('10pt', '11pt' or '12pt').
+    #'pointsize': '10pt',
+    # Additional stuff for the LaTeX preamble.
+    "preamble": r"""
+\usepackage{amssymb}
+""",
+}
+
 # -- Sphinx Immaterial configs -------------------------------------------------
 
 python_apigen_modules = {

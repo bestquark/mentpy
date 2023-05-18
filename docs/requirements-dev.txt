@@ -5,6 +5,6 @@ numpy
 PennyLane
 scipy
 galois
-sphinx==5
+sphinx
 sphinx_immaterial
 ipykernel

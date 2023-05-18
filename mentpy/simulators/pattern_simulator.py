@@ -20,7 +20,7 @@ class PatternSimulator:
     ----------
     mbqcircuit: mp.MBQCircuit
         The MBQC circuit used for the simulation.
-    simulator: str
+    backend: str
         The simulator to use. Currently only 'pennylane-default.qubit' is supported.
 
     See Also
