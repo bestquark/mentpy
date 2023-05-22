@@ -673,14 +673,21 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         "transparent": True,
         "figsize": (8, 3),
         "show_controls": True,
+        "show_flow": True,
         "pauliop": None,
+        "style": "default",
     }
 
     options.update(kwargs)
 
     show_controls = options.pop("show_controls")
+    show_flow = options.pop("show_flow")
     pauliop = options.pop("pauliop")
     edge_color_control = options.pop("edge_color_control")
+    style = options.pop("style")
+
+    possible_styles = ("default", "black_and_white")
+    assert style in possible_styles, f"Style must be one of {possible_styles}"
 
     if pauliop is not None:
         options["label"] = "pauliop"
@@ -719,6 +726,9 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
                 node_colors[i] = "#CCCCCC"
             else:
                 node_colors[i] = "#FFBD59"
+
+        if style == "black_and_white":
+            node_colors = {i: "#FFFFFF" for i in state.graph.nodes()}
 
         options["node_color"] = [node_colors[node] for node in state.graph.nodes()]
 
@@ -809,7 +819,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
         del options["label"]
 
         nx.draw(state.graph, ax=ax, pos=node_pos, **options)
-        if state.flow is not None:
+        if state.flow is not None and show_flow:
             nx.draw(_graph_with_flow(state), pos=node_pos, ax=ax, **options)
         if show_controls:
             dashed_edges = []

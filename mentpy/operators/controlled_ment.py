@@ -44,7 +44,12 @@ class ControlMent(Ment):
     @property
     def angle(self, *args, **kwargs):
         if args == () and kwargs == {}:
-            if self._true_ment.angle is None or super().angle is None:
+            if isinstance(self._condition, bool):
+                if self._condition:
+                    return self._true_ment.angle
+                else:
+                    return super().angle
+            elif self._true_ment.angle is None or super().angle is None:
                 return None
             else:
                 return super().angle

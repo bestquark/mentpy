@@ -184,9 +184,9 @@ def lie_algebra_completion(generators: PauliOp, max_iter: int = 1000):
         raise ValueError("Max iterations reached")
 
     # check IIII is in lieAlg
-    n_qubits = int(lieAlg.matrix.shape[1] // 2)
-    if PauliOp("I" * n_qubits) not in lieAlg:
-        lieAlg.append(PauliOp("I" * n_qubits))
+    identityPauli = PauliOp("I" * int(lieAlg.matrix.shape[1] // 2))
+    if identityPauli not in lieAlg:
+        lieAlg.append(identityPauli)
 
     return lieAlg
 

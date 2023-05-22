@@ -33,6 +33,9 @@ class Flow:
     def adapt_angles(self, angles, outcomes):
         raise NotImplementedError
 
+    def adapt_angle(self, angle, node, previous_outcomes):
+        raise NotImplementedError
+
 
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     r"""Finds the generalized flow of graph state if allowed.
