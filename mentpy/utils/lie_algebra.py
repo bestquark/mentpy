@@ -5,7 +5,7 @@ from mentpy import MBQCircuit, PauliOp
 import galois
 import copy
 
-from mentpy.utils.linalg2 import binary_gaussian_elimination
+from mentpy.calculator import solve
 
 GF = galois.GF(2)
 
@@ -46,7 +46,7 @@ def _check_solution(A, b, x):
 def _find_solution(j: int, state: MBQCircuit, stabilizers: PauliOp):
     """Finds the solution of the system of constraints"""
     A, b = _constrains(j, state, stabilizers)
-    sol = GF(binary_gaussian_elimination(A, b))
+    sol = GF(solve(A, b))
 
     if not _check_solution(A, b, sol):
         raise ValueError("Solution not found for j: " + str(j))

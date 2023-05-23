@@ -1,7 +1,13 @@
 import numpy as np
 
 
-def binary_gaussian_elimination(A, b):
+__all__ = ["solve"]
+
+
+def solve(A, b):
+    """
+    Solve a linear system of equations Ax = b for x.
+    """
     rows, cols = A.shape
     augmented_matrix = np.hstack((A, b.reshape(-1, 1)))
 
