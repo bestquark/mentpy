@@ -3904,13 +3904,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#mentpy.utils.binary_gaussian_elimination" class="md-nav__link">
-    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.binary_gaussian_elimination (Python function)" class="md-ellipsis">mentpy.<wbr>utils.<wbr>binary_<wbr>gaussian_<wbr>elimination</span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#mentpy.utils.brownian_circuit" class="md-nav__link">
     <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.brownian_circuit (Python function) — Returns a random unitary matrix close to the identity matrix" class="md-ellipsis">mentpy.<wbr>utils.<wbr>brownian_<wbr>circuit</span>
   </a>
@@ -4424,6 +4417,13 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mentpy.utils.solve" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.solve (Python function) — Solve a linear system of equations Ax = b for x." class="md-ellipsis">mentpy.<wbr>utils.<wbr>solve</span>
+  </a>
   
 </li>
         
@@ -7547,13 +7547,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#mentpy.utils.binary_gaussian_elimination" class="md-nav__link">
-    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.binary_gaussian_elimination (Python function)" class="md-ellipsis">mentpy.<wbr>utils.<wbr>binary_<wbr>gaussian_<wbr>elimination</span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#mentpy.utils.brownian_circuit" class="md-nav__link">
     <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.brownian_circuit (Python function) — Returns a random unitary matrix close to the identity matrix" class="md-ellipsis">mentpy.<wbr>utils.<wbr>brownian_<wbr>circuit</span>
   </a>
@@ -8067,6 +8060,13 @@
         
       </ul>
     </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mentpy.utils.solve" class="md-nav__link">
+    <span aria-label="Python function" class="objinfo-icon objinfo-icon__procedure" title="Python function">F</span><span title="mentpy.utils.solve (Python function) — Solve a linear system of equations Ax = b for x." class="md-ellipsis">mentpy.<wbr>utils.<wbr>solve</span>
+  </a>
   
 </li>
         
@@ -9313,7 +9313,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">AdamOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.adam.AdamOptimizer object at 0x7f40db25d420&gt;</span>
+<span class="go">&lt;mentpy.optimizers.adam.AdamOptimizer object at 0x7fbca1ceb490&gt;</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -9370,7 +9370,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">RCDOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.rcd.RCDOptimizer object at 0x7f40db0e0220&gt;</span>
+<span class="go">&lt;mentpy.optimizers.rcd.RCDOptimizer object at 0x7fbca1d1ac80&gt;</span>
 </code></pre></div>
 </div>
 <dl class="field-list simple">
@@ -9424,7 +9424,7 @@ Output: corresponding density matrix</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">opt</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">SGDOptimizer</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="nb">print</span><span class="p">(</span><span class="n">opt</span><span class="p">)</span>
-<span class="go">&lt;mentpy.optimizers.sgd.SGDOptimizer object at 0x7f40db0e3a90&gt;</span>
+<span class="go">&lt;mentpy.optimizers.sgd.SGDOptimizer object at 0x7fbca1d6dae0&gt;</span>
 </code></pre></div>
 </div>
 <div class="seealso admonition">
@@ -10258,11 +10258,6 @@ If ‘tensor’ (default), produce a list of length n of 2x2 numpy arrays corres
 </dd></dl>
 
 <dl class="py function objdesc">
-<dt class="sig sig-object highlight py" id="mentpy.utils.binary_gaussian_elimination">
-<span class="sig-prename descclassname"><span class="pre">mentpy.utils.</span></span><span class="sig-name descname"><span class="pre">binary_gaussian_elimination</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">b</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#mentpy.utils.binary_gaussian_elimination" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function objdesc">
 <dt class="sig sig-object highlight py" id="mentpy.utils.brownian_circuit">
 <span class="sig-prename descclassname"><span class="pre">mentpy.utils.</span></span><span class="sig-name descname"><span class="pre">brownian_circuit</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">dt</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#mentpy.utils.brownian_circuit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a random unitary matrix close to the identity matrix</p>
@@ -10615,6 +10610,12 @@ Clifford in the form:</p>
 <dd class="field-odd"><p>NoneType or numpy.array</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function objdesc">
+<dt class="sig sig-object highlight py" id="mentpy.utils.solve">
+<span class="sig-prename descclassname"><span class="pre">mentpy.utils.</span></span><span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">b</span></span></em></span><span class="sig-paren">)</span><a class="headerlink" href="#mentpy.utils.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve a linear system of equations Ax = b for x.</p>
 </dd></dl>
 
 <dl class="py function objdesc">
