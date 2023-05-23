@@ -134,7 +134,10 @@ class MBQCircuit:
         self._update_attributes()
 
         if (flow is None) or (partial_order is None):
-            flow, partial_order, depth = find_cflow(graph, input_nodes, output_nodes)
+            flow, partial_order, depth, layers = find_cflow(
+                graph, input_nodes, output_nodes
+            )
+            self._layers = layers
             # try:
             #     flow, partial_order = find_flow(
             #         graph, input_nodes, output_nodes
@@ -379,19 +382,13 @@ class MBQCircuit:
         n = len(self.graph)
         mat = np.zeros((n, n), dtype=int)
 
-        # for c in self.controlled_nodes:
-        #     nodes_before = self.measurements[c].condition.cond_nodes
-        #     for node in nodes_before:
-
         for indi, i in enumerate(list(self.graph.nodes())):
             for indj, j in enumerate(list(self.graph.nodes())):
                 if self.partial_order(i, j):
                     mat[indi, indj] = 1
-        # print(mat)
+
         sum_mat = np.sum(mat, axis=1)
         order = np.argsort(sum_mat)[::-1]
-        # print("sum_mat", sum_mat)
-        # print("order", order)
 
         sum_dict = {}
         for i, s in enumerate(sum_mat):
@@ -404,53 +401,10 @@ class MBQCircuit:
         sorted_labels = [
             [list(self.graph.nodes())[i] for i in group] for group in sorted_indices
         ]
-        # print(sorted_labels)
-        # sort within groups can be optimized
+        self._sorted_labels = sorted_labels
 
-        # for group in sorted_labels:
-        #     if len(group) > 1:
-        #         for i in range(len(group)):
-        #             for j in range(i+1, len(group)):
-        #                 if not self.partial_order(group[i], group[j]):
-        #                     group[i], group[j] = group[j], group[i]
-
-        # order = []
-        # print("sorted_labels", sorted_labels)
-        # print(sorted_labels, "antes")
-        # for group in sorted_labels:
-        #     if len(group) > 1:
-        #         # arange controlled nodes
-        #         for c in self.controlled_nodes:
-        #             # check if c is in group
-        #             if c in group:
-        #                 nodes_before = self.measurements[c].condition.cond_nodes
-        #                 for node in nodes_before:
-        #                     # search if node is in group else, swap groups
-        #                     if node in group:
-        #                         indx_node = group.index(node)
-        #                         indx_c = group.index(c)
-        #                         if indx_node > indx_c:
-        #                             group.remove(c)
-        #                             group.insert(indx_node, c)
-
-        # print(sorted_labels)
         order = [item for sublist in sorted_labels for item in sublist]
-        # turn order into labels of graph
-        # order = [
-        #     list(self.graph.nodes())[i] for i in order
-        # ]  # remove once above is done
 
-        # for c in self.controlled_nodes:
-        #     nodes_before = self.measurements[c].condition.cond_nodes
-        #     for node in nodes_before:
-        #         indx_node = order.index(node)
-        #         indx_c = order.index(c)
-        #         if indx_node > indx_c:
-        #             print("swapping", node, c)
-        #             order.remove(c)
-        #             order.insert(indx_node, c)
-
-        # remove all input nodes and put them at the start
         for i in self.input_nodes[::-1]:
             order.remove(i)
             order.insert(0, i)

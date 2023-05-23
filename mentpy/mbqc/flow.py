@@ -6,35 +6,319 @@ import numpy as np
 import networkx as nx
 
 from mentpy.mbqc import GraphState
-from typing import List
+from typing import Any, List
 import warnings
 
 import galois
 
-## Not used in main MBQC module
 
-# This module should only export the flow class
+GF = galois.GF(2)
+
+
+def binary_gaussian_elimination(A, b):
+    rows, cols = A.shape
+    augmented_matrix = np.hstack((A, b.reshape(-1, 1)))
+
+    row = 0
+    for col in range(cols):
+        # Find pivot in current column
+        for pivot_row in range(row, rows):
+            if augmented_matrix[pivot_row, col]:
+                break
+        else:
+            continue
+
+        # Swap rows if needed
+        if pivot_row != row:
+            augmented_matrix[[row, pivot_row]] = augmented_matrix[[pivot_row, row]]
+
+        # Zero out below pivot
+        for i in range(row + 1, rows):
+            if augmented_matrix[i, col]:
+                augmented_matrix[i] ^= augmented_matrix[row]
+
+        row += 1
+
+        if row >= rows:
+            break
+
+    # Back-substitution
+    x = np.zeros(cols, dtype=int)
+    for row in range(min(rows, cols) - 1, -1, -1):
+        col = np.argmax(augmented_matrix[row, :cols])
+        x[col] = augmented_matrix[row, -1] ^ np.sum(
+            augmented_matrix[row, col + 1 : cols] * x[col + 1 : cols]
+        )
+
+    return x
 
 
 class Flow:
+    """This class deals with the flow of a given graph state"""
+
     def __init__(self, graph: GraphState, input_nodes, output_nodes):
         self.graph = graph
         self.input_nodes = input_nodes
         self.output_nodes = output_nodes
-        flow_function, partial_order = self.find_flow()
+        flow_function, partial_order, depth, layers = self.find_flow()
         self.func = flow_function
         self.partial_order = partial_order
-        self.depth = -1  # calculate depth
+        self.depth = depth
+        self.layers_dict = layers
+        self.layers = [
+            [n for n, l in layers.items() if l == j]
+            for j in range(max(layers.values()) + 1)
+        ]
+
+        # This can be optimized!!
+        order = [item for sublist in self.layers for item in sublist]
+        for i in self.input_nodes[::-1]:
+            order.remove(i)
+            order.insert(0, i)
+        self.measurement_order = order
+
+    def __repr__(self):
+        return f"Flow(n={self.graph.number_of_nodes()})"
+
+    def __call__(self, node):
+        return self.func(node)
 
     def find_flow(self):
         # include gflow and pflow
-        return find_flow(self.graph, self.input_nodes, self.output_nodes)
+        flow_stuff = find_cflow(self.graph, self.input_nodes, self.output_nodes)
+        if flow_stuff[0] is None:
+            flow_stuff = find_gflow(self.graph, self.input_nodes, self.output_nodes)
+            if flow_stuff[0] is None:
+                # TODO: implement pflow
+                # flow_stuff = find_pflow(self.graph, self.input_nodes, self.output_nodes)
+                pass
+
+        return flow_stuff
 
     def adapt_angles(self, angles, outcomes):
         raise NotImplementedError
 
     def adapt_angle(self, angle, node, previous_outcomes):
         raise NotImplementedError
+
+
+### This section implements causal flow -- Runs in time O(min(m, kn))
+
+
+def find_cflow(graph: GraphState, input_nodes, output_nodes) -> object:
+    """Finds the causal flow of a ``MBQCGraph`` if it exists.
+    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
+    """
+    if len(input_nodes) != len(output_nodes):
+        raise ValueError(
+            f"Cannot find flow or gflow. Input ({len(input_nodes)}) and output ({len(output_nodes)}) nodes have different size."
+        )
+
+    l = {}
+    g = {}
+    past = {}
+    C_set = set()
+
+    for v in graph.nodes():
+        l[v] = 0
+        past[v] = 0
+
+    for v in set(output_nodes) - set(input_nodes):
+        past[v] = len(
+            set(graph.neighbors(v)) & (set(graph.nodes() - set(output_nodes)))
+        )
+        if past[v] == 1:
+            C_set = C_set.union({v})
+
+    flow, ln = causal_flow_aux(
+        graph, set(input_nodes), set(output_nodes), C_set, past, 1, g, l
+    )
+
+    if len(flow) != len(graph.nodes()) - len(output_nodes):
+        return None, None, None, None
+
+    return lambda x: flow[x], lambda u, v: ln[u] > ln[v], max(flow.values()), ln
+
+
+def causal_flow_aux(graph: GraphState, inputs, outputs, C, past, k, g, l) -> object:
+    """Aux function for causal_flow"""
+    V = set(graph.nodes())
+    C_prime = set()
+
+    for _, v in enumerate(C):
+        intersection = set(graph.neighbors(v)) & (V - outputs)
+        if len(intersection) == 1:
+            u = intersection.pop()
+            g[u] = v
+            l[u] = k
+            outputs.add(u)
+            if u not in inputs:
+                past[u] = len(set(graph.neighbors(u)) & (V - outputs))
+                if past[u] == 1:
+                    C_prime.add(u)
+            for w in set(graph.neighbors(u)):
+                if past[w] > 0:
+                    past[w] -= 1
+                    if past[w] == 1:
+                        C_prime.add(w)
+
+    if len(C_prime) == 0:
+        return g, l
+
+    else:
+        return causal_flow_aux(
+            graph,
+            inputs,
+            outputs,
+            C_prime,
+            past,
+            k + 1,
+            g,
+            l,
+        )
+
+
+### This section implements generalized flow -- Runs in time O(n^4)
+
+
+def find_gflow(graph: GraphState, input_nodes, output_nodes) -> object:
+    """Finds the generalized flow of a ``MBQCGraph`` if it exists.
+    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
+    """
+    gamma = nx.adjacency_matrix(graph).toarray()
+
+    l = {}
+    g = {}
+
+    for v in output_nodes:
+        l[v] = 0
+
+    result, gn, ln = gflowaux(
+        graph,
+        gamma,
+        set(input_nodes),
+        set(output_nodes),
+        1,
+        g,
+        l,
+    )
+
+    if result == False:
+        warnings.warn("No gflow exists for this graph.", UserWarning, stacklevel=2)
+        return None, None, None, None
+
+    return lambda x: gn[x], lambda u, v: ln[u] > ln[v], max(ln.values()), ln
+
+
+def gflowaux(graph: GraphState, gamma, inputs, outputs, k, g, l) -> object:
+    """Aux function for gflow"""
+
+    mapping = graph.index_mapping()
+    V = set(graph.nodes())
+    C = set()
+    vmol = list(V - outputs)
+    for u in vmol:
+        submatrix = np.zeros((len(vmol), len(outputs - inputs)), dtype=int)
+        for i, v in enumerate(vmol):
+            for j, w in enumerate(outputs - inputs):
+                submatrix[i, j] = gamma[mapping[v], mapping[w]]
+
+        b = np.zeros((len(vmol), 1), dtype=int)
+        b[vmol.index(u)] = 1
+        submatrix = GF(submatrix)
+        b = GF(b)
+        solution = GF(binary_gaussian_elimination(submatrix, b)).reshape(-1, 1)
+
+        if np.linalg.norm(submatrix @ solution - b) <= 1e-5:
+            l[u] = k
+            C.add(u)
+            g[u] = solution
+
+    if len(C) == 0:
+        if set(outputs) == V:
+            return True, g, l
+        else:
+            return False, g, l
+
+    else:
+        return gflowaux(graph, gamma, inputs, outputs | C, k + 1, g, l)
+
+
+## This section implements PauliFlow. Currently not working.
+
+
+def find_pflow(
+    graph: GraphState, input_nodes, output_nodes, basis="XY", testing=False
+) -> object:
+    """Implementation of pauli flow algorithm in https://arxiv.org/pdf/2109.05654v1.pdf"""
+
+    if not testing:
+        raise NotImplementedError("This algorithm is not yet implemented.")
+
+    if type(basis) == str:
+        basis = {v: basis for v in graph.nodes()}
+    elif type(basis) != dict:
+        raise TypeError("Basis must be a string or a dictionary.")
+
+    lx = set()
+    ly = set()
+    lz = set()
+    d = {}
+    p = {}
+
+    gamma = nx.adjacency_matrix(graph).toarray()
+
+    for v in graph.nodes():
+        if v in output_nodes:
+            d[v] = 0
+        if basis[v] == "X":
+            lx = lx.add(v)
+        elif basis[v] == "Y":
+            ly = ly.add(v)
+        elif basis[v] == "Z":
+            lz = lz.add(v)
+
+    return pflowaux(graph, gamma, input_nodes, basis, set(), output_nodes, 0, d, p)
+
+
+def pflowaux(graph: GraphState, gamma, inputs, plane, A, B, k, d, p) -> object:
+    """Aux function for pflow"""
+    C = set()
+    mapping = graph.index_mapping()
+    for u in set(graph.nodes()) - set(B):
+        submatrix1, submatrix2, submatrix3 = None, None, None
+        solution1, solution2, solution3 = None, None, None
+        if plane[u] in ["XY", "X", "Y"]:
+            submatrix1 = 0  # TODO
+            solution1 = 0  # TODO
+        if plane[u] in ["XZ", "X", "Z"]:
+            submatrix2 = 0  # TODO
+            solution2 = 0  # TODO
+        if plane[u] in ["YZ", "Y", "Z"]:
+            submatrix3 = 0  # TODO
+            solution3 = 0  # TODO
+
+        if (
+            (solution1 is not None)
+            or (solution2 is not None)
+            or (solution3 is not None)
+        ):
+            C.add(u)
+            sol = solution1 or solution2 or solution3
+            p[u] = sol
+            d[u] = k
+
+    if len(C) == 0 and k > 0:
+        if set(B) == set(graph.nodes()):
+            return True, p, d
+        else:
+            return False, set(), set()
+    else:
+        B = B.union(C)
+        return pflowaux(graph, gamma, inputs, plane, B, B, k + 1, d, p)
+
+
+## Finds flow of a graph state. This is deprecated and will be removed in the future.
 
 
 def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
@@ -51,11 +335,11 @@ def find_flow(graph: GraphState, input_nodes, output_nodes, sanity_check=True):
     states
     """
     # raise deprecated warning
-    # warnings.warn(
-    #     "The function find_flow is deprecated. Use find_cflow instead.",
-    #     DeprecationWarning,
-    #     stacklevel=2,
-    # )
+    warnings.warn(
+        "The function find_flow is deprecated. Use find_cflow instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
 
     n_input, n_output = len(input_nodes), len(output_nodes)
     inp = input_nodes
@@ -330,255 +614,3 @@ def check_if_flow(
                 if not partial_order(i, k):
                     print(f"{i} ≮ {k}")
     return conds
-
-
-### This section implements causal flow
-
-
-def find_cflow(graph: GraphState, input_nodes, output_nodes) -> object:
-    """Finds the causal flow of a ``MBQCGraph`` if it exists.
-    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
-    """
-    if len(input_nodes) != len(output_nodes):
-        raise ValueError(
-            f"Cannot find flow or gflow. Input ({len(input_nodes)}) and output ({len(output_nodes)}) nodes have different size."
-        )
-
-    l = {}
-    g = {}
-    past = {}
-    C_set = set()
-
-    graph_extended = graph.copy()
-    max_node = max(graph.nodes()) + 1
-    input_nodes_extended = [max_node + i for i in range(len(input_nodes))]
-    graph_extended.add_edges_from(
-        [(input_nodes_extended[i], input_nodes[i]) for i in range(len(input_nodes))]
-    )
-
-    for v in graph_extended.nodes():
-        l[v] = 0
-        past[v] = 0
-
-    for v in set(output_nodes) - set(input_nodes_extended):
-        past[v] = len(
-            set(graph_extended.neighbors(v))
-            & (set(graph_extended.nodes() - set(output_nodes)))
-        )
-        if past[v] == 1:
-            C_set = C_set.union({v})
-
-    flow, l = causal_flow_aux(
-        graph_extended,
-        set(input_nodes_extended),
-        set(output_nodes),
-        C_set,
-        past,
-        1,
-        g,
-        l,
-    )
-
-    flow = {k: v for k, v in flow.items() if k not in input_nodes_extended}
-    ln = {k: v for k, v in l.items() if k not in input_nodes_extended}
-
-    if len(flow) != len(graph.nodes()) - len(output_nodes):
-        return None, None, None
-
-    return lambda x: flow[x], lambda u, v: ln[u] > ln[v], max(flow.values())
-
-
-def causal_flow_aux(graph: GraphState, inputs, outputs, C, past, k, g, l) -> object:
-    """Aux function for causal_flow"""
-    V = set(graph.nodes())
-    C_prime = set()
-
-    for _, v in enumerate(C):
-        # get intersection of neighbors of v and (V \ output nodes
-        intersection = set(graph.neighbors(v)) & (V - outputs)
-        if len(intersection) == 1:
-            u = intersection.pop()
-            g[u] = v
-            l[u] = k
-            outputs.add(u)
-            if u not in inputs:
-                past[u] = len(set(graph.neighbors(u)) & (V - outputs))
-                if past[u] == 1:
-                    C_prime.add(u)
-            for w in set(graph.neighbors(u)):
-                if past[w] > 0:
-                    past[w] -= 1
-                    if past[w] == 1:
-                        C_prime.add(w)
-
-    if len(C_prime) == 0:
-        return g, l
-
-    else:
-        return causal_flow_aux(
-            graph,
-            inputs,
-            outputs,
-            C_prime,
-            past,
-            k + 1,
-            g,
-            l,
-        )
-
-
-### This section implements generalized flow
-
-
-def find_gflow(graph: GraphState, input_nodes, output_nodes) -> object:
-    """Finds the generalized flow of a ``MBQCGraph`` if it exists.
-    Retrieved from https://arxiv.org/pdf/0709.2670v1.pdf.
-    """
-    graph_extended = graph.copy()
-    max_node = max(graph.nodes()) + 1
-    input_nodes_extended = [max_node + i for i in range(len(input_nodes))]
-    graph_extended.add_edges_from(
-        [(input_nodes_extended[i], input_nodes[i]) for i in range(len(input_nodes))]
-    )
-
-    gamma = nx.adjacency_matrix(graph_extended).toarray()
-
-    l = {}
-    g = {}
-
-    for v in output_nodes:
-        l[v] = 0
-
-    result, g, l = gflowaux(
-        graph_extended,
-        gamma,
-        set(input_nodes_extended),
-        set(output_nodes) - set(input_nodes_extended),
-        1,
-        g,
-        l,
-    )
-
-    if result == False:
-        warnings.warn("No gflow exists for this graph.", UserWarning, stacklevel=2)
-        return None, None, None
-
-    gn = {i: g[i] for i in set(graph.nodes()) - set(output_nodes)}
-    ln = {i: l[i] for i in graph.nodes()}
-
-    return lambda x: gn[x], lambda u, v: ln[u] > ln[v], max(ln.values())
-
-
-def gf2_matrix_solve(A, b):
-    A = A % 2
-    b = b % 2
-    sol, _, _, _ = np.linalg.lstsq(A, b, rcond=None)
-    return (sol.round() % 2).astype(int)
-
-
-def gflowaux(graph: GraphState, gamma, inputs, outputs, k, g, l) -> object:
-    """Aux function for gflow"""
-    out_prime = set()
-    mapping = graph.index_mapping()
-    GF = galois.GF(2)
-    V = set(graph.nodes())
-    C = set()
-    vmol = list(V - outputs)
-    for u in vmol:
-        submatrix = np.zeros((len(vmol), len(outputs - inputs)), dtype=int)
-        for i, v in enumerate(vmol):
-            for j, w in enumerate(outputs - inputs):
-                submatrix[i, j] = gamma[mapping[v], mapping[w]]
-
-        b = np.zeros((len(vmol), 1), dtype=int)
-        b[vmol.index(u)] = 1
-        solution = gf2_matrix_solve(submatrix, b)
-
-        # Check if solution is a valid solution
-        if np.linalg.norm(submatrix @ solution - b) <= 1e-5:
-            l[u] = k
-            C.add(u)
-            g[u] = solution
-
-    if len(C) == 0:
-        if set(outputs) == V:
-            return True, g, l
-        else:
-            return False, g, l
-
-    else:
-        return gflowaux(graph, gamma, inputs, outputs | C, k + 1, g, l)
-
-
-## This section implements PauliFlow
-
-
-def find_pflow(
-    graph: GraphState, input_nodes, output_nodes, basis="XY", testing=False
-) -> object:
-    """Implementation of pauli flow algorithm in https://arxiv.org/pdf/2109.05654v1.pdf"""
-
-    if not testing:
-        raise NotImplementedError("This algorithm is not yet implemented.")
-
-    if type(basis) == str:
-        basis = {v: basis for v in graph.nodes()}
-    elif type(basis) != dict:
-        raise TypeError("Basis must be a string or a dictionary.")
-
-    lx = set()
-    ly = set()
-    lz = set()
-    d = {}
-    p = {}
-
-    gamma = nx.adjacency_matrix(graph).toarray()
-
-    for v in graph.nodes():
-        if v in output_nodes:
-            d[v] = 0
-        if basis[v] == "X":
-            lx = lx.add(v)
-        elif basis[v] == "Y":
-            ly = ly.add(v)
-        elif basis[v] == "Z":
-            lz = lz.add(v)
-
-    return pflowaux(graph, gamma, input_nodes, basis, set(), output_nodes, 0, d, p)
-
-
-def pflowaux(graph: GraphState, gamma, inputs, plane, A, B, k, d, p) -> object:
-    """Aux function for pflow"""
-    C = set()
-    mapping = graph.index_mapping()
-    for u in set(graph.nodes()) - set(B):
-        submatrix1, submatrix2, submatrix3 = None, None, None
-        solution1, solution2, solution3 = None, None, None
-        if plane[u] in ["XY", "X", "Y"]:
-            submatrix1 = 0  # TODO
-            solution1 = 0  # TODO
-        if plane[u] in ["XZ", "X", "Z"]:
-            submatrix2 = 0  # TODO
-            solution2 = 0  # TODO
-        if plane[u] in ["YZ", "Y", "Z"]:
-            submatrix3 = 0  # TODO
-            solution3 = 0  # TODO
-
-        if (
-            (solution1 is not None)
-            or (solution2 is not None)
-            or (solution3 is not None)
-        ):
-            C.add(u)
-            sol = solution1 or solution2 or solution3
-            p[u] = sol
-            d[u] = k
-
-    if len(C) == 0 and k > 0:
-        if set(B) == set(graph.nodes()):
-            return True, p, d
-        else:
-            return False, set(), set()
-    else:
-        B = B.union(C)
-        return pflowaux(graph, gamma, inputs, plane, B, B, k + 1, d, p)

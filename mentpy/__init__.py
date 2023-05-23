@@ -1,7 +1,6 @@
 """
 The Measurement-Based Quantum computing simulator.
 """
-
 from .mbqc import *
 from .operators import *
 from .simulators import *
