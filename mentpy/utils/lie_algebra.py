@@ -79,17 +79,10 @@ def calculate_gens_lie_algebra(state: MBQCircuit):
         i: j
         for i, j in zip(state.measurement_order, range(len(state.measurement_order)))
     }
-    graph_stabs = state.stabilizers()
 
-    lieAlgebra = None
-    for i in state.outputc:
-        op = _find_solution(i, state, graph_stabs)
-        if lieAlgebra is None:
-            lieAlgebra = op
-        else:
-            lieAlgebra.append(op)
+    lieAlgebra = calculate_complete_gens_lie_algebra(state)
 
-    output_ops = lieAlgebra.get_subset([mapping[i] for i in state.output_nodes])
+    output_ops = lieAlgebra.get_subset(state.output_nodes)
     return remove_repeated_ops(output_ops)
 
 
@@ -130,24 +123,24 @@ def lie_algebra_completion(generators: PauliOp, max_iter: int = 1000):
     """Completes a given set of Pauli operators to a basis of the Lie algebra"""
     lieAlg = copy.deepcopy(generators)
     already_commutated = set()
-    n = len(lieAlg)
-    queue = [(i, j) for i, j in combinations(range(n), 2)]
+    queue = [(i, j) for i, j in combinations(lieAlg, 2)]
     iter = 0
     while iter < max_iter and queue:
         iter += 1
-        i, j = queue.pop(0)
-        if (i, j) not in already_commutated:
-            already_commutated.add((i, j))
-            newOp = lieAlg[i].commutator(lieAlg[j])
+        x, y = queue.pop(0)
+        if (x, y) not in already_commutated and (y, x) not in already_commutated:
+            already_commutated.add((x, y))
+            already_commutated.add((y, x))
+            newOp = x.commutator(y)
             if newOp not in lieAlg:
                 lieAlg.append(newOp)
-                queue.extend((len(lieAlg) - 1, k) for k in range(len(lieAlg) - 1))
+                queue.extend((newOp, k) for k in lieAlg if k != newOp)
 
     if iter >= max_iter - 1 and queue:
         raise ValueError("Max iterations reached")
 
     # check IIII is in lieAlg
-    identityPauli = PauliOp("I" * int(lieAlg.matrix.shape[1] // 2))
+    identityPauli = PauliOp("I" * int(lieAlg[0].matrix.shape[1] // 2))
     if identityPauli not in lieAlg:
         lieAlg.append(identityPauli)
 

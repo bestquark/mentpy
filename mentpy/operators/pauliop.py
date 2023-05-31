@@ -103,6 +103,12 @@ class PauliOp:
                 return False
         return True
 
+    def __hash__(self):
+        return hash(str(self.matrix))
+
+    def __eq__(self, other: "PauliOp"):
+        return np.all(self.matrix == other.matrix)
+
     def _mat_to_txt(self, op):
         n_qubits = op.shape[1] // 2
         txt = ""
@@ -180,8 +186,9 @@ class PauliOp:
             op = mp.PauliOp('XIZ;ZII;IIZ;IZI')
             print(op.get_subset([0, 2]))
         """
-        if max(indices) >= self.matrix.shape[1] // 2:
+        inds = indices.copy()
+        if max(inds) >= self.matrix.shape[1] // 2:
             raise ValueError("Index out of range")
 
-        indices += [i + self.matrix.shape[1] // 2 for i in indices]
-        return PauliOp(self.matrix[:, indices])
+        inds += [i + self.matrix.shape[1] // 2 for i in inds]
+        return PauliOp(self.matrix[:, inds])

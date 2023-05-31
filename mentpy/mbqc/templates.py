@@ -240,7 +240,7 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
         gr,
         input_nodes=[0, 7],
         output_nodes=[4, 11],
-        measurements={5: Ment(plane="XZ")},
+        measurements={5: Ment(plane="XY")},
         default_measurement=Ment(plane="X"),
     )
     sym_block2 = MBQCircuit(
@@ -248,7 +248,7 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
         input_nodes=[0, 7],
         output_nodes=[4, 11],
         measurements={
-            5: Ment(plane="XZ"),
+            5: Ment(plane="XY"),
             1: Ment(plane="Y"),
             3: Ment(plane="Y"),
             8: Ment(plane="Y"),

@@ -32,6 +32,9 @@ class NumpySimulatorSV(BaseSimulator):
         self.schedule = kwargs.pop("schedule", None)
         self.force0 = kwargs.pop("force0", True)
 
+        self.dev_mode = kwargs.pop("dev_mode", False)
+        self.wires = kwargs.pop("wires", None)
+
         if not self.force0:
             raise NotImplementedError("Numpy simulator does not support force0=False.")
 
@@ -96,6 +99,9 @@ class NumpySimulatorSV(BaseSimulator):
 
         self.initial_czs = np.eye(2**self.window_size)
 
+        if self.dev_mode:
+            self._current_simulated_nodes = self.schedule[0 : self.window_size]
+
         # apply cz gates to neighboring qubits
         for node in self.subgraph.nodes:
             for neighbour in self.subgraph.neighbors(node):
@@ -111,34 +117,86 @@ class NumpySimulatorSV(BaseSimulator):
 
     def current_simulated_nodes(self) -> List[int]:
         """Returns the nodes that are currently simulated."""
-        return self.schedule[
-            self.current_measurement : self.current_measurement + self.window_size
-        ]
+        if not self.dev_mode:
+            return self.schedule[
+                self.current_measurement : self.current_measurement + self.window_size
+            ]
+        elif self.dev_mode:
+            return self._current_simulated_nodes
 
     def current_number_simulated_nodes(self) -> int:
         """Returns the number of nodes that are currently simulated."""
         n = self.window_size
         return min(n, len(self.mbqcircuit) - self.current_measurement)
 
+    def node_in_which_wire(self, node: int) -> int:
+        """Returns the wire in which the node is."""
+        for i, wire in enumerate(self.wires):
+            if node in wire:
+                return i
+
+    def neighbors_in_wire(self, node: int) -> List[int]:
+        """Returns the neighbors of a node in the same wire."""
+        wire = self.wires[self.node_in_which_wire(node)]
+        # return nodes that have edges with node
+        return [n for n in wire if self.mbqcircuit.graph.has_edge(node, n)]
+
+    def future_neighbors_in_wire(self, node: int) -> List[int]:
+        neighs = self.neighbors_in_wire(node)
+        future_neighs = []
+        for neigh in neighs:
+            if neigh > node:
+                future_neighs.append(neigh)
+        return future_neighs
+
     def measure(self, angle: float) -> Tuple:
         if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 
-        current_ment = self.mbqcircuit[
-            self.schedule_measure[self.current_measurement]
-        ].copy()
+        if not self.dev_mode:
+            current_ment = self.mbqcircuit[
+                self.schedule_measure[self.current_measurement]
+            ].copy()
+            indx = 0
+        elif self.dev_mode:
+            # if in dev mode, we measure the first node in the current_simulated_nodes
+            # only if a neighbor in the same wire is also in the current_simulated_nodes
+            for node in self.current_simulated_nodes():
+                cond = False
+                futnods = self.future_neighbors_in_wire(node)
+                if len(futnods) == 0:
+                    cond = True
+                else:
+                    cond = futnods[0] in self.current_simulated_nodes()
+                if cond:
+                    current_ment = self.mbqcircuit[node].copy()
+                    indx = self.current_simulated_nodes().index(node)
+                    break
 
         self.qstate, outcome = self.measure_ment(
-            current_ment, angle, 0, force0=self.force0
+            current_ment, angle, indx, force0=self.force0
         )
 
         self.current_measurement += 1
-        self.qstate = self.partial_trace_pure_state(self.qstate, [0])
+        self.qstate = self.partial_trace_pure_state(self.qstate, [indx])
+
+        if self.dev_mode:
+            # remove qubit at indx from current_simulated_nodes
+            self._current_simulated_nodes = [
+                i for i in self._current_simulated_nodes if i != node
+            ]
+            if self.current_measurement + self.window_size <= len(
+                self.mbqcircuit.graph.nodes
+            ):
+                self._current_simulated_nodes.append(
+                    self.schedule[self.current_measurement + self.window_size - 1]
+                )
 
         if self.current_measurement + self.window_size <= len(
             self.mbqcircuit.graph.nodes
         ):
             self.qstate = np.kron(self.qstate, qubit_plus)
+
             new_qubit = self.current_simulated_nodes()[-1]
 
             # get neighbours of new qubit
@@ -169,14 +227,39 @@ class NumpySimulatorSV(BaseSimulator):
                 f"Number of angles ({len(angles)}) does not match number of trainable nodes ({len(self.mbqcircuit.trainable_nodes)})."
             )
 
-        for i in self.schedule_measure:
-            if i in self.mbqcircuit.trainable_nodes:
-                angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
-            else:
-                angle = self.mbqcircuit[i].angle
+        if not self.dev_mode:
+            for i in self.schedule_measure:
+                if i in self.mbqcircuit.trainable_nodes:
+                    angle = angles[self.mbqcircuit.trainable_nodes.index(i)]
+                else:
+                    angle = self.mbqcircuit[i].angle
 
-            self.qstate, outcome = self.measure(angle)
-            self.outcomes[i] = outcome
+                self.qstate, outcome = self.measure(angle)
+                self.outcomes[i] = outcome
+
+        elif self.dev_mode:
+            while self.current_measurement < len(self.schedule_measure):
+                for node in self.current_simulated_nodes():
+                    cond = False
+                    futnods = self.future_neighbors_in_wire(node)
+                    if len(futnods) == 0:
+                        cond = True
+                    else:
+                        cond = futnods[0] in self.current_simulated_nodes()
+                    if cond:
+                        current_ment = self.mbqcircuit[node].copy()
+                        indx = self.current_simulated_nodes().index(node)
+                        break
+
+                if cond == False:
+                    raise ValueError("WTF")
+                if node in self.mbqcircuit.trainable_nodes:
+                    angle = angles[self.mbqcircuit.trainable_nodes.index(node)]
+                else:
+                    angle = self.mbqcircuit[node].angle
+
+                self.qstate, outcome = self.measure(angle)
+                self.outcomes[node] = outcome
 
         # check if output nodes have a measurement, if so, measure them
         for i in self.mbqcircuit.output_nodes:
@@ -186,7 +269,7 @@ class NumpySimulatorSV(BaseSimulator):
                 )
                 self.outcomes[i] = outcome
 
-        current_output_order = self.schedule[-len(self.mbqcircuit.output_nodes) :]
+        current_output_order = self.current_simulated_nodes()
         if self.mbqcircuit.quantum_output_nodes != current_output_order:
             self.qstate = self.reorder_qubits(
                 self.qstate, current_output_order, self.mbqcircuit.output_nodes
@@ -218,6 +301,9 @@ class NumpySimulatorSV(BaseSimulator):
         self.qstate = self.initial_czs @ self.qstate
 
         self.outcomes = {}
+
+        if self.dev_mode:
+            self._current_simulated_nodes = self.schedule[0 : self.window_size]
 
     def arbitrary_qubit_gate(self, u, i, n):
         """
@@ -343,7 +429,7 @@ class NumpySimulatorSV(BaseSimulator):
         Controlled z gate between qubits i and j.
         n is the total number of qubits
         """
-        assert i < n and j < n
+        assert i < n and j < n, f"{i} or {j} is larger than {n}"
         op1, op2 = 1, 2
         for k in range(0, n):
             op1 = np.kron(op1, np.eye(2))

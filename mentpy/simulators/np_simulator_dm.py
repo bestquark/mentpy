@@ -114,7 +114,7 @@ class NumpySimulatorDM(BaseSimulator):
         n = self.window_size
         return min(n, len(self.mbqcircuit) - self.current_measurement)
 
-    def measure(self, angle: float) -> Tuple:
+    def measure(self, angle: float, mode="sample") -> Tuple:
         if self.current_measurement >= len(self.schedule_measure):
             raise ValueError("No more measurements to be done.")
 
@@ -122,7 +122,7 @@ class NumpySimulatorDM(BaseSimulator):
             self.schedule_measure[self.current_measurement]
         ].copy()
         self.qstate, outcome = self.measure_ment(
-            current_ment, angle, 0, force0=self.force0
+            current_ment, angle, 0, force0=self.force0, mode=mode
         )
         # check if qstate has nan
         if np.isnan(self.qstate).any():
@@ -152,7 +152,7 @@ class NumpySimulatorDM(BaseSimulator):
 
         return self.qstate, outcome
 
-    def run(self, angles: List[float]) -> Tuple[List[int], np.ndarray]:
+    def run(self, angles: List[float], mode="sample") -> Tuple[List[int], np.ndarray]:
         """Measures the quantum state in the given pattern."""
 
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
@@ -166,7 +166,7 @@ class NumpySimulatorDM(BaseSimulator):
             else:
                 angle = self.mbqcircuit[i].angle
 
-            self.qstate, outcome = self.measure(angle)
+            self.qstate, outcome = self.measure(angle, mode)
             self.outcomes[i] = outcome
 
         current_output_order = [
@@ -279,7 +279,7 @@ class NumpySimulatorDM(BaseSimulator):
             sigma = sigma + np.conjugate(ptrace.T) @ rho @ (ptrace)
         return sigma
 
-    def measure_ment(self, ment: Ment, angle, i, force0=False):
+    def measure_ment(self, ment: Ment, angle, i, force0=False, mode="sample"):
         """
         Measures a ment
         """
@@ -298,18 +298,24 @@ class NumpySimulatorDM(BaseSimulator):
         prob0 = np.real(np.trace(self.qstate @ p0_extended))
         prob1 = np.real(np.trace(self.qstate @ p1_extended))
 
+        COND = (mode == "expectation" or mode == "exp") and ment.plane == "Z"
+
         if not force0 or ment.plane == "Z":
-            outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
+            if COND:
+                outcome = prob1 / (prob0 + prob1)
+            else:
+                outcome = np.random.choice([0, 1], p=[prob0, prob1] / (prob0 + prob1))
         else:
             if prob0 < 1e-4:
                 outcome = 1  # important when measuring Z's -- should make pretty
             else:
                 outcome = 0
 
-        if outcome == 0:
-            self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T / prob0
-        else:
-            self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T / prob1
+        if not COND:
+            if outcome == 0:
+                self.qstate = p0_extended @ self.qstate @ np.conj(p0_extended).T / prob0
+            else:
+                self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T / prob1
 
         return self.qstate, outcome
 

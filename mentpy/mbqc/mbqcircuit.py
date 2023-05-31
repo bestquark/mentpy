@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 
 from mentpy.operators import Ment, ControlMent, PauliOp
 from mentpy.mbqc.states.graphstate import GraphState
-from mentpy.mbqc.flow import find_cflow, find_flow, check_if_flow
+from mentpy.mbqc.flow import find_cflow, find_flow, check_if_flow, Flow
 
 __all__ = ["MBQCircuit", "draw", "merge", "hstack", "vstack"]
 
@@ -138,6 +138,9 @@ class MBQCircuit:
                 graph, input_nodes, output_nodes
             )
             self._layers = layers
+            self.gflow = Flow(
+                graph, input_nodes, output_nodes
+            )  # TODO: make this the standard flow in this class
             # try:
             #     flow, partial_order = find_flow(
             #         graph, input_nodes, output_nodes
@@ -311,6 +314,18 @@ class MBQCircuit:
     def inputc(self) -> List:
         r"""Returns :math:`I^c`, the complement of input nodes."""
         return [v for v in self.graph.nodes() if v not in self.input_nodes]
+
+    def ordered_layers(self, train_indices=False) -> List[List[int]]:
+        r"""Returns the layers of the MBQC circuit."""
+        if self.gflow.func is None:
+            return None
+        if train_indices:
+            # return the nested layers in Flow.layers but with the trainable_nodes indices
+            return [
+                [self.trainable_nodes.index(node) for node in layer]
+                for layer in self.gflow.layers[:-1]
+            ]
+        return self.gflow.layers
 
     def _update_attributes(self) -> None:
         trainable_nodes = []
@@ -793,11 +808,11 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
 def _graph_with_flow(state):
     """Return digraph with flow (but does not have all CZ edges!)"""
     g = state.graph
-    gflow = nx.DiGraph()
-    gflow.add_nodes_from(g.nodes())
+    dflow = nx.DiGraph()
+    dflow.add_nodes_from(g.nodes())
     for node in state.outputc:
-        gflow.add_edge(node, state.flow(node))
-    return gflow
+        dflow.add_edge(node, state.flow(node))
+    return dflow
 
 
 def _create_new_partial_order(controlled_nodes, measurements, old_partial_order):

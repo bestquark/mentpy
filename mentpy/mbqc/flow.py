@@ -65,17 +65,22 @@ class Flow:
         self.partial_order = partial_order
         self.depth = depth
         self.layers_dict = layers
-        self.layers = [
-            [n for n, l in layers.items() if l == j]
-            for j in range(max(layers.values()) + 1)
-        ]
+        if layers is not None:
+            ord_layers = [
+                [n for n, l in layers.items() if l == j]
+                for j in range(max(layers.values()) + 1)
+            ]
+            self.layers = ord_layers[::-1]
 
-        # This can be optimized!!
-        order = [item for sublist in self.layers for item in sublist]
-        for i in self.input_nodes[::-1]:
-            order.remove(i)
-            order.insert(0, i)
-        self.measurement_order = order
+            # This can be optimized!!
+            order = [item for sublist in self.layers for item in sublist]
+            for i in self.input_nodes[::-1]:
+                order.remove(i)
+                order.insert(0, i)
+            self.measurement_order = order
+        else:
+            self.layers = None
+            self.measurement_order = None
 
     def __repr__(self):
         return f"Flow(n={self.graph.number_of_nodes()})"
