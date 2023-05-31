@@ -97,6 +97,11 @@ class PauliOp:
             return PauliOp(";".join([pauli.txt for pauli in paulis]))
         return paulis
 
+    def __mul__(self, other: "PauliOp"):
+        """Returns the product of two Pauli operators."""
+        new_matrix = GF(self.matrix) + GF(other.matrix)
+        return PauliOp(new_matrix)
+
     def __contains__(self, item: "PauliOp"):
         for row in item.matrix:
             if not np.any((self.matrix == row).all(axis=1)):
@@ -145,6 +150,8 @@ class PauliOp:
 
     def commutator(self, other) -> "PauliOp":
         """Returns the commutator of two Pauli operators."""
+        if not self.symplectic_prod(other):
+            return 0
         new_matrix = GF(self.matrix) + GF(other.matrix)
         return PauliOp(new_matrix)
 

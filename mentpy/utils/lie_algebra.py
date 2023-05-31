@@ -54,7 +54,7 @@ def _find_solution(j: int, state: MBQCircuit, stabilizers: PauliOp):
     op = PauliOp("I" * len(state.measurement_order))
     for i in range(len(sol)):
         if sol[i] == 1:
-            op = op.commutator(stabilizers[i])
+            op = op * stabilizers[i]
     return op
 
 
@@ -132,9 +132,10 @@ def lie_algebra_completion(generators: PauliOp, max_iter: int = 1000):
             already_commutated.add((x, y))
             already_commutated.add((y, x))
             newOp = x.commutator(y)
-            if newOp not in lieAlg:
-                lieAlg.append(newOp)
-                queue.extend((newOp, k) for k in lieAlg if k != newOp)
+            if isinstance(newOp, PauliOp):
+                if newOp not in lieAlg:
+                    lieAlg.append(newOp)
+                    queue.extend((newOp, k) for k in lieAlg if k != newOp)
 
     if iter >= max_iter - 1 and queue:
         raise ValueError("Max iterations reached")
