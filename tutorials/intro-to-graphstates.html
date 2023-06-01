@@ -545,8 +545,8 @@
 <p>Graph states are a type of quantum state that can be represented by a graph <span class="math notranslate nohighlight">\(G\)</span>.
 The state defined by <span class="math notranslate nohighlight">\(G\)</span> is</p>
 <div class="math notranslate nohighlight">
-\[|\psi\rangle = \prod_{i,j \in E(G)} CZ_{ij} |+\rangle_i |+\rangle_j,\]</div>
-<p>where <span class="math notranslate nohighlight">\(E(G)\)</span> is the set of edges of <span class="math notranslate nohighlight">\(G\)</span>, and <span class="math notranslate nohighlight">\(CZ_{ij}\)</span> is the controlled-Z gate on qubits <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.</p>
+\[|\psi\rangle = \prod_{i,j \in E(G)} CZ_{ij} |+\rangle\^{\otimes n}},\]</div>
+<p>where <span class="math notranslate nohighlight">\(n\)</span> is the number of nodes of <span class="math notranslate nohighlight">\(G\)</span>, <span class="math notranslate nohighlight">\(E(G)\)</span> is the set of edges of <span class="math notranslate nohighlight">\(G\)</span>, and <span class="math notranslate nohighlight">\(CZ_{ij}\)</span> is the controlled-Z gate on qubits <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span>.</p>
 <h2 id="graphstate">GraphState<a class="headerlink" href="#graphstate" title="Permalink to this heading">¶</a></h2>
 <p>In <code class="docutils literal notranslate"><span class="pre">mentpy</span></code> we can create a graph state using the <code class="docutils literal notranslate"><span class="pre">GraphState</span></code> class:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">gr</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">GraphState</span><span class="p">()</span>
