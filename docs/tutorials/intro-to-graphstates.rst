@@ -12,7 +12,7 @@ The state defined by :math:`G` is
 
 .. math:: |\psi\rangle = \prod_{i,j \in E(G)} CZ_{ij} |+\rangle\^{\otimes n},
 
-where :math:`n` is the number of nodes of :math:`G`, :math:`E(G)` is the set of edges of :math:`G`, and :math:`CZ_{ij}` is the controlled-Z gate on qubits :math:`i` and :math:`j`.
+where :math:`n` is the number of nodes, :math:`E(G)` is the set of edges, and :math:`CZ_{ij}` is the controlled-Z gate on qubits :math:`i` and :math:`j`.
 
 GraphState
 ----------
