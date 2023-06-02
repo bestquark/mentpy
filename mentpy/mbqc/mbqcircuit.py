@@ -166,13 +166,13 @@ class MBQCircuit:
     # if an attribute is not found, look for it in the graph
     def __getattr__(self, name):
         # try getting the attribute in graph, if not there, look in gflow
-
-        if name in self.graph.__dict__:
+        try:
             return getattr(self.graph, name)
-        elif name in self.gflow.__dict__:
-            return getattr(self.gflow, name)
-        else:
-            raise AttributeError(f"Attribute {name} not found in MBQCircuit.")
+        except AttributeError:
+            try:
+                return getattr(self.gflow, name)
+            except AttributeError:
+                raise AttributeError(f"Attribute {name} not found in MBQCircuit.")
 
     def __setitem__(self, key, value):
         r"""Set the value of the measurement of the node with index key."""
