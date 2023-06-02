@@ -137,19 +137,7 @@ class MBQCircuit:
             flow, partial_order, depth, layers = find_cflow(
                 graph, input_nodes, output_nodes
             )
-            self._layers = layers
-            self.gflow = Flow(
-                graph, input_nodes, output_nodes
-            )  # TODO: make this the standard flow in this class
-            # try:
-            #     flow, partial_order = find_flow(
-            #         graph, input_nodes, output_nodes
-            #     )  # TODO: FIX find_cflow!!!!
-            # except:
-            #     pass
-            # if flow is None:
-            #     flow, partial_order = find_cflow(graph, input_nodes, output_nodes)
-            # depth = None
+            self.gflow = Flow(graph, input_nodes, output_nodes)
 
         elif (flow is not None) and (partial_order is not None):
             check_if_flow(graph, input_nodes, output_nodes, flow, partial_order)
@@ -165,8 +153,6 @@ class MBQCircuit:
             node for node, i in self.measurements.items() if i is None
         ]
         self._quantum_output_nodes = quantum_output_nodes
-
-        self._depth = depth
         self._measurement_order = measurement_order
 
     def __repr__(self) -> str:
@@ -179,7 +165,14 @@ class MBQCircuit:
 
     # if an attribute is not found, look for it in the graph
     def __getattr__(self, name):
-        return getattr(self.graph, name)
+        # try getting the attribute in graph, if not there, look in gflow
+
+        if name in self.graph.__dict__:
+            return getattr(self.graph, name)
+        elif name in self.gflow.__dict__:
+            return getattr(self.gflow, name)
+        else:
+            raise AttributeError(f"Attribute {name} not found in MBQCircuit.")
 
     def __setitem__(self, key, value):
         r"""Set the value of the measurement of the node with index key."""
@@ -291,7 +284,7 @@ class MBQCircuit:
     @property
     def depth(self) -> int:
         r"""Return the depth of the MBQC circuit."""
-        return self._depth
+        return self.gflow.depth
 
     @property
     def measurement_order(self) -> List[int]:
