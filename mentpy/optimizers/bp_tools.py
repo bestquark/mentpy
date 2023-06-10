@@ -1,5 +1,5 @@
 import numpy as np
-from mentpy.gradients import estimate_gradient
+from mentpy.gradients import grad
 
 
 def compute_gradient_variance(f, x, estimate_gradient, num_samples=10, **kwargs):

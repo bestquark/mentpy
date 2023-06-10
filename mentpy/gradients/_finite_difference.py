@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def estimate_gradient(f, x, h=1e-5, type="central"):
+def fd_gradient(f, x, h=1e-5, type="central"):
     if type not in ["central", "forward", "backward"]:
         raise UserWarning(
             f"Expected type to be 'central', 'forward', or 'backward' but {type} was given"
@@ -20,7 +20,7 @@ def estimate_gradient(f, x, h=1e-5, type="central"):
     return grad
 
 
-def estimate_hessian(f, x, h=1e-5, type="central"):
+def fd_hessian(f, x, h=1e-5, type="central"):
     if type not in ["central", "forward", "backward"]:
         raise UserWarning(
             f"Expected type to be 'central', 'forward', or 'backward' but {type} was given"

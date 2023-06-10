@@ -213,7 +213,7 @@ class NumpySimulatorSV(BaseSimulator):
         return self.qstate, outcome
 
     def run(
-        self, angles: List[float], output_form="dm"
+        self, angles: List[float], output_form="dm", **kwargs
     ) -> Tuple[List[int], np.ndarray]:
         """Measures the quantum state in the given pattern.
 
@@ -221,6 +221,8 @@ class NumpySimulatorSV(BaseSimulator):
             angles (List[float]): List of angles to be used for the measurements.
             output_form (str): Output form of the quantum state. Can be 'dm' for density matrix or 'sv' for statevector.
         """
+        if kwargs.get("input_state") is not None:
+            self.reset(input_state=kwargs.get("input_state"))
 
         if len(angles) != len(self.mbqcircuit.trainable_nodes):
             raise ValueError(

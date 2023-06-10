@@ -1,5 +1,4 @@
 from mentpy.optimizers.base_optimizer import BaseOptimizer
-from mentpy.gradients import estimate_gradient
 
 import numpy as np
 import random
