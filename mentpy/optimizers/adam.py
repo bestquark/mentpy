@@ -1,5 +1,5 @@
 import numpy as np
-from mentpy.gradients import grad
+from mentpy.gradients import get_gradient
 
 from mentpy.optimizers.base_optimizer import BaseOptimizer
 
@@ -52,7 +52,7 @@ class AdamOptimizer(BaseOptimizer):
 
         for i in range(num_iters):
             # Adam Optimizer
-            g = grad(f, x, **kwargs)
+            g = get_gradient(f, x, **kwargs)
             m = (1 - self.b1) * g + self.b1 * m  # First  moment estimate.
             v = (1 - self.b2) * (g**2) + self.b2 * v  # Second moment estimate.
             mhat = m / (1 - self.b1 ** (i + 1))  # Bias correction.
@@ -79,7 +79,7 @@ class AdamOptimizer(BaseOptimizer):
 
         for i in range(num_iters):
             # Adam Optimizer
-            g = grad(f, x, **kwargs)
+            g = get_gradient(f, x, **kwargs)
             m = (1 - self.b1) * g + self.b1 * m
             v = (1 - self.b2) * (g**2) + self.b2 * v
             mhat = m / (1 - self.b1 ** (i + 1))

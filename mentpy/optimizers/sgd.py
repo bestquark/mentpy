@@ -1,5 +1,5 @@
 from mentpy.optimizers.base_optimizer import BaseOptimizer
-from mentpy.gradients import grad
+from mentpy.gradients import get_gradient
 
 import numpy as np
 
@@ -47,7 +47,7 @@ class SGDOptimizer(BaseOptimizer):
 
         for i in range(num_iters):
             # SGD Optimizer
-            g = grad(f, x, **kwargs)
+            g = get_gradient(f, x, **kwargs)
             v = self.momentum * v - self.step_size * g
             if self.nesterov:
                 x = x + self.momentum * v - self.step_size * g
@@ -72,7 +72,7 @@ class SGDOptimizer(BaseOptimizer):
         norm = []
         for i in range(num_iters):
             # SGD Optimizer
-            g = grad(f, x, **kwargs)
+            g = get_gradient(f, x, **kwargs)
             norm.append(np.linalg.norm(g))
             v = self.momentum * v - self.step_size * g
             if self.nesterov:
