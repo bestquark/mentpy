@@ -56,7 +56,7 @@ class RCDOptimizer(BaseOptimizer):
             if callback is not None:
                 callback(x, i)
             if verbose:
-                print(f"Step {i + 1}: {x}")
+                print(f"Iteration {i+1}/{num_iters}")
         return x
 
     def update_step_size(self, x, i, factor=0.99):

@@ -43,6 +43,22 @@ class AdamOptimizer(BaseOptimizer):
         self.b1 = b1
         self.b2 = b2
         self.eps = eps
+        self.m = None
+        self.v = None
+
+    def step(self, f, x, i, **kwargs):
+        """Take a step of the optimizer."""
+        g = get_gradient(f, x, **kwargs)
+        if self.m is None:
+            self.m = np.zeros(len(x))
+        if self.v is None:
+            self.v = np.zeros(len(x))
+        self.m = self.b1 * self.m + (1 - self.b1) * g
+        self.v = self.b2 * self.v + (1 - self.b2) * g**2
+        m_hat = self.m / (1 - self.b1 ** (i + 1))
+        v_hat = self.v / (1 - self.b2 ** (i + 1))
+        x = x - self.step_size * m_hat / (np.sqrt(v_hat) + self.eps)
+        return x
 
     def optimize(self, f, x0, num_iters=100, callback=None, verbose=False, **kwargs):
         """Optimize a function f using the Adam optimizer."""
@@ -54,17 +70,7 @@ class AdamOptimizer(BaseOptimizer):
             if callback is not None:
                 callback(x, i)
             if verbose:
-                print(f"Step {i + 1}: {x}")
-        return x
-
-    def step(self, f, x, i, **kwargs):
-        """Take a step of the optimizer."""
-        g = get_gradient(f, x, **kwargs)
-        m = (1 - self.b1) * g + self.b1 * m
-        v = (1 - self.b2) * (g**2) + self.b2 * v
-        mhat = m / (1 - self.b1 ** (i + 1))
-        vhat = v / (1 - self.b2 ** (i + 1))
-        x = x - self.step_size * mhat / (np.sqrt(vhat) + self.eps)
+                print(f"Iteration {i+1}/{num_iters} - x: {x}")
         return x
 
     def update_step_size(self, x, i, factor=0.99):
@@ -98,4 +104,5 @@ class AdamOptimizer(BaseOptimizer):
 
     def reset(self):
         """Reset the optimizer."""
-        pass
+        self.m = None
+        self.v = None

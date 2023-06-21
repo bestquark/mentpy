@@ -39,23 +39,24 @@ class SGDOptimizer(BaseOptimizer):
         self.step_size = step_size
         self.momentum = momentum
         self.nesterov = nesterov
+        self.v = None
 
     def step(self, f, x, i, **kwargs):
         """Take a step of the SGD optimizer."""
         g = get_gradient(f, x, **kwargs)
-        v = self.momentum * v - self.step_size * g
+        if self.v is None:
+            self.v = np.zeros(len(x))
+        self.v = self.momentum * self.v - self.step_size * g
         if self.nesterov:
-            x = x + self.momentum * v - self.step_size * g
+            x = x + self.momentum * self.v - self.step_size * g
         else:
-            x = x + v
+            x = x + self.v
         return x
 
     def optimize(self, f, x0, num_iters=100, callback=None, verbose=False, **kwargs):
         """Optimize a function f using the SGD optimizer."""
-        v = np.zeros(len(x0))
         x = x0
         for i in range(num_iters):
-            # SGD Optimizer
             x = self.step(f, x, i, **kwargs)
             if callback is not None:
                 callback(x, i)
@@ -90,4 +91,5 @@ class SGDOptimizer(BaseOptimizer):
         return x, norm
 
     def reset(self, *args, **kwargs):
-        pass
+        """Reset the optimizer."""
+        self.v = None

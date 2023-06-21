@@ -21,6 +21,10 @@ class BaseOptimizer(abc.ABC):
         pass
 
     @abc.abstractmethod
+    def step(self, *args, **kwargs):
+        pass
+
+    @abc.abstractmethod
     def optimize(self, *args, **kwargs):
         pass
 
