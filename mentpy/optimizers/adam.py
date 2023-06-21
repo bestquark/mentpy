@@ -49,19 +49,22 @@ class AdamOptimizer(BaseOptimizer):
         m = np.zeros(len(x0))
         v = np.zeros(len(x0))
         x = x0
-
         for i in range(num_iters):
-            # Adam Optimizer
-            g = get_gradient(f, x, **kwargs)
-            m = (1 - self.b1) * g + self.b1 * m  # First  moment estimate.
-            v = (1 - self.b2) * (g**2) + self.b2 * v  # Second moment estimate.
-            mhat = m / (1 - self.b1 ** (i + 1))  # Bias correction.
-            vhat = v / (1 - self.b2 ** (i + 1))
-            x = x - self.step_size * mhat / (np.sqrt(vhat) + self.eps)
+            x = self.step(f, x, i, **kwargs)
             if callback is not None:
                 callback(x, i)
             if verbose:
-                print(f"Iteration {i+1} of {num_iters}: {x} with value {f(x)}")
+                print(f"Step {i + 1}: {x}")
+        return x
+
+    def step(self, f, x, i, **kwargs):
+        """Take a step of the optimizer."""
+        g = get_gradient(f, x, **kwargs)
+        m = (1 - self.b1) * g + self.b1 * m
+        v = (1 - self.b2) * (g**2) + self.b2 * v
+        mhat = m / (1 - self.b1 ** (i + 1))
+        vhat = v / (1 - self.b2 ** (i + 1))
+        x = x - self.step_size * mhat / (np.sqrt(vhat) + self.eps)
         return x
 
     def update_step_size(self, x, i, factor=0.99):
