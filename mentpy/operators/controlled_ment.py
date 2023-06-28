@@ -16,8 +16,8 @@ class ControlMent(Ment):
         false_plane: Optional[str] = "X",
     ):
         """Controlled measurement operator."""
-        super().__init__(angle=false_angle, plane=false_plane)
         true_ment = Ment(angle=true_angle, plane=true_plane)
+        super().__init__(angle=false_angle, plane=false_plane)
         self._true_ment = true_ment
         self._condition = condition
 
@@ -41,7 +41,6 @@ class ControlMent(Ment):
             )
         self._condition = condition
 
-    @property
     def angle(self, *args, **kwargs):
         if args == () and kwargs == {}:
             if isinstance(self._condition, bool):
@@ -59,7 +58,6 @@ class ControlMent(Ment):
             else:
                 return super().angle
 
-    @property
     def plane(self, *args, **kwargs):
         if args == () and kwargs == {}:
             if self._true_ment.plane is None or super().plane is None:
@@ -72,7 +70,6 @@ class ControlMent(Ment):
             else:
                 return super().plane
 
-    @property
     def is_trainable(self):
         return super().is_trainable() or self._true_ment.is_trainable()
 
@@ -81,16 +78,25 @@ class ControlMent(Ment):
             self.condition,
             self._true_ment.angle,
             self._true_ment.plane,
-            self.angle,
-            self.plane,
+            self._angle,
+            self._plane,
         )
 
     def matrix(self, angle: float | None = None, *args, **kwargs):
         """Return the matrix of the controlled measurement operator."""
+        if (not self.is_trainable()) and (angle is not None):
+            raise ValueError("ControlledMent is not trainable, so angle must be None.")
+
         if self.condition(*args, **kwargs):
-            return self._true_ment.matrix(angle, *args, **kwargs)
+            if self._true_ment.is_trainable():
+                return self._true_ment.matrix(angle, *args, **kwargs)
+            else:
+                return self._true_ment.matrix()
         else:
-            return super().matrix(angle, *args, **kwargs)
+            if super().is_trainable():
+                return super().matrix(angle, *args, **kwargs)
+            else:
+                return super().matrix()
 
     def get_povm(self, angle: float | None = None, *args, **kwargs):
         if self.condition(*args, **kwargs):

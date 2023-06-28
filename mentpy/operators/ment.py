@@ -9,13 +9,19 @@ class MentOutcome:
     """Measurement outcome class."""
 
     def __init__(self, outcome: Callable[..., bool], node_id=None, cond_nodes=None):
+        if isinstance(outcome, (bool, int)):
+            outcome_value = bool(outcome % 2)
+            outcome = lambda *args, **kwargs: outcome_value
         self._outcome = outcome
         self._node_id = node_id
-        self._cond_nodes = (
-            cond_nodes
-            if cond_nodes is not None
-            else (set([node_id]) if node_id is not None else set())
-        )
+        if isinstance(outcome, MentOutcome):
+            self._cond_nodes = outcome.cond_nodes
+        else:
+            self._cond_nodes = (
+                cond_nodes
+                if cond_nodes is not None
+                else (set([node_id]) if node_id is not None else set())
+            )
 
     @property
     def node_id(self):
@@ -41,17 +47,17 @@ class MentOutcome:
     def _binary_operation(self, operation, other):
         if isinstance(other, (bool, int)):
             return MentOutcome(
-                lambda x: bool(operation(self._outcome(x), other)),
+                lambda x: bool(operation(self._outcome(x), other) % 2),
                 cond_nodes=self._cond_nodes,
             )
         elif isinstance(other, MentOutcome):
             return MentOutcome(
-                lambda x: bool(operation(self._outcome(x), other._outcome(x))),
+                lambda x: bool(operation(self._outcome(x), other._outcome(x)) % 2),
                 cond_nodes=self._cond_nodes | other._cond_nodes,
             )
         elif isinstance(other, Callable):
             return MentOutcome(
-                lambda x: bool(operation(self._outcome(x), other(x))),
+                lambda x: bool(operation(self._outcome(x), other(x)) % 2),
                 cond_nodes=self._cond_nodes,
             )
         else:
@@ -162,13 +168,13 @@ class Ment:
         self._outcome = MentOutcome(lambda x: x[self._node_id])
 
     def __repr__(self):
-        theta = round(self.angle, 4) if isinstance(self.angle, (int, float)) else "θ"
+        theta = round(self._angle, 4) if isinstance(self._angle, (int, float)) else "θ"
         theta = (
-            (round(self.angle[0], 4), round(self.angle[1], 4))
-            if isinstance(self.angle, tuple)
+            (round(self._angle[0], 4), round(self._angle[1], 4))
+            if isinstance(self._angle, tuple)
             else theta
         )
-        return f"Ment({theta}, {self.plane})"
+        return f"Ment({theta}, {self._plane})"
 
     @property
     def plane(self):
@@ -198,30 +204,30 @@ class Ment:
 
     def copy(self):
         "Returns a copy of the measurement."
-        return Ment(self.angle, self.plane)
+        return Ment(self._angle, self._plane)
 
     def is_trainable(self):
         "Returns True if the measurement is trainable."
-        return self.angle is None and self.plane in ["XY", "XZ", "YZ", "XYZ"]
+        return self._angle is None and self._plane in ["XY", "XZ", "YZ", "XYZ"]
 
     def matrix(self, angle: Optional[float] = None, *args, **kwargs):
         "Returns the matrix representation of the measurement."
-        if self.angle is None and angle is None:
+        if self._angle is None and angle is None:
             raise ValueError("Measurement is trainable, please provide an angle.")
-        elif self.angle is not None and angle is not None:
-            if self.angle != angle:
+        elif self._angle is not None and angle is not None:
+            if self._angle != angle:
                 raise ValueError(
-                    f"Measurement has a fixed angle of {round(self.angle, 4)}"
+                    f"Measurement has a fixed angle of {round(self._angle, 4)}"
                 )
-        elif self.angle is not None:
-            angle = self.angle
+        elif self._angle is not None:
+            angle = self._angle
 
-        match self.plane:
+        match self._plane:
             case "XY":
                 matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliY
             case "X" | "Y" | "Z":
                 matrices = {"X": PauliX, "Y": PauliY, "Z": PauliZ}
-                matrix = matrices[self.plane]
+                matrix = matrices[self._plane]
             case "XZ":
                 matrix = np.cos(angle) * PauliX + np.sin(angle) * PauliZ
             case "YZ":

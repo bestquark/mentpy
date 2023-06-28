@@ -331,7 +331,7 @@ class MBQCircuit:
                 if isinstance(menti, ControlMent):
                     controlled_nodes.append(nodei)
 
-                if menti.angle is None:
+                if menti.is_trainable():
                     trainable_nodes.append(nodei)
 
                 planes[nodei] = menti.plane

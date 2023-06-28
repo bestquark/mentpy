@@ -4,7 +4,7 @@ import numpy as np
 import math
 import networkx as nx
 
-from mentpy.operators import Ment
+from mentpy.operators import Ment, ControlledMent
 from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
@@ -41,7 +41,7 @@ class NumpySimulatorDM(BaseSimulator):
         # TODO: FIND SCHEDULE IF NOT PROVIDED
         if self.schedule is not None:
             self.schedule_measure = [
-                i for i in self.schedule if i not in mbqcircuit.measurements.values()
+                i for i in self.schedule if i not in mbqcircuit.quantum_output_nodes
             ]
         elif mbqcircuit.measurement_order is not None:
             # remove output nodes from the measurement order
@@ -241,15 +241,18 @@ class NumpySimulatorDM(BaseSimulator):
                     else:
                         cond = futnods[0] in self.current_simulated_nodes()
                     if cond:
-                        current_ment = self.mbqcircuit[node].copy()
-                        indx = self.current_simulated_nodes().index(node)
+                        # current_ment = self.mbqcircuit[node].copy()
+                        # indx = self.current_simulated_nodes().index(node)
                         break
 
                 if cond == False:
                     raise ValueError("WTF")
                 if node in self.mbqcircuit.trainable_nodes:
                     angle = angles[self.mbqcircuit.trainable_nodes.index(node)]
-                else:
+                    if isinstance(self.mbqcircuit[node], ControlledMent):
+                        cond_angle = self.mbqcircuit[node].angle(self.outcomes) or angle
+                        angle = cond_angle
+                elif isinstance(self.mbqcircuit[node], Ment):
                     angle = self.mbqcircuit[node].angle
 
                 self.qstate, outcome = self.measure(angle)
@@ -372,6 +375,7 @@ class NumpySimulatorDM(BaseSimulator):
         """
         Measures a ment
         """
+
         op = ment.matrix(angle, self.outcomes)
         if op is None:
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
