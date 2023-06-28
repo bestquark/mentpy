@@ -33,6 +33,7 @@ class NumpySimulatorDM(BaseSimulator):
         self.schedule = kwargs.pop("schedule", None)
         self.force0 = kwargs.pop("force0", True)
         self.dev_mode = kwargs.pop("dev_mode", False)
+        self.wires = kwargs.pop("wires", None)
 
         if not self.force0:
             raise NotImplementedError("Numpy simulator does not support force0=False.")

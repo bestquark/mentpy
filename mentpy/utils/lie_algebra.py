@@ -24,9 +24,8 @@ def _constrains(j: int, state: MBQCircuit, stabilizers: PauliOp):
     A = []
     b = []
     for k in mo:
-        indk = mo.index(k)
-        indj = mo.index(j)
-        if indk <= indj:
+
+        if (not state.partial_order(j, k)) or k == j:
             A.append(stabilizers[k].matrix[0, : len(mo)])
             b.append(np.zeros(1, dtype=int))
 
