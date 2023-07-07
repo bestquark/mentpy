@@ -648,7 +648,7 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
     edge_color_control = options.pop("edge_color_control")
     style = options.pop("style")
 
-    possible_styles = ("default", "black_and_white")
+    possible_styles = ("default", "black_and_white", "blue_inputs")
     assert style in possible_styles, f"Style must be one of {possible_styles}"
 
     if pauliop is not None:
@@ -691,6 +691,10 @@ def draw(state: Union[MBQCircuit, GraphState], fix_wires=None, **kwargs):
 
         if style == "black_and_white":
             node_colors = {i: "#FFFFFF" for i in state.graph.nodes()}
+
+        if style == "blue_inputs":
+            for i in state.input_nodes:
+                node_colors[i] = "#ADD8E6"
 
         options["node_color"] = [node_colors[node] for node in state.graph.nodes()]
 
