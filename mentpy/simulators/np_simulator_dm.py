@@ -228,7 +228,7 @@ class NumpySimulatorDM(BaseSimulator):
                 else:
                     angle = self.mbqcircuit[i].angle
 
-                self.qstate, outcome = self.measure(angle)
+                self.qstate, outcome = self.measure(angle, mode)
                 self.outcomes[i] = outcome
 
         elif self.dev_mode:
@@ -255,7 +255,7 @@ class NumpySimulatorDM(BaseSimulator):
                 elif isinstance(self.mbqcircuit[node], Ment):
                     angle = self.mbqcircuit[node].angle
 
-                self.qstate, outcome = self.measure(angle)
+                self.qstate, outcome = self.measure(angle, mode)
                 self.outcomes[node] = outcome
 
         current_output_order = [
