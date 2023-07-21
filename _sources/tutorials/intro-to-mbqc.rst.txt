@@ -27,19 +27,23 @@ In :obj:`mentpy` we can simulate an MBQC circuit by using the :obj:`MBQCircuit` 
     mp.draw(mbcirc)
 
 This circuit is designed to implement a single qubit gate on the input qubit, with qubits 
-measured in a left-to-right sequence. We can use this same circuit to implement a teleportation by 
-measuring qubits :math:`0`, :math:`1`, :math:`2`, and :math:`3` in the :math:`X` basis. However,
-the output qubit with a byproduct operator :math:`Z` that depends on the earlier qubits measurement 
-outcomes.
+measured in a left-to-right sequence. We can use this circuit to implement a teleportation from 
+qubit 0 to qubit 4 by measuring qubits :math:`0`, :math:`1`, :math:`2`, and :math:`3` in 
+the :math:`X` basis. 
 
 Ment Operators
 --------------
 
-To build this circuit, we can use the :obj:`Measurement` (or its alias :obj:`Ment`) operator to the 
-circuit's qubits. The :obj:`Measurement` object is characterized by an angle and a measurement 
+To specify the measurement angles, we can use the :obj:`Measurement` (or its alias :obj:`Ment`) 
+operator at each qubit position. The :obj:`Measurement` object is characterized by an angle and a measurement 
 plane, which can be "XY", "XZ", or "YZ" ("X", "Y", and "Z" are also accepted), determining the 
 basis in which the qubit is measured. The angle can be specified or set to ``None``. 
 If not provided, it will be treated as a trainable parameter.
+
+.. admonition:: Note
+   :class: warning
+
+   At the moment, only the "XY", "X", and "Y" measurement planes are supported.
 
 .. ipython:: python
 
@@ -50,7 +54,8 @@ If not provided, it will be treated as a trainable parameter.
     @savefig 1d_cluster_measure.png width=1000px
     mp.draw(mbcirc, label='planes')
 
-Similarly, we can define the same circuit when creating the :obj:`MBQCircuit` object.
+We can define the same circuit when creating the :obj:`MBQCircuit` object with the
+``measurements`` argument:
 
 .. ipython:: python
 
@@ -59,8 +64,7 @@ Similarly, we can define the same circuit when creating the :obj:`MBQCircuit` ob
     @savefig 1d_cluster_measure2.png width=1000px
     mp.draw(mbcirc, label='arrows')
 
-If not every measurement is specified, the unspecified measurements will be set to the
-value of the :obj:`default_measurement` attribute of the :obj:`MBQCircuit` object. By default,
+The default measurement basis can be specified with the :obj:`default_measurement` kwarg. By default,
 it is set to :math:`XY`, but we can change it to any other :obj:`Ment` object. Let's see an example:
 
 .. ipython:: python
@@ -118,7 +122,7 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
 Finally, if you want to know the set of gates that the MBQC circuit you have created
 implements, you can use the :func:`utils.calculate_lie_algebra`. This function returns
 the lie algebra :math:`\mathfrak{g}` that the circuit implements, which can be used to calculate the set of 
-gates using the exponential map :math:`e^{\mathfrak{g}}`.
+gates using the exponential map :math:`\{e^{i \theta \mathfrak{g}} \mid \theta in \mathbb{R} \}`.
 
 .. ipython:: python
     :okwarning:

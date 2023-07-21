@@ -574,16 +574,19 @@ information flows through the system by measuring the qubits of the resource sta
 </div>
 <a class="reference internal image-reference" href="../_images/1d_cluster.png"><img alt="../_images/1d_cluster.png" src="../_images/1d_cluster.png" style="width: 1000px;" /></a>
 <p>This circuit is designed to implement a single qubit gate on the input qubit, with qubits
-measured in a left-to-right sequence. We can use this same circuit to implement a teleportation by
-measuring qubits <span class="math notranslate nohighlight">\(0\)</span>, <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, and <span class="math notranslate nohighlight">\(3\)</span> in the <span class="math notranslate nohighlight">\(X\)</span> basis. However,
-the output qubit with a byproduct operator <span class="math notranslate nohighlight">\(Z\)</span> that depends on the earlier qubits measurement
-outcomes.</p>
+measured in a left-to-right sequence. We can use this circuit to implement a teleportation from
+qubit 0 to qubit 4 by measuring qubits <span class="math notranslate nohighlight">\(0\)</span>, <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, and <span class="math notranslate nohighlight">\(3\)</span> in
+the <span class="math notranslate nohighlight">\(X\)</span> basis.</p>
 <h2 id="ment-operators">Ment Operators<a class="headerlink" href="#ment-operators" title="Permalink to this heading">¶</a></h2>
-<p>To build this circuit, we can use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> (or its alias <code class="xref py py-obj docutils literal notranslate"><span class="pre">Ment</span></code>) operator to the
-circuit’s qubits. The <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> object is characterized by an angle and a measurement
+<p>To specify the measurement angles, we can use the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> (or its alias <code class="xref py py-obj docutils literal notranslate"><span class="pre">Ment</span></code>)
+operator at each qubit position. The <code class="xref py py-obj docutils literal notranslate"><span class="pre">Measurement</span></code> object is characterized by an angle and a measurement
 plane, which can be “XY”, “XZ”, or “YZ” (“X”, “Y”, and “Z” are also accepted), determining the
 basis in which the qubit is measured. The angle can be specified or set to <code class="docutils literal notranslate"><span class="pre">None</span></code>.
 If not provided, it will be treated as a trainable parameter.</p>
+<div class="warning admonition">
+<p class="admonition-title">Note</p>
+<p>At the moment, only the “XY”, “X”, and “Y” measurement planes are supported.</p>
+</div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [5]: </span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 
 <span class="gp">In [6]: </span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">)</span>
@@ -596,7 +599,8 @@ If not provided, it will be treated as a trainable parameter.</p>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/1d_cluster_measure.png"><img alt="../_images/1d_cluster_measure.png" src="../_images/1d_cluster_measure.png" style="width: 1000px;" /></a>
-<p>Similarly, we can define the same circuit when creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> object.</p>
+<p>We can define the same circuit when creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> object with the
+<code class="docutils literal notranslate"><span class="pre">measurements</span></code> argument:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">measurements</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">2</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)}</span>
 
 <span class="gp">In [11]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">)</span>
@@ -605,8 +609,7 @@ If not provided, it will be treated as a trainable parameter.</p>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/1d_cluster_measure2.png"><img alt="../_images/1d_cluster_measure2.png" src="../_images/1d_cluster_measure2.png" style="width: 1000px;" /></a>
-<p>If not every measurement is specified, the unspecified measurements will be set to the
-value of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">default_measurement</span></code> attribute of the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> object. By default,
+<p>The default measurement basis can be specified with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">default_measurement</span></code> kwarg. By default,
 it is set to <span class="math notranslate nohighlight">\(XY\)</span>, but we can change it to any other <code class="xref py py-obj docutils literal notranslate"><span class="pre">Ment</span></code> object. Let’s see an example:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
 <span class="gp">   ....: </span>                       <span class="n">measurements</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">)},</span>
@@ -675,7 +678,7 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
 <p>Finally, if you want to know the set of gates that the MBQC circuit you have created
 implements, you can use the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.calculate_lie_algebra()</span></code>. This function returns
 the lie algebra <span class="math notranslate nohighlight">\(\mathfrak{g}\)</span> that the circuit implements, which can be used to calculate the set of
-gates using the exponential map <span class="math notranslate nohighlight">\(e^{\mathfrak{g}}\)</span>.</p>
+gates using the exponential map <span class="math notranslate nohighlight">\(\{e^{i \theta \mathfrak{g}} \mid \theta in \mathbb{R} \}\)</span>.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [27]: </span><span class="n">ops</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">calculate_lie_algebra</span><span class="p">(</span><span class="n">grid_cluster</span><span class="p">)</span>
 
 <span class="gp">In [28]: </span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ops</span><span class="p">))</span>
