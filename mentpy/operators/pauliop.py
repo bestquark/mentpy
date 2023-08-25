@@ -148,6 +148,11 @@ class PauliOp:
                     mat[i, j + n_qubits] = 1
         return GF(mat)
 
+    @property
+    def number_of_qubits(self):
+        """Returns the number of qubits in the Pauli operator."""
+        return int(self.matrix.shape[1] // 2)
+
     def commutator(self, other) -> "PauliOp":
         """Returns the commutator of two Pauli operators."""
         if not self.symplectic_prod(other):

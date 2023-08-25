@@ -6,7 +6,7 @@ It has several common ansatzes that can be used for MBQC algorithms
 """
 
 from typing import List
-from mentpy.operators import Ment
+from mentpy.operators import Ment, PauliOp
 from mentpy.mbqc.states.graphstate import GraphState
 from mentpy.mbqc.mbqcircuit import MBQCircuit, hstack, merge
 
@@ -290,3 +290,43 @@ def spturb(n_qubits: int, n_layers: int, periodic=False, **kwargs):
                     spt_ansatz = merge(spt_ansatz, sym_block2, [(n1, 0), (n2, 7)])
 
     return spt_ansatz
+
+
+def from_pauli(pauli_op: PauliOp):
+    """Returns a graph state that can implement :math:`U=e^{-i\theta P}`"""
+
+    if len(pauli_op) != 1:
+        raise ValueError(
+            f"Can only create the template for a single Pauli operator, but {len(pauli_op)} were given."
+        )
+
+    n_qubits = pauli_op.number_of_qubits
+    exp_ansatz = many_wires([3] * n_qubits).graph
+    exp_ansatz.add_nodes_from([3 * n_qubits, 3 * n_qubits + 1])
+    exp_ansatz.add_edge(3 * n_qubits, 3 * n_qubits + 1)
+
+    measurements = {3 * n_qubits + 1: Ment("XY")}
+
+    for q in range(n_qubits):
+        has_x, has_z = False, False
+        if pauli_op.matrix[0, q] == 1:
+            exp_ansatz.add_edge(3 * q + 1, 3 * n_qubits)
+            has_x = True
+
+        if pauli_op.matrix[0, q + n_qubits] == 1:
+            exp_ansatz.add_edge(3 * q, 3 * n_qubits)
+            has_z = True
+
+        if has_x and has_z:
+            measurements[3 * n_qubits] = Ment("Y")
+
+    input_nodes = [3 * q for q in range(n_qubits)]
+    output_nodes = [3 * q + 2 for q in range(n_qubits)]
+
+    return MBQCircuit(
+        exp_ansatz,
+        measurements=measurements,
+        default_measurement=Ment("X"),
+        input_nodes=input_nodes,
+        output_nodes=output_nodes,
+    )

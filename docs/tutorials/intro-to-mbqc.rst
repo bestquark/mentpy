@@ -122,7 +122,7 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
 Finally, if you want to know the set of gates that the MBQC circuit you have created
 implements, you can use the :func:`utils.calculate_lie_algebra`. This function returns
 the lie algebra :math:`\mathfrak{g}` that the circuit implements, which can be used to calculate the set of 
-gates using the exponential map :math:`\{e^{i \theta \mathfrak{g}} \mid \theta in \mathbb{R} \}`.
+gates using the exponential map :math:`\{e^{i \theta \mathfrak{g}} \mid \theta \in \mathbb{R} \}`.
 
 .. ipython:: python
     :okwarning:
