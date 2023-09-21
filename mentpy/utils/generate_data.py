@@ -28,7 +28,7 @@ def random_special_unitary(n_qubits: int):
     return cirq.testing.random_special_unitary(dim=int(2**n_qubits))
 
 
-def random_train_test_states_unitary(
+def generate_random_dataset(
     unitary: np.ndarray, n_samples: int, test_size: float = 0.3
 ) -> tuple:
     r"Return random training and test data (input, target) for a given unitary gate ``unitary``."
@@ -72,7 +72,7 @@ def randomUnitary_closetoid(dim, t, n):
     return brownian_circuit(dim, n, np.sqrt(1 / (n * dim)) * 2 * np.pi * t)
 
 
-def random_train_test_states_unitary_noise(
+def generate_random_dataset_noisy(
     unitary: np.ndarray,
     n_samples: int,
     noise_level: float = 0.0,

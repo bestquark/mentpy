@@ -17,8 +17,9 @@ An introduction to MB-QML
 
 
 .. ipython:: python
+    from pathos.multiprocessing import ProcessingPool as Pool
 
-   def loss(output, target):
+    def loss(output, target):
         avg_fidelity = 0
         for sty, out in zip(target, output):
             sty = mp.calculator.pure2density(sty)
@@ -40,3 +41,33 @@ An introduction to MB-QML
     def cost(thetas, statesx, statesy):
         outputs = prediction(thetas, statesx)
         return loss(outputs, statesy)
+
+
+
+.. ipython:: python
+    runs_train = {}
+    runs_test = {}
+
+    NUM_STEPS = 100
+    NUM_RUNS = 20
+
+    for i in range(NUM_RUNS):
+        random_gate = np.kron(mp.utils.random_special_unitary(1), np.eye(2))
+        (x_train, y_train), (x_test, y_test) = mp.utils.generate_random_dataset(random_gate, 10, test_size = 0.3)
+
+        cost_train, cost_test = [], []
+
+        def callback(params, iter):
+            cost_train.append(cost(params, x_train, y_train))
+            cost_test.append(cost(params, x_test, y_test))
+            
+        theta = np.random.rand(len(gs.trainable_nodes))
+        opt = mp.optimizers.AdamOptimizer(step_size=0.08)
+        theta = opt.optimize(lambda params: cost(params, x_train, y_train), theta, num_iters=NUM_STEPS, callback=callback)
+        post_cost = cost(theta, x_test, y_test)
+
+        runs_train[i] = cost_train
+        runs_test[i] = cost_test
+
+.. ipython:: python
+    
