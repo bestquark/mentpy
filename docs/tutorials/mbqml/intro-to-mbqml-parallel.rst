@@ -1,10 +1,15 @@
-An introduction to MB-QML
-=========================
+Parallelizing MB-QML protocols
+==============================
 
 .. admonition:: Note
    :class: warning
    
    This tutorial is under construction
+
+
+In measurement-based quantum machine learning, we first need to define a model. The model will 
+be a MBQC circuit with parametrized measurement angles. Let's define a model using the MuTA 
+ansatz with two input qubits:
 
 .. ipython:: python
 
@@ -16,9 +21,14 @@ An introduction to MB-QML
    mp.draw(gs)
 
 
+Great, now we need to define a loss function. In our case, we will use the average infidelity between
+the target states and the output states. 
+
 .. ipython:: python
 
-   def loss(output, target):
+    from pathos.multiprocessing import ProcessingPool as Pool
+
+    def loss(output, target):
         avg_fidelity = 0
         for sty, out in zip(target, output):
             sty = mp.calculator.pure2density(sty)
@@ -40,3 +50,4 @@ An introduction to MB-QML
     def cost(thetas, statesx, statesy):
         outputs = prediction(thetas, statesx)
         return loss(outputs, statesy)
+

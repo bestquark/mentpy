@@ -80,12 +80,12 @@ class BaseSimulator(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def run(self, parameters: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
+    def run(self, angles: List[float], **kwargs) -> Tuple[List[int], np.ndarray]:
         """Measures the state of the system.
 
         Parameters
         ----------
-        parameters: List[float]
+        angles: List[float]
             The parameters of the MBQC circuit (if any).
         """
         pass

@@ -1,8 +1,10 @@
 black
+coverage
 cirq
 networkx
 numpy
 PennyLane
+pathos
 scipy
 galois
 sphinx

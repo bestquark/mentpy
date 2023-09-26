@@ -7,9 +7,6 @@ from mentpy.simulators.pennylane_simulator import *
 from mentpy.simulators.np_simulator_dm import *
 from mentpy.simulators.np_simulator_sv import *
 
-# from mentpy.simulators.cirq_simulator import *
-# from mentpy.simulators.qiskit_simulator import *
-
 __all__ = ["PatternSimulator"]
 
 
@@ -42,8 +39,6 @@ class PatternSimulator:
     ) -> None:
         supported_backends = {
             "pennylane": PennylaneSimulator,
-            # "cirq": CirqSimulator,
-            # "qiskit": QiskitSimulator,
             "numpy-dm": NumpySimulatorDM,
             "numpy-sv": NumpySimulatorSV,
         }
