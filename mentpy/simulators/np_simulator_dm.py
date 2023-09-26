@@ -8,6 +8,8 @@ from mentpy.operators import Ment, ControlledMent
 from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
+from . import commons
+
 # COMMON GATES
 H = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
 S = np.array([[1, 0], [0, 1j]])
@@ -298,56 +300,6 @@ class NumpySimulatorDM(BaseSimulator):
         if self.dev_mode:
             self._current_simulated_nodes = self.schedule[0 : self.window_size]
 
-    def arbitrary_qubit_gate(self, u, i, n):
-        """
-        Single qubit gate u acting on qubit i
-        n is the number of qubits
-        """
-        op = 1
-        for k in range(0, n):
-            if k == i:
-                op = np.kron(op, u)
-            else:
-                op = np.kron(op, np.eye(2))
-        return op
-
-    def swap_ij(self, i, j, n):
-        """
-        Swaps qubit i with qubit j
-        """
-        assert i < n and j < n
-        op1, op2, op3, op4 = np.ones(4)
-        for k in range(n):
-            if k == i or k == j:
-                op1 = np.kron(
-                    op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-            else:
-                op1 = np.kron(op1, np.eye(2))
-                op4 = np.kron(op4, np.eye(2))
-
-            if k == i:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-            elif k == j:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-                op3 = np.kron(op3, np.eye(2))
-        return op1 + op2 + op3 + op4
-
     def partial_trace(self, rho, indices):
         """
         Partial trace of state rho over some indices
@@ -381,10 +333,10 @@ class NumpySimulatorDM(BaseSimulator):
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
         p0, p1 = ment.get_povm(angle, self.outcomes)
-        p0_extended = self.arbitrary_qubit_gate(
+        p0_extended = commons.arbitrary_qubit_gate(
             p0, i, self.current_number_simulated_nodes()
         )
-        p1_extended = self.arbitrary_qubit_gate(
+        p1_extended = commons.arbitrary_qubit_gate(
             p1, i, self.current_number_simulated_nodes()
         )
 
@@ -505,7 +457,7 @@ class NumpySimulatorDM(BaseSimulator):
 
         swaps = self.find_swaps(current_order, target_order)
         for i, j in swaps:
-            swap_op = self.swap_ij(i, j, len(current_order))
+            swap_op = commons.swap_ij(i, j, len(current_order))
             if type_state == "pure":
                 new_state = swap_op @ new_state
             else:
