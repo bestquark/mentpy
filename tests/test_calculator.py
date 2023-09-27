@@ -2,6 +2,7 @@
 #
 # This program is released under the GNU GPL v3.0 or later.
 # See <https://www.gnu.org/licenses/> for details.
+"""Tests for the calculator module."""
 import pytest
 
 import numpy as np
@@ -9,6 +10,7 @@ import mentpy as mp
 
 
 def test_pure2density():
+    """Test the pure to density matrix function."""
     psi = np.array([1, 0])
     rho_expected = np.array([[1, 0], [0, 0]])
     rho_result = mp.calculator.pure2density(psi)
@@ -21,6 +23,7 @@ def test_pure2density():
 
 
 def test_partial_trace():
+    """Test the partial trace function."""
     # Simple test with mixed state
     rho = np.array([[0.5, 0], [0, 0.5]])
     indices = [0]

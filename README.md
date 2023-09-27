@@ -2,21 +2,22 @@
   <img src="./docs/_static/logo.png" alt="MentPy: A Measurement-Based Quantum computing simulator." width="70%">
 </p>
 
-<div align=center>
-  <a href="https://pypi.org/project/mentpy"><img src="https://img.shields.io/pypi/v/mentpy"></a>
-  <!-- <a href="https://pypi.org/project/mentpy"><img src="https://img.shields.io/pypi/pyversions/mentpy"></a> -->
-  <a href="https://pypi.org/project/mentpy"><img src="https://img.shields.io/pypi/wheel/mentpy"></a>
-  <a href='https://mentpy.readthedocs.io/en/latest/?badge=latest'>
-    <img src='https://readthedocs.org/projects/mentpy/badge/?version=latest' alt='Documentation Status' />
-</a>
-  <!-- <a href="https://pypistats.org/packages/mentpy"><img src="https://img.shields.io/pypi/dm/mentpy"></a>
-  <a href="https://pypi.org/project/mentpy"><img src="https://img.shields.io/pypi/l/mentpy"></a> -->
-  <a href="https://twitter.com/mentpy"><img src="https://img.shields.io/twitter/follow/mentpy?label=mentpy&style=flat&logo=twitter"></a>
-  <!-- <a href="https://github.com/bestquark/mentpy/actions/workflows/docs.yaml"><img src="https://github.com/bestquark/mentpy/actions/workflows/docs.yaml/badge.svg"></a>
-  <a href="https://github.com/bestquark/mentpy/actions/workflows/lint.yaml"><img src="https://github.com/bestquark/mentpy/actions/workflows/lint.yaml/badge.svg"></a>
-  <a href="https://github.com/bestquark/mentpy/actions/workflows/build.yaml"><img src="https://github.com/bestquark/mentpy/actions/workflows/build.yaml/badge.svg"></a>
-  <a href="https://github.com/bestquark/mentpy/actions/workflows/test.yaml"><img src="https://github.com/bestquark/mentpy/actions/workflows/test.yaml/badge.svg"></a>
-  <a href="https://codecov.io/gh/bestquark/mentpy"><img src="https://codecov.io/gh/bestquark/mentpy/branch/master/graph/badge.svg?token=3FJML79ZUK"></a> -->
+<div align="center">
+    <a href="https://pypi.org/project/mentpy">
+        <img src="https://img.shields.io/pypi/v/mentpy">
+    </a>
+    <a href="https://pypi.org/project/mentpy">
+        <img src="https://img.shields.io/pypi/wheel/mentpy">
+    </a>
+    <a href="https://mentpy.readthedocs.io/en/latest/?badge=latest">
+        <img src="https://readthedocs.org/projects/mentpy/badge/?version=latest" alt="Documentation Status">
+    </a>
+    <a href="https://codecov.io/gh/BestQuark/mentpy">
+        <img src="https://codecov.io/gh/BestQuark/mentpy/graph/badge.svg?token=TDWFQPW3KD">
+    </a>
+    <a href="https://twitter.com/mentpy">
+        <img src="https://img.shields.io/twitter/follow/mentpy?label=mentpy&style=flat&logo=twitter">
+    </a>
 </div>
 
 The `MentPy` library is an open-source software for simulations of 
@@ -49,6 +50,14 @@ output = ps(np.random.rand(len(st.outputc)))
 For visualization of circuits, you can use the `mp.draw(st)` function
 
 ![image](https://user-images.githubusercontent.com/52287586/230715389-bf280971-c841-437d-8772-bf59557b0875.png)
+
+To calculate the lie algebra of a model $G_\theta$, you can use the `mp.utils.calculate_lie_algebra` function
+
+```python
+lie_alg = mp.utils.calculate_lie_algebra(st)
+len(lie_alg)
+>> 16
+```
 
 ## Documentation
 

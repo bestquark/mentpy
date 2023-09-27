@@ -15,11 +15,17 @@ We will use the :obj:`PatternSimulator` class to create a simulator. Let's try i
 .. ipython:: python
 
     grid_cluster = mp.templates.grid_cluster(3, 5)
-    simulator = mp.PatternSimulator(grid_cluster, backend='pennylane')
+    simulator = mp.PatternSimulator(grid_cluster, backend='numpy-dm')
     print(simulator)
 
-You can specify the simulator you want to use with the keyword argument ``simulator``.
-This can be useful if you want to run a circuit on real hardware. 
+You can specify the backend you want to use with the keyword argument ``backend``.
+This can be useful if you want to run a circuit on real hardware.
+
+.. admonition:: Note
+   :class: warning
+   
+   Currently, ``mentpy`` does not support running circuits on real hardware. This feature
+    will be added in the future.
 
 Running the circuit
 -------------------

@@ -7,9 +7,8 @@ Parallelizing MB-QML protocols
    This tutorial is under construction
 
 
-In measurement-based quantum machine learning, we first need to define a model. The model will 
-be a MBQC circuit with parametrized measurement angles. Let's define a model using the MuTA 
-ansatz with two input qubits:
+In this tutorial, we will see how to parallelize the MB-QML protocols in :mod:`mentpy`. 
+Similar to the previous tutorial, we first need a MB-QML model to work with.
 
 .. ipython:: python
 
@@ -21,8 +20,8 @@ ansatz with two input qubits:
    mp.draw(gs)
 
 
-Great, now we need to define a loss function. In our case, we will use the average infidelity between
-the target states and the output states. 
+Then, when we define a loss function, we can use the :mod:`pathos` package to parallelize the computation
+of the infidelity between the target states and the output states.
 
 .. ipython:: python
 
@@ -51,3 +50,5 @@ the target states and the output states.
         outputs = prediction(thetas, statesx)
         return loss(outputs, statesy)
 
+
+This will significantly speed up the computation of the loss function!

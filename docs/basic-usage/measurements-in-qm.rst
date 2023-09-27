@@ -1,5 +1,5 @@
-Measurements in quantum mechanics
-=================================
+Single qubit measurements
+=========================
 
 .. meta::
    :description: Measurements in quantum mechanics using python
@@ -12,7 +12,7 @@ Measurements in quantum mechanics
 
 **Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
 
-In MentPy, measurements are represneted by the :obj:`mp.Ment` class.
+In MentPy, measurements are represented by the :obj:`mp.Ment` class.
 
 .. ipython:: python
 

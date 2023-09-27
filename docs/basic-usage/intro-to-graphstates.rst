@@ -1,5 +1,5 @@
-An introduction to Graph States
-===============================
+Graph States
+============
 
 .. meta::
    :description: An introduction to graph states in MentPy
@@ -17,7 +17,7 @@ where :math:`n` is the number of nodes, :math:`E(G)` is the set of edges, and :m
 GraphState
 ----------
 
-In ``mentpy`` we can create a graph state using the ``GraphState`` class:
+In ``mentpy`` we can create a graph state using the :class:`GraphState` class:
 
 .. ipython:: python
 
@@ -28,7 +28,7 @@ In ``mentpy`` we can create a graph state using the ``GraphState`` class:
 Stabilizers
 -----------
 
-Graph states are a particular type of stabilizer state. We can get the stabilizer operators of such state using the ``stabilizers`` method:
+Graph states are a particular type of stabilizer state. We can get the stabilizer operators of such state using the :func:`stabilizers` method:
 
 .. ipython:: python
     :okwarning:

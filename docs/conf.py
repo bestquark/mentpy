@@ -120,10 +120,10 @@ html_theme_options = {
     # "google_analytics": ["UA-XXXXX", "auto"],
     "globaltoc_collapse": True,
     "features": [
-        "navigation.expand",
-        # "navigation.tabs",
+        # "navigation.expand",
+        "navigation.tabs",
         # "toc.integrate",
-        "navigation.sections",
+        # "navigation.sections",
         # "navigation.instant",
         # "header.autohide",
         "navigation.top",
