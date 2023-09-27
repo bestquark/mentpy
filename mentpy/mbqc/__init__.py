@@ -8,6 +8,7 @@ from .states import *
 from .mbqcircuit import *
 from .templates import *
 from .flow import *
+from .view import *
 
 __all__ = [
     "GraphState",
