@@ -13,7 +13,7 @@ Welcome to MentPy's documentation
 .. admonition:: Note
    :class: warning
    
-   MentPy is currently in alpha and is under active development. 
+   MentPy is in its alpha version and is under active development.
 
 The :obj:`mentpy` library is an open-source Python package for creating and training quantum machine learning (QML) models 
 in the measurement-based quantum computing (MBQC) framework. This library contains functions
@@ -111,6 +111,7 @@ If you find MentPy useful in your research, please consider citing us 🙂
 
    tutorials/intro-to-mbqml.rst
    tutorials/intro-to-mbqml-parallel.rst
+   tutorials/classify-classical-data.rst
 
 .. toctree::
    :caption: API Reference

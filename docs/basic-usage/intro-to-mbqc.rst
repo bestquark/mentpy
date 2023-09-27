@@ -5,8 +5,6 @@ Creating MBQC Circuits
    :description: What is measurement-based quantum computation?
    :keywords: mbqc, measurement-based quantum computation, quantum computing
 
-**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
-
 Measurement-based quantum computation is a paradigm of quantum computation that uses 
 single qubit measurements to perform universal quantum computation [#raussendorf2001]_. 
 It is equivalent to the standard gate-based model. The main difference is that the gates 

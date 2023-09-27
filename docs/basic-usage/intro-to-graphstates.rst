@@ -5,8 +5,6 @@ Graph States
    :description: An introduction to graph states in MentPy
    :keywords: mbqc, measurement-based quantum computation, quantum computing, graph states
 
-**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
-
 Graph states are a type of quantum state that can be represented by a graph :math:`G`.
 The state defined by :math:`G` is 
 

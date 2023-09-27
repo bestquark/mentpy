@@ -5,12 +5,11 @@ An introduction to MB-QML
    :description: An introduction to measurement-based quantum machine learning
    :keywords: mb-qml, measurement-based quantum machine learning, quantum machine learning, mbqc
 
-**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
-
 Quantum machine learning (QML) is a field that studies how to use parametrized quantum circuits to 
 learn to identify patterns in quantum data. In measurement-based qunatum machine learning (MB-QML) 
-[#thesis]_, we use a MBQC circuit with parametrized measurement angles to solve QML problems. In 
-:mod:`mentpy`, MB-QML models are defined using the :class:`MBQCircuit` class. We can define a model from scratch
+[#thesis]_, we use a MBQC circuit with parametrized measurement angles to solve QML problems. 
+
+In :mod:`mentpy`, MB-QML models are defined using the :class:`MBQCircuit` class. We can define a model from scratch
 or use one of the templates provided in :mod:`mentpy.templates`. Here, we use the MuTA template with two 
 input qubits, and fix two of the parameters to be fixed (qubits 3 and 8).
 
