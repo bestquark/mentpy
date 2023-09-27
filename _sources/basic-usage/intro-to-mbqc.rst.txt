@@ -1,5 +1,5 @@
-An introduction to MBQC
-========================
+Creating MBQC Circuits
+======================
 
 .. meta::
    :description: What is measurement-based quantum computation?
@@ -8,10 +8,11 @@ An introduction to MBQC
 **Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
 
 Measurement-based quantum computation is a paradigm of quantum computation that uses 
-single qubit measurements to perform universal quantum computation. It is equivalent to 
-the standard gate-based model. The main difference is that the gates are not explicitly
-applied to the qubits, but rather a big resource (entangled) state is prepared and logical 
-information flows through the system by measuring the qubits of the resource state. 
+single qubit measurements to perform universal quantum computation [#raussendorf2001]_. 
+It is equivalent to the standard gate-based model. The main difference is that the gates 
+are not explicitly applied to the qubits, but rather a big resource (entangled) state 
+is prepared and logical information flows through the system by measuring the qubits of the 
+resource state. 
 
 MBQC Circuits
 -------------
@@ -130,3 +131,15 @@ gates using the exponential map :math:`\{e^{i \theta \mathfrak{g}} \mid \theta \
     ops = mp.utils.calculate_lie_algebra(grid_cluster)
     print(len(ops))
     ops[:3]
+
+Lie algebras are a powerful tool for studying QML models. It has been shown that, 
+for a given model, the size of the Lie algebra is related to the phenomenon of barren plateaus [#adjointbp2023]_ [#unifiedbp2023]_.
+
+References
+----------
+
+.. [#raussendorf2001] Raussendorf, R., & Briegel, H. J. (2001). A One-Way Quantum Computer. Physical Review Letters, 86(22), 5188–5191.
+
+.. [#adjointbp2023] Fontana, E., Herman, D., Chakrabarti, S., Kumar, N., Yalovetzky, R., Heredge, J., Sureshbabu, S. H., & Pistoia, M. (2023). The Adjoint Is All You Need: Characterizing Barren Plateaus in Quantum Ansätze. arXiv preprint arXiv:2309.07902.
+
+.. [#unifiedbp2023] Ragone, M., Bakalov, B. N., Sauvage, F., Kemper, A. F., Ortiz Marrero, C., Larocca, M., & Cerezo, M. (2023). A Unified Theory of Barren Plateaus for Deep Parametrized Quantum Circuits. arXiv preprint arXiv:2309.09342.

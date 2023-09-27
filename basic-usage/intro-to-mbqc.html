@@ -9,11 +9,11 @@
       
       
       
-      <link rel="icon" href="../../_static/favicon-32x32.png">
+      <link rel="icon" href="../_static/favicon-32x32.png">
     
     
       
-        <title>An introduction to MBQC - MentPy</title>
+        <title>Creating MBQC Circuits - MentPy</title>
       
     
     
@@ -32,8 +32,8 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../../_static/sphinx_immaterial_theme.79d3faa9841bcddc6.min.css?v=e88de5f6" />
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.79d3faa9841bcddc6.min.css?v=e88de5f6" />
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -82,8 +82,8 @@
 
 <header class="md-header" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../../index.html" title="MentPy" class="md-header__button md-logo" aria-label="MentPy" data-md-component="logo">
-      <img src="../../_static/logo-state.png" alt="logo">
+    <a href="../index.html" title="MentPy" class="md-header__button md-logo" aria-label="MentPy" data-md-component="logo">
+      <img src="../_static/logo-state.png" alt="logo">
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
@@ -98,7 +98,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              An introduction to MBQC
+              Creating MBQC Circuits
             
           </span>
         </div>
@@ -190,6 +190,65 @@
       
         
           
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../getting-started.html" class="md-tabs__link">
+      <span class="md-ellipsis">Getting Started</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+    
+  
+
+
+  <li class="md-tabs__item">
+    <a href="measurements-in-qm.html" class="md-tabs__link md-tabs__link--active">
+      <span class="md-ellipsis">Basic usage</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../tutorials/intro-to-mbqml.html" class="md-tabs__link">
+      <span class="md-ellipsis">Tutorials</span>
+    </a>
+  </li>
+
+      
+        
+  
+  
+
+
+  <li class="md-tabs__item">
+    <a href="../api.html" class="md-tabs__link">
+      <span class="md-ellipsis">API Reference</span>
+    </a>
+  </li>
+
+      
+    </ul>
+  </div>
+</nav>
+          
         
       
       <main class="md-main" data-md-component="main">
@@ -202,11 +261,13 @@
                   <div class="md-sidebar__inner">
                     
 
+  
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../../index.html" title="MentPy" class="md-nav__button md-logo" aria-label="MentPy" data-md-component="logo">
-      <img src="../../_static/logo-state.png" alt="logo">
+    <a href="../index.html" title="MentPy" class="md-nav__button md-logo" aria-label="MentPy" data-md-component="logo">
+      <img src="../_static/logo-state.png" alt="logo">
     </a>
     MentPy
   </label>
@@ -233,12 +294,10 @@
   
   
     
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_1" type="checkbox" id="__nav_1" >
       
       
       
@@ -261,7 +320,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started.html" class="md-nav__link">
+      <a href="../getting-started.html" class="md-nav__link">
         <span class="md-ellipsis">Installation</span>
       </a>
     </li>
@@ -286,9 +345,7 @@
   
   
     
-      
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
         <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
@@ -296,14 +353,14 @@
       
       
         <label class="md-nav__link" for="__nav_2">
-          <span class="md-ellipsis">Tutorials</span>
+          <span class="md-ellipsis">Basic usage</span>
           <span class="md-nav__icon md-icon"></span>
         </label>
       
-      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+      <nav class="md-nav" aria-label="Basic usage" data-md-level="1">
         <label class="md-nav__title" for="__nav_2">
           <span class="md-nav__icon md-icon"></span>
-          <span class="md-ellipsis">Tutorials</span>
+          <span class="md-ellipsis">Basic usage</span>
         </label>
         <ul class="md-nav__list" data-md-scrollfix>
           
@@ -315,7 +372,7 @@
   
     <li class="md-nav__item">
       <a href="measurements-in-qm.html" class="md-nav__link">
-        <span class="md-ellipsis">Measurements in quantum mechanics</span>
+        <span class="md-ellipsis">Single qubit measurements</span>
       </a>
     </li>
   
@@ -330,7 +387,7 @@
   
     <li class="md-nav__item">
       <a href="intro-to-graphstates.html" class="md-nav__link">
-        <span class="md-ellipsis">An introduction to Graph States</span>
+        <span class="md-ellipsis">Graph States</span>
       </a>
     </li>
   
@@ -352,12 +409,12 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          <span class="md-ellipsis">An introduction to MBQC</span>
+          <span class="md-ellipsis">Creating MBQC Circuits</span>
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="#" class="md-nav__link md-nav__link--active">
-        <span class="md-ellipsis">An introduction to MBQC</span>
+        <span class="md-ellipsis">Creating MBQC Circuits</span>
       </a>
       
         
@@ -372,7 +429,7 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      <span class="md-ellipsis">An introduction to MBQC</span>
+      <span class="md-ellipsis">Creating MBQC Circuits</span>
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
@@ -393,6 +450,13 @@
         <li class="md-nav__item">
   <a href="#templates" class="md-nav__link">
     <span class="md-ellipsis">Templates</span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
   </a>
   
 </li>
@@ -421,6 +485,40 @@
 
             
           
+        </ul>
+      </nav>
+    </li>
+  
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          <span class="md-ellipsis">Tutorials</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Tutorials" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          <span class="md-ellipsis">Tutorials</span>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
             
               
   
@@ -428,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mbqml/intro-to-mbqml.html" class="md-nav__link">
+      <a href="../tutorials/intro-to-mbqml.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
       </a>
     </li>
@@ -443,7 +541,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../mbqml/intro-to-mbqml-parallel.html" class="md-nav__link">
+      <a href="../tutorials/intro-to-mbqml-parallel.html" class="md-nav__link">
         <span class="md-ellipsis">Parallelizing MB-<wbr>QML protocols</span>
       </a>
     </li>
@@ -466,22 +564,20 @@
   
   
     
-      
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_4" type="checkbox" id="__nav_4" >
       
       
       
-        <label class="md-nav__link" for="__nav_3">
+        <label class="md-nav__link" for="__nav_4">
           <span class="md-ellipsis">API Reference</span>
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="API Reference" data-md-level="1">
-        <label class="md-nav__title" for="__nav_3">
+        <label class="md-nav__title" for="__nav_4">
           <span class="md-nav__icon md-icon"></span>
           <span class="md-ellipsis">API Reference</span>
         </label>
@@ -494,7 +590,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../api.html" class="md-nav__link">
+      <a href="../api.html" class="md-nav__link">
         <span class="md-ellipsis">Ment<wbr>Py</span>
       </a>
     </li>
@@ -530,7 +626,7 @@
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
-      <span class="md-ellipsis">An introduction to MBQC</span>
+      <span class="md-ellipsis">Creating MBQC Circuits</span>
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
@@ -555,6 +651,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -569,15 +672,16 @@
                   
 
 
-<h1 id="an-introduction-to-mbqc">An introduction to MBQC<a class="headerlink" href="#an-introduction-to-mbqc" title="Link to this heading">¶</a></h1>
+<h1 id="creating-mbqc-circuits">Creating MBQC Circuits<a class="headerlink" href="#creating-mbqc-circuits" title="Link to this heading">¶</a></h1>
 <p><strong>Author(s):</strong> <a class="reference external" href="https://twitter.com/realmantilla">Luis Mantilla</a></p>
 <p>Measurement-based quantum computation is a paradigm of quantum computation that uses
-single qubit measurements to perform universal quantum computation. It is equivalent to
-the standard gate-based model. The main difference is that the gates are not explicitly
-applied to the qubits, but rather a big resource (entangled) state is prepared and logical
-information flows through the system by measuring the qubits of the resource state.</p>
+single qubit measurements to perform universal quantum computation <a class="footnote-reference brackets" href="#raussendorf2001" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>.
+It is equivalent to the standard gate-based model. The main difference is that the gates
+are not explicitly applied to the qubits, but rather a big resource (entangled) state
+is prepared and logical information flows through the system by measuring the qubits of the
+resource state.</p>
 <h2 id="mbqc-circuits">MBQC Circuits<a class="headerlink" href="#mbqc-circuits" title="Link to this heading">¶</a></h2>
-<p>In <a class="reference internal" href="../../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mentpy</span></code></a> we can simulate an MBQC circuit by using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class.</p>
+<p>In <a class="reference internal" href="../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mentpy</span></code></a> we can simulate an MBQC circuit by using the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class.</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="n">gs</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">GraphState</span><span class="p">()</span>
 
 <span class="gp">In [2]: </span><span class="n">gs</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
@@ -588,7 +692,7 @@ information flows through the system by measuring the qubits of the resource sta
 <span class="gh">Out[4]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/1d_cluster.png"><img alt="../../_images/1d_cluster.png" src="../../_images/1d_cluster.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/1d_cluster.png"><img alt="../_images/1d_cluster.png" src="../_images/1d_cluster.png" style="width: 1000px;" /></a>
 <p>This circuit is designed to implement a single qubit gate on the input qubit, with qubits
 measured in a left-to-right sequence. We can use this circuit to implement a teleportation from
 qubit 0 to qubit 4 by measuring qubits <span class="math notranslate nohighlight">\(0\)</span>, <span class="math notranslate nohighlight">\(1\)</span>, <span class="math notranslate nohighlight">\(2\)</span>, and <span class="math notranslate nohighlight">\(3\)</span> in
@@ -615,7 +719,7 @@ If not provided, it will be treated as a trainable parameter.</p>
 <span class="gh">Out[9]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/1d_cluster_measure.png"><img alt="../../_images/1d_cluster_measure.png" src="../../_images/1d_cluster_measure.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/1d_cluster_measure.png"><img alt="../_images/1d_cluster_measure.png" src="../_images/1d_cluster_measure.png" style="width: 1000px;" /></a>
 <p>We can define the same circuit when creating the <code class="xref py py-obj docutils literal notranslate"><span class="pre">MBQCircuit</span></code> object with the
 <code class="docutils literal notranslate"><span class="pre">measurements</span></code> argument:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [10]: </span><span class="n">measurements</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">2</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;XY&#39;</span><span class="p">),</span> <span class="mi">3</span><span class="p">:</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)}</span>
@@ -626,7 +730,7 @@ If not provided, it will be treated as a trainable parameter.</p>
 <span class="gh">Out[12]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/1d_cluster_measure2.png"><img alt="../../_images/1d_cluster_measure2.png" src="../../_images/1d_cluster_measure2.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/1d_cluster_measure2.png"><img alt="../_images/1d_cluster_measure2.png" src="../_images/1d_cluster_measure2.png" style="width: 1000px;" /></a>
 <p>The default measurement basis can be specified with the <code class="xref py py-obj docutils literal notranslate"><span class="pre">default_measurement</span></code> kwarg. By default,
 it is set to <span class="math notranslate nohighlight">\(XY\)</span>, but we can change it to any other <code class="xref py py-obj docutils literal notranslate"><span class="pre">Ment</span></code> object. Let’s see an example:</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [13]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
@@ -661,7 +765,7 @@ vstack</label></div>
 <span class="gh">Out[18]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/merge_mbqc.png"><img alt="../../_images/merge_mbqc.png" src="../../_images/merge_mbqc.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/merge_mbqc.png"><img alt="../_images/merge_mbqc.png" src="../_images/merge_mbqc.png" style="width: 1000px;" /></a>
 </div>
 <div class="tabbed-block docutils container">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
@@ -670,7 +774,7 @@ vstack</label></div>
 <span class="gh">Out[20]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/hstack_mbqc.png"><img alt="../../_images/hstack_mbqc.png" src="../../_images/hstack_mbqc.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/hstack_mbqc.png"><img alt="../_images/hstack_mbqc.png" src="../_images/hstack_mbqc.png" style="width: 1000px;" /></a>
 </div>
 <div class="tabbed-block docutils container">
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
@@ -679,7 +783,7 @@ vstack</label></div>
 <span class="gh">Out[22]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/vstack_mbqc.png"><img alt="../../_images/vstack_mbqc.png" src="../../_images/vstack_mbqc.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/vstack_mbqc.png"><img alt="../_images/vstack_mbqc.png" src="../_images/vstack_mbqc.png" style="width: 1000px;" /></a>
 </div>
 </div>
 </div><h2 id="templates">Templates<a class="headerlink" href="#templates" title="Link to this heading">¶</a></h2>
@@ -696,7 +800,7 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
 <span class="gh">Out[26]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
-<a class="reference internal image-reference" href="../../_images/template_merge.png"><img alt="../../_images/template_merge.png" src="../../_images/template_merge.png" style="width: 1000px;" /></a>
+<a class="reference internal image-reference" href="../_images/template_merge.png"><img alt="../_images/template_merge.png" src="../_images/template_merge.png" style="width: 1000px;" /></a>
 <p>Finally, if you want to know the set of gates that the MBQC circuit you have created
 implements, you can use the <code class="xref py py-func docutils literal notranslate"><span class="pre">utils.calculate_lie_algebra()</span></code>. This function returns
 the lie algebra <span class="math notranslate nohighlight">\(\mathfrak{g}\)</span> that the circuit implements, which can be used to calculate the set of
@@ -713,6 +817,23 @@ gates using the exponential map <span class="math notranslate nohighlight">\(\{e
 <span class="go">IXZ</span>
 </code></pre></div>
 </div>
+<p>Lie algebras are a powerful tool for studying QML models. It has been shown that,
+for a given model, the size of the Lie algebra is related to the phenomenon of barren plateaus <a class="footnote-reference brackets" href="#adjointbp2023" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> <a class="footnote-reference brackets" href="#unifiedbp2023" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a>.</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="raussendorf2001" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Raussendorf, R., &amp; Briegel, H. J. (2001). A One-Way Quantum Computer. Physical Review Letters, 86(22), 5188–5191.</p>
+</aside>
+<aside class="footnote brackets" id="adjointbp2023" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Fontana, E., Herman, D., Chakrabarti, S., Kumar, N., Yalovetzky, R., Heredge, J., Sureshbabu, S. H., &amp; Pistoia, M. (2023). The Adjoint Is All You Need: Characterizing Barren Plateaus in Quantum Ansätze. arXiv preprint arXiv:2309.07902.</p>
+</aside>
+<aside class="footnote brackets" id="unifiedbp2023" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">3</a><span class="fn-bracket">]</span></span>
+<p>Ragone, M., Bakalov, B. N., Sauvage, F., Kemper, A. F., Ortiz Marrero, C., Larocca, M., &amp; Cerezo, M. (2023). A Unified Theory of Barren Plateaus for Deep Parametrized Quantum Circuits. arXiv preprint arXiv:2309.09342.</p>
+</aside>
+</aside>
 
 
 
@@ -739,7 +860,7 @@ gates using the exponential map <span class="math notranslate nohighlight">\(\{e
     <nav class="md-footer__inner md-grid" aria-label="Footer" >
       
         
-        <a href="intro-to-graphstates.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: An introduction to Graph States" rel="prev">
+        <a href="intro-to-graphstates.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Graph States" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
           </div>
@@ -748,7 +869,7 @@ gates using the exponential map <span class="math notranslate nohighlight">\(\{e
               <span class="md-footer__direction">
                 Previous
               </span>
-              An introduction to Graph States
+              Graph States
             </div>
           </div>
         </a>
@@ -801,11 +922,11 @@ gates using the exponential map <span class="math notranslate nohighlight">\(\{e
       <div class="md-dialog__inner md-typeset"></div>
     </div>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.share", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "..", "features": ["navigation.tabs", "navigation.top", "search.share", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
       
-        <script src="../../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js?v=1e7b0789"></script>
-        <script id="MathJax-script" src="../../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
+        <script src="../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js?v=1e7b0789"></script>
+        <script id="MathJax-script" src="../_static/mathjax/tex-mml-chtml.js?v=cadf963e"></script>
     
   </body>
 </html>

@@ -13,11 +13,12 @@ Welcome to MentPy's documentation
 .. admonition:: Note
    :class: warning
    
-   MentPy is currently in alpha and many features are still in development and may not work as expected.
+   MentPy is currently in alpha and is under active development. 
 
-The :obj:`mentpy` library is a Python package for simulating MBQC circuits. This library contains functions
-to automatically calculate the causal flow or generalized flow of a graph, and deal with correction and 
-byproduct operators in MBQC circuits. 
+The :obj:`mentpy` library is an open-source Python package for creating and training quantum machine learning (QML) models 
+in the measurement-based quantum computing (MBQC) framework. This library contains functions
+to automatically calculate the causal flow or generalized flow of a graph and tools to analyze the 
+expressivity of the MBQC ansatzes.
 
 
 Features
@@ -33,9 +34,8 @@ Features
 Roadmap
 -------
 * Improve current simulators for MBQC circuits.
-* Fix many bugs in the library 🐛.
-* Improve tests on current functions.
-* Add a tensor network simulator for MBQC circuits.
+* Increase code coverage.
+* Add autodiff support for MBQC circuits.
 * Add support for more general MBQC states.
 * Integrate with `pyzx` to optimize resources in MBQC circuits.
 
@@ -47,8 +47,9 @@ If you would like to contribute to this project, please feel free to open an iss
 Acknowledgements
 ----------------
 
-This library is being developed as part of my master's thesis at the University of British Columbia.
-I would like to thank my supervisors, Dr. Dmytro Bondarenko, Dr. Polina Feldmann, and Dr. Robert Raussendorf.
+This library was first developed by Luis Mantilla for his master's thesis
+at the University of British Columbia. Luis would like to thank his M.Sc. 
+supervisors, Dr. Dmytro Bondarenko, Dr. Polina Feldmann, and Dr. Robert Raussendorf.
 
 
 Citation
@@ -62,7 +63,7 @@ If you find MentPy useful in your research, please consider citing us 🙂
       .. code-block:: latex
 
          @software{Mantilla_Mentpy_2023,
-            title = {{MentPy: A Python library for simulating MBQC circuits}},
+            title = {{MentPy: A python package for simulating and training QML models in the MBQC framework.}},
             author = {Mantilla, Luis},
             year = {2023},
             url = {https://github.com/bestquark/mentpy},
@@ -72,43 +73,44 @@ If you find MentPy useful in your research, please consider citing us 🙂
 
       .. code-block:: text
 
-         L. Mantilla, MentPy: A Python library for simulating MBQC circuits, (2023). https://github.com/bestquark/mentpy
+         L. Mantilla, MentPy: A python package for simulating and training QML models in the MBQC framework, (2023). https://github.com/bestquark/mentpy
      
 
    .. md-tab-item:: APA
 
       .. code-block:: text
 
-         Mantilla, L. (2023). MentPy: A Python library for simulating MBQC circuits. Retrieved from https://github.com/bestquark/mentpy
+         Mantilla, L. (2023). MentPy: A python package for simulating and training QML models in the MBQC framework. Retrieved from https://github.com/bestquark/mentpy
    
    .. md-tab-item:: MLA
 
       .. code-block:: text
 
-         Mantilla, Luis. MentPy: A Python Library for Simulating MBQC Circuits. 2023. Web. https://github.com/bestquark/mentpy
+         Mantilla, Luis. MentPy: A python package for simulating and training QML models in the MBQC framework. 2023. Web. https://github.com/bestquark/mentpy
 
 
 
 .. toctree::
    :caption: Getting Started
    :hidden:
-   :maxdepth: 2
 
    getting-started
 
 .. toctree::
+   :caption: Basic usage
+   :hidden:
+
+   basic-usage/measurements-in-qm.rst
+   basic-usage/intro-to-graphstates.rst
+   basic-usage/intro-to-mbqc.rst
+   basic-usage/simulating-mbqc-circuits.rst
+
+.. toctree::
    :caption: Tutorials
    :hidden:
-   :maxdepth: 2
 
-   tutorials/getting-started/measurements-in-qm.rst
-   tutorials/getting-started/intro-to-graphstates.rst
-   tutorials/getting-started/intro-to-mbqc.rst
-   tutorials/getting-started/simulating-mbqc-circuits.rst
-
-   tutorials/mbqml/intro-to-mbqml.rst
-   tutorials/mbqml/intro-to-mbqml-parallel.rst
-   
+   tutorials/intro-to-mbqml.rst
+   tutorials/intro-to-mbqml-parallel.rst
 
 .. toctree::
    :caption: API Reference
