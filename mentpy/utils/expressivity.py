@@ -4,7 +4,6 @@
 # See <https://www.gnu.org/licenses/> for details.
 """A module to study the expressivity of a given MBQC circuit."""
 import numpy as np
-import cirq
 import networkx as nx
 
 from scipy.spatial import distance
@@ -109,16 +108,16 @@ def sample_probability_density_of_fidelities(
             fid = qml.math.fidelity(np.kron(random_st.T, random_st), final_state)
             fidelities.append(fid)
 
-    elif backend == "cirq":
-        for random_st in random_input_states:
-            random_pattern = (
-                2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
-            )
-            pattern_simulator.reset(input_state=random_st)
+    # elif backend == "cirq":
+    #     for random_st in random_input_states:
+    #         random_pattern = (
+    #             2 * np.pi * np.random.rand(pattern_simulator.max_measure_number)
+    #         )
+    #         pattern_simulator.reset(input_state=random_st)
 
-            _ = pattern_simulator.measure_pattern(random_pattern)
-            final_state = pattern_simulator.current_sim_state
-            fidelities.append(cirq.fidelity(random_st, final_state))
+    #         _ = pattern_simulator.measure_pattern(random_pattern)
+    #         final_state = pattern_simulator.current_sim_state
+    #         fidelities.append(cirq.fidelity(random_st, final_state))
 
     else:
         print(f"Unsupported backend {backend}")

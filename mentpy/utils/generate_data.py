@@ -5,17 +5,19 @@
 """A module for generating random quantum data."""
 import numpy as np
 import scipy
-import cirq
+
+from functools import reduce
 
 from mentpy import MBQCircuit
+from mentpy.operators import gates
 
 
 def _generate_haar_random_state(n_qubits: int) -> np.ndarray:
     r"""Makes one Haar random state over n_qubits"""
 
-    zero_list = n_qubits * [cirq.KET_ZERO.state_vector()]
-    ket_zeros = cirq.kron(*zero_list)
-    haar_random_u = cirq.testing.random_special_unitary(dim=int(2**n_qubits))
+    zero_list = n_qubits * [np.array([1, 0])]
+    ket_zeros = reduce(np.kron, zero_list)
+    haar_random_u = gates.random_su(n_qubits)
     return (haar_random_u @ ket_zeros.T).T[0]
 
 
@@ -26,11 +28,6 @@ def generate_haar_random_states(n_qubits: int, n_samples: int = 1) -> np.ndarray
         return _generate_haar_random_state(n_qubits)
     else:
         return [_generate_haar_random_state(n_qubits) for _ in range(n_samples)]
-
-
-def random_special_unitary(n_qubits: int):
-    """Returns a random special unitary in ``n_qubits`` sampled from the Haar distribution."""
-    return cirq.testing.random_special_unitary(dim=int(2**n_qubits))
 
 
 def generate_random_dataset(
