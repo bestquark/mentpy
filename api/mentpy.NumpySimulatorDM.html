@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.9dcb20399d0097661.min.css" />
+        <link rel="stylesheet" type="text/css" href="../_static/sphinx_immaterial_theme.79d3faa9841bcddc6.min.css?v=e88de5f6" />
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -301,7 +301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/measurements-in-qm.html" class="md-nav__link">
+      <a href="../tutorials/getting-started/measurements-in-qm.html" class="md-nav__link">
         <span class="md-ellipsis">Measurements in quantum mechanics</span>
       </a>
     </li>
@@ -316,7 +316,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/intro-to-graphstates.html" class="md-nav__link">
+      <a href="../tutorials/getting-started/intro-to-graphstates.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to Graph States</span>
       </a>
     </li>
@@ -331,7 +331,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/intro-to-mbqc.html" class="md-nav__link">
+      <a href="../tutorials/getting-started/intro-to-mbqc.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MBQC</span>
       </a>
     </li>
@@ -346,7 +346,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/simulating-mbqc-circuits.html" class="md-nav__link">
+      <a href="../tutorials/getting-started/simulating-mbqc-circuits.html" class="md-nav__link">
         <span class="md-ellipsis">Simulating MBQC Circuits</span>
       </a>
     </li>
@@ -361,8 +361,23 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/intro-to-mbqml.html" class="md-nav__link">
+      <a href="../tutorials/mbqml/intro-to-mbqml.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/mbqml/intro-to-mbqml-parallel.html" class="md-nav__link">
+        <span class="md-ellipsis">Parallelizing MB-<wbr>QML protocols</span>
       </a>
     </li>
   
@@ -460,7 +475,7 @@
 <dt class="sig sig-object highlight py">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mentpy.</span></span><span class="sig-name descname"><span class="pre">NumpySimulatorDM</span></span><span class="p"><span class="pre">(</span></span><span class="desctype"><a class="reference internal" href="mentpy.BaseSimulator.html" title="mentpy.BaseSimulator (Python class) — Base class for simulators."><span class="pre">mentpy.BaseSimulator</span></a></span><span class="p"><span class="pre">)</span></span></dt>
 <dd><p>A density matrix simulator that uses numpy to simulate the quantum circuit.</p>
-<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permalink to this heading">¶</a></h2>
+<h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Link to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.__init__.html" title="mentpy.NumpySimulatorDM.__init__ (Python method) — Initialize self.  See help(type(self)) for accurate signature."><span class="sig-name descname pseudo-toc-entry"><span class="pre">NumpySimulatorDM</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">mbqcircuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference internal" href="mentpy.MBQCircuit.html" title="mentpy.mbqc.mbqcircuit.MBQCircuit (Python class)"><span class="pre">MBQCircuit</span></a></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="p"><span class="pre">...</span></span></em></span><span class="sig-paren">)</span></dt>
@@ -469,43 +484,21 @@
 
 <div class="toctree-wrapper compound">
 </div>
-<h2 id="string-representation">String representation<a class="headerlink" href="#string-representation" title="Permalink to this heading">¶</a></h2>
+<h2 id="string-representation">String representation<a class="headerlink" href="#string-representation" title="Link to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
 <a class="sig-name descname reference internal" href="mentpy.BaseSimulator.__repr__.html" title="mentpy.BaseSimulator.__repr__ (Python method) — Return repr(self)."><span class="sig-name descname"><span class="pre">__repr__</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span></span></dt>
 <dd><p>Return repr(self).</p>
 </dd></dl>
 
-<h2 id="special-methods">Special methods<a class="headerlink" href="#special-methods" title="Permalink to this heading">¶</a></h2>
+<h2 id="special-methods">Special methods<a class="headerlink" href="#special-methods" title="Link to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
 <a class="sig-name descname reference internal" href="mentpy.BaseSimulator.__call__.html" title="mentpy.BaseSimulator.__call__ (Python method) — Call self as a function."><span class="sig-name descname"><span class="pre">__call__</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Call self as a function.</p>
 </dd></dl>
 
-<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permalink to this heading">¶</a></h2>
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.arbitrary_qubit_gate.html" title="mentpy.NumpySimulatorDM.arbitrary_qubit_gate (Python method) — Single qubit gate u acting on qubit i n is the number of qubits"><span class="sig-name descname pseudo-toc-entry"><span class="pre">arbitrary_qubit_gate</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">u</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Single qubit gate u acting on qubit i
-n is the number of qubits</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.cnot_ij.html" title="mentpy.NumpySimulatorDM.cnot_ij (Python method) — CNOT gate with j: target qubit n: number of qubits"><span class="sig-name descname pseudo-toc-entry"><span class="pre">cnot_ij</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>CNOT gate with
-j: target qubit
-n: number of qubits</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.controlled_z.html" title="mentpy.NumpySimulatorDM.controlled_z (Python method) — Controlled z gate between qubits i and j. n is the total number of qubits"><span class="sig-name descname pseudo-toc-entry"><span class="pre">controlled_z</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Controlled z gate between qubits i and j.
-n is the total number of qubits</p>
-</dd></dl>
-
+<h2 id="methods">Methods<a class="headerlink" href="#methods" title="Link to this heading">¶</a></h2>
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.current_number_simulated_nodes.html" title="mentpy.NumpySimulatorDM.current_number_simulated_nodes (Python method) — Returns the number of nodes that are currently simulated."><span class="sig-name descname pseudo-toc-entry"><span class="pre">current_number_simulated_nodes</span></span></a><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span></span></dt>
@@ -554,47 +547,28 @@ n is the total number of qubits</p>
 
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.partial_trace.html" title="mentpy.NumpySimulatorDM.partial_trace (Python method) — Partial trace of state rho over some indices"><span class="sig-name descname pseudo-toc-entry"><span class="pre">partial_trace</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Partial trace of state rho over some indices</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.pure2density.html" title="mentpy.NumpySimulatorDM.pure2density (Python method) — Input: quantum state Output: corresponding density matrix"><span class="sig-name descname pseudo-toc-entry"><span class="pre">pure2density</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">psi</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Input: quantum state
-Output: corresponding density matrix</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
 <a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.reorder_qubits.html" title="mentpy.NumpySimulatorDM.reorder_qubits (Python method) — Reorders the qubits in the given order."><span class="sig-name descname pseudo-toc-entry"><span class="pre">reorder_qubits</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">current_order</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">target_order</span></span></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Reorders the qubits in the given order.</p>
 </dd></dl>
 
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.reset.html" title="mentpy.NumpySimulatorDM.reset (Python method) — Resets the simulator to the initial state."><span class="sig-name descname pseudo-toc-entry"><span class="pre">reset</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">input_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.reset.html" title="mentpy.NumpySimulatorDM.reset (Python method) — Resets the simulator to the initial state."><span class="sig-name descname pseudo-toc-entry"><span class="pre">reset</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">input_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><code class="code python default_value docutils literal highlight highlight-python"><span class="kc">None</span></code></em></span><span class="sig-paren">)</span></dt>
 <dd><p>Resets the simulator to the initial state.</p>
 </dd></dl>
 
 <dl class="py method summary objdesc">
 <dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.run.html" title="mentpy.NumpySimulatorDM.run (Python method) — Measures the quantum state in the given pattern."><span class="sig-name descname pseudo-toc-entry"><span class="pre">run</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="p"><span class="pre">...</span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
+<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.run.html" title="mentpy.NumpySimulatorDM.run (Python method) — Measures the quantum state in the given pattern."><span class="sig-name descname pseudo-toc-entry"><span class="pre">run</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="p"><span class="pre">...</span></span></em></span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="desctype"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Tuple" title="(in Python v3.11)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.List" title="(in Python v3.11)"><span class="pre">List</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span></span></dt>
 <dd><p>Measures the quantum state in the given pattern.</p>
-</dd></dl>
-
-<dl class="py method summary objdesc">
-<dt class="sig sig-object highlight py">
-<a class="sig-name descname pseudo-toc-entry reference internal" href="mentpy.NumpySimulatorDM.swap_ij.html" title="mentpy.NumpySimulatorDM.swap_ij (Python method) — Swaps qubit i with qubit j"><span class="sig-name descname pseudo-toc-entry"><span class="pre">swap_ij</span></span></a><span class="sig-paren">(</span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">j</span></span></em>, </span><span class="sig-param-decl"><em class="sig-param"><span class="n"><span class="pre">n</span></span></em></span><span class="sig-paren">)</span></dt>
-<dd><p>Swaps qubit i with qubit j</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
 </div>
-<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permalink to this heading">¶</a></h2>
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Link to this heading">¶</a></h2>
 <dl class="py property summary objdesc">
 <dt class="sig sig-object highlight py">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname reference internal" href="mentpy.BaseSimulator.input_state.html" title="mentpy.BaseSimulator.input_state (Python property) — The input state of the simulator."><span class="sig-name descname"><span class="pre">input_state</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.25)"><span class="pre">ndarray</span></a></span></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><a class="sig-name descname reference internal" href="mentpy.BaseSimulator.input_state.html" title="mentpy.BaseSimulator.input_state (Python property) — The input state of the simulator."><span class="sig-name descname"><span class="pre">input_state</span></span></a><span class="p"> <span class="pre">:</span> </span><span class="desctype"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.26)"><span class="pre">ndarray</span></a></span></dt>
 <dd><p>The input state of the simulator.</p>
 </dd></dl>
 
@@ -648,7 +622,7 @@ Output: corresponding density matrix</p>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    7.0.1.
+    7.2.6.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -667,7 +641,7 @@ Output: corresponding density matrix</p>
     <script id="__config" type="application/json">{"base": "..", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.share", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
       
-        <script src="../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
+        <script src="../_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js?v=1e7b0789"></script>
     
   </body>
 </html>

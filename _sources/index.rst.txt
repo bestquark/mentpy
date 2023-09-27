@@ -101,11 +101,14 @@ If you find MentPy useful in your research, please consider citing us 🙂
    :hidden:
    :maxdepth: 2
 
-   tutorials/measurements-in-qm.rst
-   tutorials/intro-to-graphstates.rst
-   tutorials/intro-to-mbqc.rst
-   tutorials/simulating-mbqc-circuits.rst
-   tutorials/intro-to-mbqml.rst
+   tutorials/getting-started/measurements-in-qm.rst
+   tutorials/getting-started/intro-to-graphstates.rst
+   tutorials/getting-started/intro-to-mbqc.rst
+   tutorials/getting-started/simulating-mbqc-circuits.rst
+
+   tutorials/mbqml/intro-to-mbqml.rst
+   tutorials/mbqml/intro-to-mbqml-parallel.rst
+   
 
 .. toctree::
    :caption: API Reference

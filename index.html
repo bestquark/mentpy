@@ -32,7 +32,7 @@
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
-        <link rel="stylesheet" type="text/css" href="_static/sphinx_immaterial_theme.9dcb20399d0097661.min.css" />
+        <link rel="stylesheet" type="text/css" href="_static/sphinx_immaterial_theme.79d3faa9841bcddc6.min.css?v=e88de5f6" />
     <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
@@ -306,7 +306,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/measurements-in-qm.html" class="md-nav__link">
+      <a href="tutorials/getting-started/measurements-in-qm.html" class="md-nav__link">
         <span class="md-ellipsis">Measurements in quantum mechanics</span>
       </a>
     </li>
@@ -321,7 +321,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/intro-to-graphstates.html" class="md-nav__link">
+      <a href="tutorials/getting-started/intro-to-graphstates.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to Graph States</span>
       </a>
     </li>
@@ -336,7 +336,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/intro-to-mbqc.html" class="md-nav__link">
+      <a href="tutorials/getting-started/intro-to-mbqc.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MBQC</span>
       </a>
     </li>
@@ -351,7 +351,7 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/simulating-mbqc-circuits.html" class="md-nav__link">
+      <a href="tutorials/getting-started/simulating-mbqc-circuits.html" class="md-nav__link">
         <span class="md-ellipsis">Simulating MBQC Circuits</span>
       </a>
     </li>
@@ -366,8 +366,23 @@
   
   
     <li class="md-nav__item">
-      <a href="tutorials/intro-to-mbqml.html" class="md-nav__link">
+      <a href="tutorials/mbqml/intro-to-mbqml.html" class="md-nav__link">
         <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tutorials/mbqml/intro-to-mbqml-parallel.html" class="md-nav__link">
+        <span class="md-ellipsis">Parallelizing MB-<wbr>QML protocols</span>
       </a>
     </li>
   
@@ -507,7 +522,7 @@
 
 
 <a class="reference internal image-reference" href="_images/logo.png"><img alt="_images/logo.png" class="align-center" src="_images/logo.png" style="width: 70%;" /></a>
-<h1 id="welcome-to-mentpy-s-documentation">Welcome to MentPy’s documentation<a class="headerlink" href="#welcome-to-mentpy-s-documentation" title="Permalink to this heading">¶</a></h1>
+<h1 id="welcome-to-mentpy-s-documentation">Welcome to MentPy’s documentation<a class="headerlink" href="#welcome-to-mentpy-s-documentation" title="Link to this heading">¶</a></h1>
 <div class="warning admonition">
 <p class="admonition-title">Note</p>
 <p>MentPy is currently in alpha and many features are still in development and may not work as expected.</p>
@@ -515,7 +530,7 @@
 <p>The <a class="reference internal" href="api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mentpy</span></code></a> library is a Python package for simulating MBQC circuits. This library contains functions
 to automatically calculate the causal flow or generalized flow of a graph, and deal with correction and
 byproduct operators in MBQC circuits.</p>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permalink to this heading">¶</a></h2>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Manipulation of graph states.</p></li>
 <li><p>Automatically calculate the causal flow or generalized flow of a graph.</p></li>
@@ -524,7 +539,7 @@ byproduct operators in MBQC circuits.</p>
 <li><p>Create data and noisy data for training QML models.</p></li>
 <li><p>Determine the lie algebra of an MBQC ansatz.</p></li>
 </ul>
-<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Permalink to this heading">¶</a></h2>
+<h2 id="roadmap">Roadmap<a class="headerlink" href="#roadmap" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p>Improve current simulators for MBQC circuits.</p></li>
 <li><p>Fix many bugs in the library 🐛.</p></li>
@@ -533,12 +548,12 @@ byproduct operators in MBQC circuits.</p>
 <li><p>Add support for more general MBQC states.</p></li>
 <li><p>Integrate with <cite>pyzx</cite> to optimize resources in MBQC circuits.</p></li>
 </ul>
-<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading">¶</a></h2>
+<h2 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
 <p>If you would like to contribute to this project, please feel free to open an issue or pull request 😄.</p>
-<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this heading">¶</a></h2>
+<h2 id="acknowledgements">Acknowledgements<a class="headerlink" href="#acknowledgements" title="Link to this heading">¶</a></h2>
 <p>This library is being developed as part of my master’s thesis at the University of British Columbia.
 I would like to thank my supervisors, Dr. Dmytro Bondarenko, Dr. Polina Feldmann, and Dr. Robert Raussendorf.</p>
-<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Permalink to this heading">¶</a></h2>
+<h2 id="citation">Citation<a class="headerlink" href="#citation" title="Link to this heading">¶</a></h2>
 <p>If you find MentPy useful in your research, please consider citing us 🙂</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4">
 <input checked type="radio" id="__tabbed_1_1" name="__tabbed_1"><input type="radio" id="__tabbed_1_2" name="__tabbed_1"><input type="radio" id="__tabbed_1_3" name="__tabbed_1"><input type="radio" id="__tabbed_1_4" name="__tabbed_1"><div class="tabbed-labels docutils container">
@@ -637,7 +652,7 @@ MLA</label></div>
   
     Created using
     <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
-    7.0.1.
+    7.2.6.
      and
     <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
   
@@ -656,7 +671,7 @@ MLA</label></div>
     <script id="__config" type="application/json">{"base": ".", "features": ["navigation.expand", "navigation.sections", "navigation.top", "search.share", "toc.follow", "toc.sticky"], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
       
-        <script src="_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js"></script>
+        <script src="_static/sphinx_immaterial_theme.1b5b7a2d5891aec19.min.js?v=1e7b0789"></script>
     
   </body>
 </html>
