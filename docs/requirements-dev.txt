@@ -2,6 +2,7 @@ black>=23.3.0
 coverage
 galois>=0.3.5
 ipykernel>=6.25.2
+matplotlib>=3.7.1
 networkx>=2.8.8
 numpy>=1.23.5
 pathos
