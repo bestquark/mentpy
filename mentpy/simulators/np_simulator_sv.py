@@ -14,6 +14,12 @@ from mentpy.operators import Ment
 from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
+from mentpy.operators import gates
+import mentpy.calculator as calc
+
+
+__all__ = ["NumpySimulatorSV"]
+
 # COMMON GATES
 H = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
 S = np.array([[1, 0], [0, 1j]])
@@ -115,7 +121,7 @@ class NumpySimulatorSV(BaseSimulator):
                 if node < neighbour:
                     indx = self.current_simulated_nodes().index(node)
                     indy = self.current_simulated_nodes().index(neighbour)
-                    cz = self.controlled_z(indx, indy, self.window_size)
+                    cz = gates.controlled_z(indx, indy, self.window_size)
                     # self.qstate = cz @ self.qstate @ np.conj(cz).T
                     self.initial_czs = cz @ self.initial_czs
 
@@ -184,7 +190,7 @@ class NumpySimulatorSV(BaseSimulator):
         )
 
         self.current_measurement += 1
-        self.qstate = self.partial_trace_pure_state(self.qstate, [indx])
+        self.qstate = calc.partial_trace(self.qstate, [indx])
 
         if self.dev_mode:
             # remove qubit at indx from current_simulated_nodes
@@ -213,7 +219,7 @@ class NumpySimulatorSV(BaseSimulator):
             for neighbour in neighbours:
                 if neighbour in self.current_simulated_nodes():
                     indxn = self.current_simulated_nodes().index(neighbour)
-                    cz = self.controlled_z(indxn, indx_new, self.window_size)
+                    cz = gates.controlled_z(indxn, indx_new, self.window_size)
                     self.qstate = cz @ self.qstate
 
         return self.qstate, outcome
@@ -313,87 +319,6 @@ class NumpySimulatorSV(BaseSimulator):
         if self.dev_mode:
             self._current_simulated_nodes = self.schedule[0 : self.window_size]
 
-    def arbitrary_qubit_gate(self, u, i, n):
-        """
-        Single qubit gate u acting on qubit i
-        n is the number of qubits
-        """
-        op = 1
-        for k in range(0, n):
-            if k == i:
-                op = np.kron(op, u)
-            else:
-                op = np.kron(op, np.eye(2))
-        return op
-
-    def swap_ij(self, i, j, n):
-        """
-        Swaps qubit i with qubit j
-        """
-        assert i < n and j < n
-        op1, op2, op3, op4 = np.ones(4)
-        for k in range(n):
-            if k == i or k == j:
-                op1 = np.kron(
-                    op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-            else:
-                op1 = np.kron(op1, np.eye(2))
-                op4 = np.kron(op4, np.eye(2))
-
-            if k == i:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-            elif k == j:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-                op3 = np.kron(op3, np.eye(2))
-        return op1 + op2 + op3 + op4
-
-    def partial_trace_pure_state(self, psi, indices_to_trace):
-        num_qubits = int(np.log2(psi.shape[0]))
-
-        remaining_qubits = sorted(set(range(num_qubits)) - set(indices_to_trace))
-        num_remaining_qubits = len(remaining_qubits)
-
-        # Calculate the initial shape of the tensor product
-        initial_shape = [2] * num_qubits
-
-        # Reshape the state vector into a tensor
-        tensor = psi.reshape(initial_shape)
-
-        # Transpose the tensor to move the qubits to trace to the end
-        tensor = tensor.transpose(remaining_qubits + indices_to_trace)
-
-        # Calculate the final shape after tracing
-        final_shape = [2] * num_remaining_qubits
-
-        # Perform the partial trace by summing over the traced qubits
-        traced_tensor = tensor.reshape(final_shape + [-1]).sum(
-            axis=tuple(range(-len(indices_to_trace), 0))
-        )
-
-        # Reshape to a vector
-        traced_tensor = traced_tensor.reshape(-1)
-
-        # Normalize the result
-        traced_tensor /= np.linalg.norm(traced_tensor)
-
-        return traced_tensor
-
     def measure_ment(self, ment: Ment, angle, i, force0=False):
         """
         Measures a ment
@@ -408,10 +333,10 @@ class NumpySimulatorSV(BaseSimulator):
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
         p0, p1 = ment.get_povm(angle, self.outcomes)
-        p1_extended = self.arbitrary_qubit_gate(
+        p1_extended = gates.arbitrary_qubit_gate(
             p1, i, self.current_number_simulated_nodes()
         )
-        p0_extended = self.arbitrary_qubit_gate(
+        p0_extended = gates.arbitrary_qubit_gate(
             p0, i, self.current_number_simulated_nodes()
         )
 
@@ -431,65 +356,6 @@ class NumpySimulatorSV(BaseSimulator):
             self.qstate /= np.linalg.norm(self.qstate)
 
         return self.qstate, outcome
-
-    def controlled_z(self, i, j, n):
-        """
-        Controlled z gate between qubits i and j.
-        n is the total number of qubits
-        """
-        assert i < n and j < n, f"{i} or {j} is larger than {n}"
-        op1, op2 = 1, 2
-        for k in range(0, n):
-            op1 = np.kron(op1, np.eye(2))
-            if k in [i, j]:
-                op2 = np.kron(
-                    op2,
-                    np.kron(np.conjugate(np.array([[0], [1]]).T), np.array([[0], [1]])),
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-        return op1 - op2
-
-    def cnot_ij(self, i, j, n):
-        """
-        CNOT gate with
-        j: target qubit
-        n: number of qubits
-        """
-        op1, op2, op3, op4 = np.ones(4)
-        for k in range(1, n + 1):
-            if k == i or k == j:
-                op1 = np.kron(
-                    op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-            else:
-                op1 = np.kron(op1, np.eye(2))
-            if k == i:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-            elif k == j:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-                op3 = np.kron(op3, np.eye(2))
-                op4 = np.kron(op4, np.eye(2))
-
-        return op1 + op2 + op3 + op4
 
     def find_swaps(self, source, target):
         assert set(source) == set(
@@ -514,5 +380,5 @@ class NumpySimulatorSV(BaseSimulator):
         new_state = state.copy()
         swaps = self.find_swaps(current_order, target_order)
         for i, j in swaps:
-            new_state = self.swap_ij(i, j, len(current_order)) @ new_state
+            new_state = gates.swap_ij(i, j, len(current_order)) @ new_state
         return new_state

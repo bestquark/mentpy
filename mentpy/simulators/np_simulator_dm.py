@@ -14,18 +14,16 @@ from mentpy.operators import Ment, ControlledMent
 from mentpy.mbqc.mbqcircuit import MBQCircuit
 from mentpy.simulators.base_simulator import BaseSimulator
 
-from . import commons
+from mentpy.operators import gates
 
-# COMMON GATES
-H = np.array([[1, 1], [1, -1]]) / np.sqrt(2)
-S = np.array([[1, 0], [0, 1j]])
-Pi8 = np.array([[1, 0], [0, np.exp(1j * np.pi / 4)]])
-sx = np.array([[0, 1], [1, 0]])
-sz = np.array([[1, 0], [0, -1]])
+import mentpy.calculator as calc
+
+__all__ = ["NumpySimulatorDM"]
+
 
 # COMMON QUANTUM STATES
 q_zero = np.array([1, 0])
-qubit_plus = H @ q_zero
+qubit_plus = gates.HGate @ q_zero
 
 
 class NumpySimulatorDM(BaseSimulator):
@@ -91,7 +89,7 @@ class NumpySimulatorDM(BaseSimulator):
         for i in range(self.window_size - n_qubits_input):
             self.input_state = np.kron(self.input_state, qubit_plus)
 
-        self.qstate = self.pure2density(self.input_state)
+        self.qstate = calc.pure2density(self.input_state)
         # get subgraph of the first window_size nodes
         self.subgraph = self.mbqcircuit.graph.subgraph(
             self.schedule[: self.window_size]
@@ -109,7 +107,7 @@ class NumpySimulatorDM(BaseSimulator):
                 if node < neighbour:
                     indx = self.current_simulated_nodes().index(node)
                     indy = self.current_simulated_nodes().index(neighbour)
-                    cz = self.controlled_z(indx, indy, self.window_size)
+                    cz = gates.controlled_z(indx, indy, self.window_size)
                     # self.qstate = cz @ self.qstate @ np.conj(cz).T
                     self.initial_czs = cz @ self.initial_czs
 
@@ -184,7 +182,7 @@ class NumpySimulatorDM(BaseSimulator):
             )
         self.current_measurement += 1
 
-        self.qstate = self.partial_trace(self.qstate, [indx])
+        self.qstate = calc.partial_trace(self.qstate, [indx])
 
         if self.dev_mode:
             # remove qubit at indx from current_simulated_nodes
@@ -201,7 +199,7 @@ class NumpySimulatorDM(BaseSimulator):
         if self.current_measurement + self.window_size <= len(
             self.mbqcircuit.graph.nodes
         ):
-            self.qstate = np.kron(self.qstate, self.pure2density(qubit_plus))
+            self.qstate = np.kron(self.qstate, calc.pure2density(qubit_plus))
             new_qubit = self.current_simulated_nodes()[-1]
 
             # get neighbours of new qubit
@@ -212,7 +210,7 @@ class NumpySimulatorDM(BaseSimulator):
             for neighbour in neighbours:
                 if neighbour in self.current_simulated_nodes():
                     indxn = self.current_simulated_nodes().index(neighbour)
-                    cz = self.controlled_z(indxn, indx_new, self.window_size)
+                    cz = gates.controlled_z(indxn, indx_new, self.window_size)
                     self.qstate = cz @ self.qstate @ np.conj(cz.T)
 
         return self.qstate, outcome
@@ -298,36 +296,13 @@ class NumpySimulatorDM(BaseSimulator):
             for i in range(self.window_size - len(self.mbqcircuit.input_nodes)):
                 self.input_state = np.kron(self.input_state, qubit_plus)
 
-        self.qstate = self.pure2density(self.input_state)
+        self.qstate = calc.pure2density(self.input_state)
 
         self.qstate = self.initial_czs @ self.qstate @ np.conj(self.initial_czs).T
         self.outcomes = {}
 
         if self.dev_mode:
             self._current_simulated_nodes = self.schedule[0 : self.window_size]
-
-    def partial_trace(self, rho, indices):
-        """
-        Partial trace of state rho over some indices
-        """
-        x, y = rho.shape
-        n = int(math.log(x, 2))
-        r = len(indices)
-        sigma = np.zeros((int(x / (2**r)), int(y / (2**r))))
-        for m in range(0, 2**r):
-            qubits = format(m, "0" + f"{r}" + "b")
-            ptrace = 1
-            for k in range(0, n):
-                if k in indices:
-                    idx = indices.index(k)
-                    if qubits[idx] == "0":
-                        ptrace = np.kron(ptrace, np.array([[1], [0]]))
-                    elif qubits[idx] == "1":
-                        ptrace = np.kron(ptrace, np.array([[0], [1]]))
-                else:
-                    ptrace = np.kron(ptrace, np.eye(2))
-            sigma = sigma + np.conjugate(ptrace.T) @ rho @ (ptrace)
-        return sigma
 
     def measure_ment(self, ment: Ment, angle, i, force0=False, mode="sample"):
         """
@@ -339,10 +314,10 @@ class NumpySimulatorDM(BaseSimulator):
             raise ValueError(f"Ment has no matrix representation at qubit {i}")
 
         p0, p1 = ment.get_povm(angle, self.outcomes)
-        p0_extended = commons.arbitrary_qubit_gate(
+        p0_extended = gates.arbitrary_qubit_gate(
             p0, i, self.current_number_simulated_nodes()
         )
-        p1_extended = commons.arbitrary_qubit_gate(
+        p1_extended = gates.arbitrary_qubit_gate(
             p1, i, self.current_number_simulated_nodes()
         )
 
@@ -369,72 +344,6 @@ class NumpySimulatorDM(BaseSimulator):
                 self.qstate = p1_extended @ self.qstate @ np.conj(p1_extended).T / prob1
 
         return self.qstate, outcome
-
-    def controlled_z(self, i, j, n):
-        """
-        Controlled z gate between qubits i and j.
-        n is the total number of qubits
-        """
-        assert i < n and j < n
-        op1, op2 = 1, 2
-        for k in range(0, n):
-            op1 = np.kron(op1, np.eye(2))
-            if k in [i, j]:
-                op2 = np.kron(
-                    op2,
-                    np.kron(np.conjugate(np.array([[0], [1]]).T), np.array([[0], [1]])),
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-        return op1 - op2
-
-    def cnot_ij(self, i, j, n):
-        """
-        CNOT gate with
-        j: target qubit
-        n: number of qubits
-        """
-        op1, op2, op3, op4 = np.ones(4)
-        for k in range(1, n + 1):
-            if k == i or k == j:
-                op1 = np.kron(
-                    op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-            else:
-                op1 = np.kron(op1, np.eye(2))
-            if k == i:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-            elif k == j:
-                op2 = np.kron(
-                    op2, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-                )
-                op3 = np.kron(
-                    op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-                )
-                op4 = np.kron(
-                    op4, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-                )
-            else:
-                op2 = np.kron(op2, np.eye(2))
-                op3 = np.kron(op3, np.eye(2))
-                op4 = np.kron(op4, np.eye(2))
-
-        return op1 + op2 + op3 + op4
-
-    def pure2density(self, psi):
-        """
-        Input: quantum state
-        Output: corresponding density matrix
-        """
-        return np.outer(psi, np.conj(psi).T)
 
     def find_swaps(self, source, target):
         assert set(source) == set(
@@ -463,7 +372,7 @@ class NumpySimulatorDM(BaseSimulator):
 
         swaps = self.find_swaps(current_order, target_order)
         for i, j in swaps:
-            swap_op = commons.swap_ij(i, j, len(current_order))
+            swap_op = gates.swap_ij(i, j, len(current_order))
             if type_state == "pure":
                 new_state = swap_op @ new_state
             else:
