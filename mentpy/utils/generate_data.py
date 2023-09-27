@@ -16,7 +16,7 @@ def _generate_haar_random_state(n_qubits: int) -> np.ndarray:
     r"""Makes one Haar random state over n_qubits"""
 
     zero_list = n_qubits * [np.array([1, 0])]
-    ket_zeros = reduce(np.kron, zero_list)
+    ket_zeros = reduce(np.kron, zero_list).reshape((1, 2**n_qubits))
     haar_random_u = gates.random_su(n_qubits)
     return (haar_random_u @ ket_zeros.T).T[0]
 
