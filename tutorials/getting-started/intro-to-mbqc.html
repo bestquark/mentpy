@@ -585,6 +585,7 @@ information flows through the system by measuring the qubits of the resource sta
 <span class="gp">In [3]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 
 <span class="gp">In [4]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">)</span>
+<span class="gh">Out[4]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/1d_cluster.png"><img alt="../../_images/1d_cluster.png" src="../../_images/1d_cluster.png" style="width: 1000px;" /></a>
@@ -611,6 +612,7 @@ If not provided, it will be treated as a trainable parameter.</p>
 <span class="gp">In [8]: </span><span class="n">mbcirc</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Ment</span><span class="p">(</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
 
 <span class="gp">In [9]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;planes&#39;</span><span class="p">)</span>
+<span class="gh">Out[9]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/1d_cluster_measure.png"><img alt="../../_images/1d_cluster_measure.png" src="../../_images/1d_cluster_measure.png" style="width: 1000px;" /></a>
@@ -621,6 +623,7 @@ If not provided, it will be treated as a trainable parameter.</p>
 <span class="gp">In [11]: </span><span class="n">mbcirc</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">MBQCircuit</span><span class="p">(</span><span class="n">gs</span><span class="p">,</span> <span class="n">input_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">output_nodes</span><span class="o">=</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">measurements</span><span class="o">=</span><span class="n">measurements</span><span class="p">)</span>
 
 <span class="gp">In [12]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;arrows&#39;</span><span class="p">)</span>
+<span class="gh">Out[12]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/1d_cluster_measure2.png"><img alt="../../_images/1d_cluster_measure2.png" src="../../_images/1d_cluster_measure2.png" style="width: 1000px;" /></a>
@@ -655,6 +658,7 @@ vstack</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [17]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">,</span> <span class="n">along</span><span class="o">=</span><span class="p">[(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>  <span class="c1"># specify nodes to merge</span>
 
 <span class="gp">In [18]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;angles&#39;</span><span class="p">)</span>
+<span class="gh">Out[18]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/merge_mbqc.png"><img alt="../../_images/merge_mbqc.png" src="../../_images/merge_mbqc.png" style="width: 1000px;" /></a>
@@ -663,6 +667,7 @@ vstack</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [19]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
 
 <span class="gp">In [20]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;planes&#39;</span><span class="p">)</span>
+<span class="gh">Out[20]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/hstack_mbqc.png"><img alt="../../_images/hstack_mbqc.png" src="../../_images/hstack_mbqc.png" style="width: 1000px;" /></a>
@@ -671,6 +676,7 @@ vstack</label></div>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [21]: </span><span class="n">new_circ</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">mbcirc</span><span class="p">,</span> <span class="n">mbcirc</span><span class="p">))</span>
 
 <span class="gp">In [22]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">new_circ</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;arrows&#39;</span><span class="p">)</span>
+<span class="gh">Out[22]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/vstack_mbqc.png"><img alt="../../_images/vstack_mbqc.png" src="../../_images/vstack_mbqc.png" style="width: 1000px;" /></a>
@@ -687,6 +693,7 @@ some common MBQC circuits. For example, we can create a grid cluster state with 
 <span class="gp">In [25]: </span><span class="n">grid_and_linear</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">grid_cluster</span><span class="p">,</span> <span class="n">linear_cluster</span><span class="p">,</span> <span class="n">along</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span><span class="mi">0</span><span class="p">)])</span>
 
 <span class="gp">In [26]: </span><span class="n">mp</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">grid_and_linear</span><span class="p">)</span>
+<span class="gh">Out[26]: </span><span class="go">(&lt;Figure size 800x300 with 1 Axes&gt;, &lt;Axes: &gt;)</span>
 </code></pre></div>
 </div>
 <a class="reference internal image-reference" href="../../_images/template_merge.png"><img alt="../../_images/template_merge.png" src="../../_images/template_merge.png" style="width: 1000px;" /></a>
