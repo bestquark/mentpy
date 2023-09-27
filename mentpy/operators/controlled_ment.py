@@ -1,3 +1,8 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""Controlled measurement operator."""
 from typing import Optional, Union, Callable
 import numpy as np
 import warnings

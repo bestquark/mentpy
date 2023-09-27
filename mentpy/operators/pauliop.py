@@ -1,3 +1,8 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""Module for representing Pauli operators."""
 import numpy as np
 from typing import Union, List
 import galois

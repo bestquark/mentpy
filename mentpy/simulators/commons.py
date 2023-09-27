@@ -1,5 +1,12 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""A module to store common functions used in the simulators."""
+
 import numpy as np
 import math
+
 
 def arbitrary_qubit_gate(u, i, n):
     """
@@ -14,6 +21,7 @@ def arbitrary_qubit_gate(u, i, n):
             op = np.kron(op, np.eye(2))
     return op
 
+
 def swap_ij(i, j, n):
     """
     Swaps qubit i with qubit j
@@ -22,34 +30,23 @@ def swap_ij(i, j, n):
     op1, op2, op3, op4 = np.ones(4)
     for k in range(n):
         if k == i or k == j:
-            op1 = np.kron(
-                op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]]))
-            )
-            op4 = np.kron(
-                op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]]))
-            )
+            op1 = np.kron(op1, np.kron(np.array([[1], [0]]).T, np.array([[1], [0]])))
+            op4 = np.kron(op4, np.kron(np.array([[0], [1]]).T, np.array([[0], [1]])))
         else:
             op1 = np.kron(op1, np.eye(2))
             op4 = np.kron(op4, np.eye(2))
 
         if k == i:
-            op2 = np.kron(
-                op2, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-            )
-            op3 = np.kron(
-                op3, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-            )
+            op2 = np.kron(op2, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]])))
+            op3 = np.kron(op3, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]])))
         elif k == j:
-            op2 = np.kron(
-                op2, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]]))
-            )
-            op3 = np.kron(
-                op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]]))
-            )
+            op2 = np.kron(op2, np.kron(np.array([[0], [1]]).T, np.array([[1], [0]])))
+            op3 = np.kron(op3, np.kron(np.array([[1], [0]]).T, np.array([[0], [1]])))
         else:
             op2 = np.kron(op2, np.eye(2))
             op3 = np.kron(op3, np.eye(2))
     return op1 + op2 + op3 + op4
+
 
 def partial_trace(rho, indices):
     """

@@ -1,5 +1,8 @@
-# Author: Luis Mantilla
-# Github: BestQuark
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""Graph state class and related functions."""
 import numpy as np
 from mentpy.operators import PauliOp
 import networkx as nx

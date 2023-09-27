@@ -1,5 +1,7 @@
-# Author: Luis Mantilla
-# Github: BestQuark
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
 """
 This is the common_ansatz module. 
 It has several common ansatzes that can be used for MBQC algorithms

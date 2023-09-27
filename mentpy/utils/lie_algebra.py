@@ -1,3 +1,8 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""A module for calculating the Lie algebra of a given MBQC circuit"""
 from itertools import combinations
 
 import numpy as np

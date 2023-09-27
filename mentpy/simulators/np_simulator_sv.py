@@ -1,3 +1,9 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""A vector state simulator that uses numpy to simulate the quantum circuit."""
+
 from typing import Union, List, Tuple, Optional
 
 import numpy as np

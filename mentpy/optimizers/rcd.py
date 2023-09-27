@@ -1,3 +1,8 @@
+# Copyright (C) [2023] Luis Mantilla
+#
+# This program is released under the GNU GPL v3.0 or later.
+# See <https://www.gnu.org/licenses/> for details.
+"""This module contains the random coordinate descent optimizer."""
 from mentpy.optimizers.base_optimizer import BaseOptimizer
 
 import numpy as np
