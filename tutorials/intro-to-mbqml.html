@@ -67,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#references" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -467,9 +472,41 @@
       
       <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="#" class="md-nav__link md-nav__link--active">
         <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
       </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -485,6 +522,21 @@
     <li class="md-nav__item">
       <a href="intro-to-mbqml-parallel.html" class="md-nav__link">
         <span class="md-ellipsis">Parallelizing MB-<wbr>QML protocols</span>
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="classify-classical-data.html" class="md-nav__link">
+        <span class="md-ellipsis">Classifying classical data</span>
       </a>
     </li>
   
@@ -560,9 +612,26 @@
                   <div class="md-sidebar__inner">
                     
 
+  
+
 <nav class="md-nav md-nav--secondary">
   
   
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      <span class="md-ellipsis">An introduction to MB-<wbr>QML</span>
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">References</span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -580,8 +649,8 @@
 <p><strong>Author(s):</strong> <a class="reference external" href="https://twitter.com/realmantilla">Luis Mantilla</a></p>
 <p>Quantum machine learning (QML) is a field that studies how to use parametrized quantum circuits to
 learn to identify patterns in quantum data. In measurement-based qunatum machine learning (MB-QML)
-<a class="footnote-reference brackets" href="#thesis" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, we use a MBQC circuit with parametrized measurement angles to solve QML problems. In
-<a class="reference internal" href="../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mentpy</span></code></a>, MB-QML models are defined using the <code class="xref py py-class docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class. We can define a model from scratch
+<a class="footnote-reference brackets" href="#thesis" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>, we use a MBQC circuit with parametrized measurement angles to solve QML problems.</p>
+<p>In <a class="reference internal" href="../api.html#module-mentpy" title="mentpy (Python module)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mentpy</span></code></a>, MB-QML models are defined using the <code class="xref py py-class docutils literal notranslate"><span class="pre">MBQCircuit</span></code> class. We can define a model from scratch
 or use one of the templates provided in <a class="reference internal" href="../api.html#module-mentpy.templates" title="mentpy.templates (Python module)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">mentpy.templates</span></code></a>. Here, we use the MuTA template with two
 input qubits, and fix two of the parameters to be fixed (qubits 3 and 8).</p>
 <div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><code><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -660,6 +729,7 @@ where the input and target states are related by a given unitary <span class="ma
 </code></pre></div>
 </div>
 <p>Finally, we can average over the runs and plot the results!</p>
+<h2 id="references">References<a class="headerlink" href="#references" title="Link to this heading">¶</a></h2>
 <aside class="footnote-list brackets">
 <aside class="footnote brackets" id="thesis" role="doc-footnote">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>

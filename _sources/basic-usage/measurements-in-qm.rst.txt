@@ -10,8 +10,6 @@ Single qubit measurements
    
    This tutorial is under construction
 
-**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
-
 In MentPy, measurements are represented by the :obj:`mp.Ment` class.
 
 .. ipython:: python
