@@ -1,7 +1,17 @@
 Classifying classical data
 ==========================
 
-QML can be used to process classical data. Notably, previous studies have applied quantum models for such tasks, and you can find more about these in [#havlicek2019]_, [#schuld2019]_, [#abbas2021]_, to name a few. In this tutorial, we'll focus on using MB-QML for the task of classical data classification. The core idea is to implement an embedding :math:`x_i \mapsto |\phi(x_i)\rangle` of a 2D dataset and use this map to formulate the kernel:
+.. meta::
+   :description: Using MBQC to classify classical data.
+   :keywords: mb-qml, mbqc, measurement-based quantum machine learning, qml
+
+**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
+
+QML can be used to process classical data. Notably, previous studies have applied quantum models 
+for such tasks, and you can find more about these in [#havlicek2019]_, [#schuld2019]_, [#abbas2021]_, 
+to name a few. In this tutorial, we'll focus on using MB-QML for the task of classical data 
+classification. The core idea is to implement an embedding :math:`x_i \mapsto |\phi(x_i)\rangle` 
+of a 2D dataset and use this map to formulate the kernel:
 
 .. math:: K(x_i, x_j) = \abs{\braket{\phi(x_i)}{\phi(x_j)}}^2,
 
@@ -23,13 +33,15 @@ The data embedding :math:`\phi` can be implemented in several ways, and in MB-QM
    y = blobs_df['target']
    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-   @savefig scatter_classical_data.png width=1000px
+   fig, ax = plt.subplots()
+   ax.set_facecolor('white') 
+   @savefig scatter_classical_data.png width=500px
    plt.scatter(X_train['feature1'], X_train['feature2'], c=y_train, cmap='coolwarm')
 
 
 It is a good practice to normalize the data to avoid issues when embedding as the measurement angles.
 
-.. code-block:: python
+.. ipython:: python
 
    from sklearn.preprocessing import MinMaxScaler
 
@@ -73,10 +85,11 @@ embeddings mentioned in [#suzuki2020]_ to define the measurement angles for each
       return K
 
 
-Finally, we can create a SVM classifier and use this kernel to train the model:
+Finally, we can create a SVM classifier and use this kernel to train the model.
 
 .. code-block:: python
 
+   from sklearn import svm
    from sklearn.metrics import accuracy_score
 
    clf = svm.SVC(kernel=quantum_kernel)
@@ -85,6 +98,33 @@ Finally, we can create a SVM classifier and use this kernel to train the model:
 
    print("Accuracy:", accuracy_score(y_test, y_pred))
 
+
+The decision boundary of the trained model can be visualized as follows:
+
+.. code-block:: python
+
+   from matplotlib.colors import ListedColormap
+
+   X_train_np = np.array(X_train)
+   y_train_np = np.array(y_train)
+
+   x_min, x_max = X_train_np[:, 0].min() - 0.2, X_train_np[:, 0].max() + 0.2
+   y_min, y_max = X_train_np[:, 1].min() - 0.2, X_train_np[:, 1].max() + 0.2
+   xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.05),
+                        np.arange(y_min, y_max, 0.05))
+
+   Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+   Z = Z.reshape(xx.shape)
+
+   colors = ('red', 'blue')
+   cmap = ListedColormap(colors)
+
+   plt.figure(figsize=(8, 6))
+   contour = plt.contourf(xx, yy, 1-Z, alpha=0.4, cmap='coolwarm')
+   plt.scatter(X_train_np[:, 0], X_train_np[:, 1], c=1-y_train_np, cmap='coolwarm', edgecolors='k')
+   plt.colorbar(contour)
+
+   plt.show()
 
 
 References

@@ -5,6 +5,8 @@ An introduction to MB-QML
    :description: An introduction to measurement-based quantum machine learning
    :keywords: mb-qml, measurement-based quantum machine learning, quantum machine learning, mbqc
 
+**Author(s):** `Luis Mantilla <https://twitter.com/realmantilla>`_
+
 Quantum machine learning (QML) is a field that studies how to use parametrized quantum circuits to 
 learn to identify patterns in quantum data. In measurement-based qunatum machine learning (MB-QML) 
 [#thesis]_, we use a MBQC circuit with parametrized measurement angles to solve QML problems. 
@@ -84,5 +86,8 @@ where the input and target states are related by a given unitary :math:`\sigma_i
         runs_test[i] = cost_test
 
 Finally, we can average over the runs and plot the results!
+
+References
+----------
 
 .. [#thesis] Mantilla Calderón, L. C. (2023). Measurement-based quantum machine learning (T). University of British Columbia. 
