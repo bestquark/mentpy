@@ -5,6 +5,7 @@ ipykernel>=6.25.2
 matplotlib>=3.7.1
 networkx>=2.8.8
 numpy>=1.23.5
+pandas>=2.0.1
 pathos
 PennyLane>=0.30.0
 scikit-learn>=1.2.2
