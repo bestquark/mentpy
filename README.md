@@ -15,11 +15,11 @@
     <a href="https://codecov.io/gh/BestQuark/mentpy">
         <img src="https://codecov.io/gh/BestQuark/mentpy/graph/badge.svg?token=TDWFQPW3KD">
     </a>
-    <a href="https://twitter.com/mentpy">
-        <img src="https://img.shields.io/twitter/follow/mentpy?label=mentpy&style=flat&logo=twitter">
+    <a href="https://x.com/mentpy">
+        <img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/mentpy">
     </a>
     <a href="https://discord.gg/HNA36hmEE5">
-      <img alt="Discord" src="https://img.shields.io/discord/1158882999551676586?style=social&logo=discord">
+      <img alt="Discord" src="https://img.shields.io/discord/1158882999551676586?style=flat&logo=discord">
     </a>
 </div>
 
