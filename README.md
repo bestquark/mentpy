@@ -19,7 +19,7 @@
         <img alt="X (formerly Twitter) Follow" src="https://img.shields.io/twitter/follow/mentpy">
     </a>
     <a href="https://discord.gg/HNA36hmEE5">
-      <img alt="Discord" src="https://img.shields.io/discord/1158882999551676586?style=flat&logo=discord">
+      <img alt="Discord" src="https://img.shields.io/discord/1158882999551676586?logo=discord&label=Chat&labelColor=ffffff">
     </a>
 </div>
 
