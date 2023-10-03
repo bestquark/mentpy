@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./docs/_static/logo.png" alt="MentPy: A Measurement-Based Quantum computing simulator." width="70%">
+  <img src="https://github.com/BestQuark/mentpy/blob/main/docs/_static/logo.png?raw=true" alt="MentPy: A Measurement-Based Quantum computing simulator." width="70%">
 </p>
 
 <div align="center">
@@ -17,6 +17,9 @@
     </a>
     <a href="https://twitter.com/mentpy">
         <img src="https://img.shields.io/twitter/follow/mentpy?label=mentpy&style=flat&logo=twitter">
+    </a>
+    <a href="https://discord.gg/HNA36hmEE5">
+      <img alt="Discord" src="https://img.shields.io/discord/1158882999551676586?style=social&logo=discord">
     </a>
 </div>
 
